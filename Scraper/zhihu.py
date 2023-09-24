@@ -1,3 +1,5 @@
+from importlib import reload
+
 from bs4 import BeautifulSoup
 import requests
 import json
@@ -9,9 +11,11 @@ from pathlib import Path
 import traceback
 # import urllib.parse
 import urllib
-import urlparse
 import re
 import sys
+import Scraper.Analyser
+from Scraper.Analyser import ZhihuAnalyser
+
 reload(sys)
 sys.setdefaultencoding('utf-8')
 
@@ -116,10 +120,13 @@ for i in range(0, len(proxyList)):
 
 index = 0
 maxLine = 10000
-# target = "R:\\scrapeBoss\\data"
-topicInfoPath = "d:\\scrapeBoss\\topic.txt"
-target = "d:\\scrapeBaike\\data"
-# qidPath = "d:\\data.txt"
+
+dataBasePath = os.path[0]
+print(dataBasePath)
+target = os.path.join(dataBasePath, "data")
+
+topicInfoPath = os.path.join(target, "topic.txt")
+
 handler = None
 lineCount = 0
 
@@ -129,8 +136,8 @@ duplicated = 0
 scrapedQid = set()
 scrapedTopic = set()
 
-scrapedQidPath = "D:\\scrapeBaike\\data\\baike_scraped.txt"
-scrapedTopicPath = "d:\\scrapeBaike\\data\\scrapedTopic.txt"
+scrapedQidPath = os.path.join(target, "baike_scraped.txt")
+scrapedTopicPath = os.path.join(target, "scrapedTopic.txt")
 
 waitQid = set()
 waitingTopic = set()
@@ -139,16 +146,16 @@ waitingTopic = set()
 qidQueue = []
 topicQueue = []
 
-waitQidPath = "D:\\scrapeBaike\\data\\catel3.txt.output.seedfound.baike"
-waitTopicPath = "D:\\scrapeBaike\\data\\topicQueue.txt"
+waitQidPath = os.path.join(target, "catel3.txt.output.seedfound.baike")
+waitTopicPath = os.path.join(target, "topicQueue.txt")
 
 failedQid = set()
 failedTopic = set()
 
-failedQidPath = "D:\\scrapeBaike\\data\\baike_failed.txt"
-failedTopicPath = "D:\\scrapeBaike\\data\\faileTopic.txt"
+failedQidPath = os.path.join(target, "baike_failed.txt")
+failedTopicPath = os.path.join(target, "faileTopic.txt")
 
-flagPath = "d:\\scrapeBaike\\data\\stop.txt"
+flagPath = os.path.join(target, "stop.txt")
 scrapeCounter = 0
 
 # drop proxy ip when X times failure occurred
@@ -159,7 +166,7 @@ topicInfoDict = {}
 
 # seed finder section
 
-seedQueryPath = "D:\\scrapeBaike\\data\\catel3.txt.output"
+seedQueryPath = os.path.join(target, "母婴.output")
 seedOutputPath = seedQueryPath + ".seedfound"
 seedDict = set()
 failedSeedList = set()
@@ -586,6 +593,8 @@ def scrapeBossDetail():
         return url, header
 
     def recordAndDiscover(response, qid):
+        analyser = ZhihuAnalyser()
+        analyser.recordAndDiscover(response, qid)
         dataStr = response.text
         bs = BeautifulSoup(dataStr, 'html.parser')
         summary = bs.select(".lemma-summary")
@@ -610,7 +619,6 @@ def scrapeBossDetail():
         # state saving
         if not scrapedQid.__contains__(qid):
             scrapedQid.add(qid)
-
         return False, True
     # stripedQueue = [q[-1] for q in qidQueue]
     scrapeGlobal(buildRequest, recordAndDiscover)
