@@ -10,10 +10,11 @@ from pathlib import Path
 import traceback
 # import urllib.parse
 import urllib
-import urlparse
+# import urlparse
 import re
 import sys
-reload(sys)
+import imp
+imp.reload(sys)
 sys.setdefaultencoding('utf-8')
 
 requestConfig = {
