@@ -1,0 +1,78 @@
+https://www.zhihu.com/api/v4/questions/421697624/similar-questions?include=data%5B*%5D.answer_count%2Cauthor%2Cfollower_count&limit=5
+
+{
+    "paging": {
+        "is_end": true,
+        "is_start": true,
+        "next": "https://www.zhihu.com/api/v4/questions/421697624/similar-questions?include=data%5B%2A%5D.answer_count%2Cauthor%2Cfollower_count\u0026limit=10\u0026offset=10",
+        "previous": "https://www.zhihu.com/api/v4/questions/421697624/similar-questions?include=data%5B%2A%5D.answer_count%2Cauthor%2Cfollower_count\u0026limit=10\u0026offset=0",
+        "totals": 5
+    },
+    "data": [
+        {
+            "type": "question",
+            "id": 512619779,
+            "title": "穷人翻身有哪些途径？",
+            "question_type": "normal",
+            "created": 1642727707,
+            "updated_time": 1642727707,
+            "url": "https://www.zhihu.com/api/v4/questions/512619779",
+            "answer_count": 24,
+            "comment_count": 0,
+            "follower_count": 34,
+            "relationship": {}
+        },
+        {
+            "type": "question",
+            "id": 557634368,
+            "title": "穷人用什么方法翻身?",
+            "question_type": "normal",
+            "created": 1664874308,
+            "updated_time": 1664874308,
+            "url": "https://www.zhihu.com/api/v4/questions/557634368",
+            "answer_count": 2,
+            "comment_count": 0,
+            "follower_count": 3,
+            "relationship": {}
+        },
+        {
+            "type": "question",
+            "id": 602223070,
+            "title": "穷人如何翻身？应注意什么？",
+            "question_type": "normal",
+            "created": 1684659478,
+            "updated_time": 1684659478,
+            "url": "https://www.zhihu.com/api/v4/questions/602223070",
+            "answer_count": 3,
+            "comment_count": 0,
+            "follower_count": 5,
+            "relationship": {}
+        },
+        {
+            "type": "question",
+            "id": 419624556,
+            "title": "穷人如何翻身?",
+            "question_type": "normal",
+            "created": 1599321903,
+            "updated_time": 1599321903,
+            "url": "https://www.zhihu.com/api/v4/questions/419624556",
+            "answer_count": 10,
+            "comment_count": 0,
+            "follower_count": 13,
+            "relationship": {}
+        },
+        {
+            "type": "question",
+            "id": 60087707,
+            "title": "穷人如何翻身？",
+            "question_type": "normal",
+            "created": 1495274221,
+            "updated_time": 1495274221,
+            "url": "https://www.zhihu.com/api/v4/questions/60087707",
+            "answer_count": 4,
+            "comment_count": 0,
+            "follower_count": 6,
+            "relationship": {}
+        }
+    ]
+}

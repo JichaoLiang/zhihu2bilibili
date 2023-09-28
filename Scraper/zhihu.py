@@ -15,6 +15,7 @@ import re
 import sys
 import Scraper.Analyser
 from Scraper.Analyser import ZhihuAnalyser
+from Scraper.Analyser.AnswerAnalyser import AnswerAnalyser
 
 reload(sys)
 sys.setdefaultencoding('utf-8')
@@ -121,11 +122,10 @@ for i in range(0, len(proxyList)):
 index = 0
 maxLine = 10000
 
-dataBasePath = os.path[0]
-print(dataBasePath)
+dataBasePath = os.path.abspath('../Resource/task/zhihu/')
 target = os.path.join(dataBasePath, "data")
 
-topicInfoPath = os.path.join(target, "topic.txt")
+topicInfoPath = os.path.join(dataBasePath, "topic.txt")
 
 handler = None
 lineCount = 0
@@ -136,24 +136,28 @@ duplicated = 0
 scrapedQid = set()
 scrapedTopic = set()
 
-scrapedQidPath = os.path.join(target, "baike_scraped.txt")
-scrapedTopicPath = os.path.join(target, "scrapedTopic.txt")
+scrapedQidPath = os.path.join(target, "scraped_question.txt")
+scrapedTopicPath = os.path.join(target, "scraped_topic.txt")
 
 waitQid = set()
 waitingTopic = set()
 
+#
+# qidQueue = []
+# topicQueue = []
 
-qidQueue = []
-topicQueue = []
+taskQueuePath = os.path.join(target, "taskqueue.txt")
 
-waitQidPath = os.path.join(target, "catel3.txt.output.seedfound.baike")
-waitTopicPath = os.path.join(target, "topicQueue.txt")
+taskQueue = []
+
+waitQidPath = os.path.join(target, "waiting_question.txt")
+waitTopicPath = os.path.join(target, "waiting_topic.txt")
 
 failedQid = set()
 failedTopic = set()
 
-failedQidPath = os.path.join(target, "baike_failed.txt")
-failedTopicPath = os.path.join(target, "faileTopic.txt")
+failedQidPath = os.path.join(target, "failed_question.txt")
+failedTopicPath = os.path.join(target, "failed_topic.txt")
 
 flagPath = os.path.join(target, "stop.txt")
 scrapeCounter = 0
@@ -166,10 +170,10 @@ topicInfoDict = {}
 
 # seed finder section
 
-seedQueryPath = os.path.join(target, "母婴.output")
-seedOutputPath = seedQueryPath + ".seedfound"
-seedDict = set()
-failedSeedList = set()
+# seedQueryPath = os.path.join(target, "母婴.output")
+# seedOutputPath = seedQueryPath + ".seedfound"
+# seedDict = set()
+# failedSeedList = set()
 
 def stopFlag():
     return Path(flagPath).exists()
@@ -207,8 +211,8 @@ def record(msg):
 def saveStatus():
     saveList(list(scrapedQid), scrapedQidPath)
     saveList(list(scrapedTopic), scrapedTopicPath)
-    saveList(qidQueue, waitQidPath)
-    saveList(topicQueue, waitTopicPath)
+    saveList(taskQueue, taskQueuePath)
+    # saveList(topicQueue, waitTopicPath)
     saveList(failedQid, failedQidPath)
     saveList(failedTopic, failedTopicPath)
 
@@ -423,15 +427,17 @@ def stripTopic(str):
     return str.split("https://youle.zhipin.com/topic/")[-1].split(".html")[0]
 
 def restoreScrapeDataQueue():
+    list = [l.replace('\n','') for l in loadList(taskQueuePath)]
+    for l in list:
+        taskQueue.append(l)
+
     list = [l.replace('\n','') for l in loadList(waitQidPath)]
     for l in list:
         waitQid.add(l)
-        qidQueue.append(l)
 
     list = [l.replace('\n','') for l in loadList(waitTopicPath)]
     for l in list:
         waitingTopic.add(l)
-        topicQueue.append(l)
 
     list = [l.replace('\n','') for l in loadList(scrapedQidPath)]
     for l in list:
@@ -586,6 +592,22 @@ def discoverLink(p):
             resultlist.append(targetUrl["baikePrefix"] + href)
     return resultlist
 
+class IdType:
+    answer:str = 'answer'
+    question:str = 'question'
+    topic:str = 'topic'
+    favorlist:str = 'favorlist'
+    fullset = [answer,question,topic,favorlist]
+
+    def getType(qid: str):
+        for tp in IdType.fullset:
+            if qid.startswith(IdType.answer):
+                return IdType.answer
+        pass
+    pass
+
+
+
 def scrapeBossDetail():
     def buildRequest(qid):
         url = qid # targetUrl["detailprefix"].replace("[qid]", qid)
@@ -593,29 +615,34 @@ def scrapeBossDetail():
         return url, header
 
     def recordAndDiscover(response, qid):
-        analyser = ZhihuAnalyser()
-        analyser.recordAndDiscover(response, qid)
         dataStr = response.text
-        bs = BeautifulSoup(dataStr, 'html.parser')
-        summary = bs.select(".lemma-summary")
-        title = bs.select(".J-lemma-title")
-        titleStr = ""
-        if len(title) > 0:
-            h1 = title[0].select("h1")
-            if len(h1) > 0:
-                titleStr = stripHtmlTag(h1[0].text)
-        if len(summary) > 0:
-            paragraphs = summary[0].select('.para')
-            SummaryList = []
-            for p in paragraphs:
-                SummaryList.append(stripHtmlTag(p.text))
-                newLink = discoverLink(p)
-                for l in newLink:
-                    newQid(l)
-            joinedStr = convertNewLineAndTable('[SEP]'.join([p.text for p in paragraphs]))
-            outputLine = titleStr + "\t" + joinedStr
-            print(outputLine)
-            record(outputLine)
+        if IdType.getType(qid) == IdType.answer:
+            result = AnswerAnalyser.extractAndDiscover(dataStr)
+            qTitle = result["titleText"]
+            qContent = result["qContentText"]
+            answer = result["answerText"]
+            topics = result["topics"]
+            outputrow = qTitle + '\t' + qContent + '\t' + answer
+        # bs = BeautifulSoup(dataStr, 'html.parser')
+        # summary = bs.select(".lemma-summary")
+        # title = bs.select(".J-lemma-title")
+        # titleStr = ""
+        # if len(title) > 0:
+        #     h1 = title[0].select("h1")
+        #     if len(h1) > 0:
+        #         titleStr = stripHtmlTag(h1[0].text)
+        # if len(summary) > 0:
+        #     paragraphs = summary[0].select('.para')
+        #     SummaryList = []
+        #     for p in paragraphs:
+        #         SummaryList.append(stripHtmlTag(p.text))
+        #         newLink = discoverLink(p)
+        #         for l in newLink:
+        #             newQid(l)
+        #     joinedStr = convertNewLineAndTable('[SEP]'.join([p.text for p in paragraphs]))
+        #     outputLine = titleStr + "\t" + joinedStr
+        #     print(outputLine)
+        #     record(outputLine)
         # state saving
         if not scrapedQid.__contains__(qid):
             scrapedQid.add(qid)
@@ -627,12 +654,12 @@ def scrapeBossDetail():
 def newQid(qid):
     if not scrapedQid.__contains__(qid) and not waitQid.__contains__(qid):
         waitQid.add(qid)
-        qidQueue.append(qid)
+        taskQueue.append(qid)
 
 def newTopic(topicId):
     if not scrapedTopic.__contains__(topicId) and not waitingTopic.__contains__(topicId) and len(topicId) > 0:
         waitingTopic.add(topicId)
-        topicQueue.append(topicId)
+        taskQueue.append(topicId)
 
 def scrapeBossList():
     iter = 1
