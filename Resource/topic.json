@@ -1,0 +1,730 @@
+{
+    "paging": {
+        "totals": 580,
+        "is_start": false,
+        "is_end": false,
+        "previous": "https://www.zhihu.com/api/v5.1/topics/20751492/feeds/essence?offset=40\u0026limit=20\u0026",
+        "next": "https://www.zhihu.com/api/v5.1/topics/20751492/feeds/essence?offset=80\u0026limit=20\u0026"
+    },
+    "version": "2.0",
+    "data": [
+        {
+            "attached_info": "CjcQBBoINTAyNzI0ODEgjPzlwgUoxw0wTUAAUgdfYW5zd2VyWggxMzc1MjkyOXIJMTM2ODcwNTcw",
+            "type": "topic_feed",
+            "target_description": "",
+            "target": {
+                "is_labeled": false,
+                "from_source": "",
+                "excerpt": "900赞了....无以回报更新几个好玩的评论吧 [图片] 比尔盖茨为朋友两肋插刀......Jarvis能不能订汉堡并且从后门送进来.Mark说我可以帮你做一个出来 [图片] 这个回答是来源mark老婆里面的视频,在初期Jarvis只能听懂Mark自己的声音,他老婆说要把温度调高的时候不好使,mark说现在AI听不懂你的声音. 他老婆给了他一个表情(自行体会),Mark赶紧说 我马上改..... [图片] 这个程序员应该都懂...sudo joke [图片] 这个是说mark有一套战衣 有一个评论找不到了,是问Mark赶…",
+                "created_time": 1482259980,
+                "id": 136870570,
+                "token": 136870570,
+                "topic_thumbnails": [
+                    "https://pic1.zhimg.com/v2-447d4f7852772021c5d21fc3dc01b2b1_720w.jpg?source=7e7ef6e2",
+                    "https://picx.zhimg.com/v2-a16cf1201d9dbe9a78916d1b09537012_720w.jpg?source=7e7ef6e2",
+                    "https://pica.zhimg.com/v2-d56ddbd0977964e8c522bd68c983216d_720w.jpg?source=7e7ef6e2"
+                ],
+                "author": {
+                    "id": "1ba295acdcdcdce745acd18d5a428bec",
+                    "url": "https://api.zhihu.com/people/billguocheng",
+                    "name": "Bill",
+                    "gender": 1,
+                    "headline": "知乎，与世界分享你瞎编的故事",
+                    "url_token": "billguocheng",
+                    "avatar_url_template": "https://pic1.zhimg.com/v2-780014f8f54546fd8f851e9c631644e4_qhd.jpg?source=57bbeac9",
+                    "user_type": "people",
+                    "is_advertiser": false,
+                    "avatar_url": "https://picx.zhimg.com/50/v2-780014f8f54546fd8f851e9c631644e4_l.jpg?source=57bbeac9",
+                    "is_org": false,
+                    "type": "people",
+                    "badge_v2": {
+                        "title": "",
+                        "merged_badges": [],
+                        "detail_badges": [],
+                        "icon": "",
+                        "night_icon": ""
+                    },
+                    "edu_member_tag": {
+                        "type": "",
+                        "member_tag": ""
+                    },
+                    "badge": [],
+                    "is_following": false,
+                    "is_followed": false
+                },
+                "url": "http://api.zhihu.com/answers/136870570",
+                "question": {
+                    "id": 53832840,
+                    "token": 53832840,
+                    "title": "如何评价扎克伯格自己写的 Jarvis AI？",
+                    "url": "http://api.zhihu.com/questions/53832840",
+                    "created": 1482200939,
+                    "updated_time": 1482334696,
+                    "is_following": false,
+                    "question_type": "normal",
+                    "created_time": 1482200939,
+                    "type": "question"
+                },
+                "updated_time": 1482419348,
+                "comment_count": 77,
+                "favlists_count": 456,
+                "answer_type": "NORMAL",
+                "voteup_count": 1735,
+                "type": "answer",
+                "thumbnail": "https://pic1.zhimg.com/v2-447d4f7852772021c5d21fc3dc01b2b1_720w.jpg?source=7e7ef6e2",
+                "attachment": null,
+                "content": "\u003cp data-pid=\"Z-6WxZx4\"\u003e900赞了....无以回报更新几个好玩的评论吧\u003c/p\u003e\u003cfigure\u003e\u003cimg src=\"https://picx.zhimg.com/50/v2-447d4f7852772021c5d21fc3dc01b2b1_720w.jpg?source=1940ef5c\" data-rawwidth=\"1016\" data-rawheight=\"344\" data-original-token=\"v2-447d4f7852772021c5d21fc3dc01b2b1\" class=\"origin_image zh-lightbox-thumb\" width=\"1016\" data-original=\"https://picx.zhimg.com/v2-447d4f7852772021c5d21fc3dc01b2b1_r.jpg?source=1940ef5c\"/\u003e\u003c/figure\u003e\u003cp data-pid=\"IIJgR80R\"\u003e比尔盖茨为朋友两肋插刀......Jarvis能不能订汉堡并且从后门送进来.Mark说我可以帮你做一个出来\u003c/p\u003e\u003cfigure\u003e\u003cimg src=\"https://pic1.zhimg.com/50/v2-a16cf1201d9dbe9a78916d1b09537012_720w.jpg?source=1940ef5c\" data-rawwidth=\"1000\" data-rawheight=\"260\" data-original-token=\"v2-a16cf1201d9dbe9a78916d1b09537012\" class=\"origin_image zh-lightbox-thumb\" width=\"1000\" data-original=\"https://picx.zhimg.com/v2-a16cf1201d9dbe9a78916d1b09537012_r.jpg?source=1940ef5c\"/\u003e\u003c/figure\u003e\u003cp data-pid=\"K89ZxvHw\"\u003e这个回答是来源mark老婆里面的视频,在初期Jarvis只能听懂Mark自己的声音,他老婆说要把温度调高的时候不好使,mark说现在AI听不懂你的声音. 他老婆给了他一个表情(自行体会),Mark赶紧说 我马上改.....\u003c/p\u003e\u003cfigure\u003e\u003cimg src=\"https://pica.zhimg.com/50/v2-d56ddbd0977964e8c522bd68c983216d_720w.jpg?source=1940ef5c\" data-rawwidth=\"952\" data-rawheight=\"198\" data-original-token=\"v2-d56ddbd0977964e8c522bd68c983216d\" class=\"origin_image zh-lightbox-thumb\" width=\"952\" data-original=\"https://pic1.zhimg.com/v2-d56ddbd0977964e8c522bd68c983216d_r.jpg?source=1940ef5c\"/\u003e\u003c/figure\u003e\u003cp data-pid=\"58hayjS1\"\u003e这个程序员应该都懂...sudo joke\u003c/p\u003e\u003cfigure\u003e\u003cimg src=\"https://picx.zhimg.com/50/v2-36f82da59e39756b8e1952021eeaab36_720w.jpg?source=1940ef5c\" data-rawwidth=\"1000\" data-rawheight=\"286\" data-original-token=\"v2-36f82da59e39756b8e1952021eeaab36\" class=\"origin_image zh-lightbox-thumb\" width=\"1000\" data-original=\"https://picx.zhimg.com/v2-36f82da59e39756b8e1952021eeaab36_r.jpg?source=1940ef5c\"/\u003e\u003c/figure\u003e\u003cp data-pid=\"KDUwukDC\"\u003e这个是说mark有一套战衣\u003c/p\u003e\u003cp data-pid=\"U7xQcxa8\"\u003e有一个评论找不到了,是问Mark赶紧把他地下室的钢铁侠放出来,mark回复\u0026#34;I dont know what u talking about wink wink\u0026#34;\u003c/p\u003e\u003cbr/\u003e\u003cp data-pid=\"mlJhpwLY\"\u003e一晚上收获了这么多赞,实在不好意思.本来只是不想复习考试逛fb,第一时间看到Mark文章随便说两句. 只好在下面多总结几段了\u003c/p\u003e\u003cp data-pid=\"Wb3RkH0v\"\u003e\u003ci\u003e原答案\u003c/i\u003e\u003c/p\u003e\u003cp data-pid=\"RUTUGXYA\"\u003e我读了他的文章(\u003c/p\u003e\u003ca href=\"https://link.zhihu.com/?target=https%3A//www.facebook.com/notes/mark-zuckerberg/building-jarvis/10154361492931634%3Fhc_location%3Dufi\" class=\" external\" target=\"_blank\" rel=\"nofollow noreferrer\"\u003e\u003cspan class=\"invisible\"\u003ehttps://www.\u003c/span\u003e\u003cspan class=\"visible\"\u003efacebook.com/notes/mark\u003c/span\u003e\u003cspan class=\"invisible\"\u003e-zuckerberg/building-jarvis/10154361492931634?hc_location=ufi\u003c/span\u003e\u003cspan class=\"ellipsis\"\u003e\u003c/span\u003e\u003c/a\u003e\u003cp data-pid=\"Rq9y7D0t\"\u003e),今天他发布了DEMO video(\u003c/p\u003e\u003ca href=\"https://link.zhihu.com/?target=https%3A//www.facebook.com/zuck/videos/10103351034741311/\" class=\" external\" target=\"_blank\" rel=\"nofollow noreferrer\"\u003e\u003cspan class=\"invisible\"\u003ehttps://www.\u003c/span\u003e\u003cspan class=\"visible\"\u003efacebook.com/zuck/video\u003c/span\u003e\u003cspan class=\"invisible\"\u003es/10103351034741311/\u003c/span\u003e\u003cspan class=\"ellipsis\"\u003e\u003c/span\u003e\u003c/a\u003e\u003cp data-pid=\"S7poo2OG\"\u003e). \u003c/p\u003e\u003cfigure\u003e\u003cimg src=\"https://picx.zhimg.com/50/v2-c4f1f221a7beb1d6d196ce2f898ebce4_720w.jpg?source=1940ef5c\" data-rawwidth=\"1900\" data-rawheight=\"720\" data-original-token=\"v2-c4f1f221a7beb1d6d196ce2f898ebce4\" class=\"origin_image zh-lightbox-thumb\" width=\"1900\" data-original=\"https://pica.zhimg.com/v2-c4f1f221a7beb1d6d196ce2f898ebce4_r.jpg?source=1940ef5c\"/\u003e\u003c/figure\u003e\u003cbr/\u003e\u003cp data-pid=\"JlGy8THA\"\u003e他一个CEO用自己的业余时间做出了一个像模像样的AI(用的摩根弗里曼的声音非常的sexy). 虽然大部分技术都是现成的(facebook开源项目和一些自动化家用硬件),有点像当年的iphone. 但是他整合技术和学习能力实在太恐怖了. 他文章里写到自己上次写IOS 的app是 2012年. 现在写肯定是从头学起. 一个比较好玩的用处在于用摄像头和图像识别技术来自动让自己的亲人朋友进门.\u003c/p\u003e\u003cblockquote data-pid=\"PXywx87I\"\u003eTo do this, I installed a few cameras at my door that can capture images from all angles. AI systems today cannot identify people from the back of their heads, so having a few angles ensures we see the person\u0026#39;s face. I built a simple server that continuously watches the cameras and runs a two step process: first, it runs face detection to see if any person has come into view, and second, if it finds a face, then it runs face recognition to identify who the person is. Once it identifies the person, it checks a list to confirm I\u0026#39;m expecting that person, and if I am then it will let them in and tell me they\u0026#39;re here.\u003cbr/\u003e\u003c/blockquote\u003e\u003cfigure\u003e\u003cimg src=\"https://pic1.zhimg.com/50/v2-40443c16e57b1b9b5d92658d3f432a04_720w.jpg?source=1940ef5c\" data-rawwidth=\"719\" data-rawheight=\"1280\" data-original-token=\"v2-40443c16e57b1b9b5d92658d3f432a04\" class=\"origin_image zh-lightbox-thumb\" width=\"719\" data-original=\"https://pica.zhimg.com/v2-40443c16e57b1b9b5d92658d3f432a04_r.jpg?source=1940ef5c\"/\u003e\u003c/figure\u003e\u003cbr/\u003e\u003cp data-pid=\"NOSGyH_h\"\u003e文章里列举了很多他遇到的问题,比如AI需要知道他们在房间的哪个地方,这样说\u0026#34;turn on the light\u0026#34;的时候不会不知道开哪个房间的灯. 如何自己做一个联网的toast machine 由于现有的toast机都不联网,所以他自己改装了一个1950的toast机\u003c/p\u003e\u003cblockquote data-pid=\"7sXEIMZr\"\u003eFurther, most appliances aren\u0026#39;t even connected to the internet yet. It\u0026#39;s possible to control some of these using internet-connected power switches that let you turn the power on and off remotely. But often that isn\u0026#39;t enough. For example, one thing I learned is it\u0026#39;s hard to find a toaster that will let you push the bread down while it\u0026#39;s powered off so you can automatically start toasting when the power goes on. I ended up finding an old toaster from the 1950s and rigging it up with a connected switch. Similarly, I found that connecting a food dispenser for Beast or a grey t-shirt cannon would require hardware modifications to work.\u003cbr/\u003e\u003c/blockquote\u003e\u003cbr/\u003e\u003cp data-pid=\"4G1kPaE1\"\u003e还有一个技术上的限制就是语音识别,当人和人说话对比人和机器说话是完全不同的. 如果用机器学习的算法从Google上拿人和机器说话的数据来学习的话 结果可能比用facebook的数据更差. \u003c/p\u003e\u003cblockquote data-pid=\"iAxbnGDH\"\u003eAnother interesting limitation of speech recognition systems -- and machine learning systems more generally -- is that they are more optimized for specific problems than most people realize. For example, understanding a person talking to a computer is subtly different problem from understanding a person talking to another person. If you train a machine learning system on data from Google of people speaking to a search engine, it will perform relatively worse on Facebook at understanding people talking to real people. In the case of Jarvis, training an AI that you\u0026#39;ll talk to at close range is also different from training a system you\u0026#39;ll talk to from all the way across the room, like Echo. These systems are more specialized than it appears, and that implies we are further off from having general systems than it might seem.\u003cbr/\u003e\u003c/blockquote\u003e\u003cp data-pid=\"VsLcZUqj\"\u003e在他的总结里面,他也清楚的认识到了现有AI技术的不足\u003c/p\u003e\u003cblockquote data-pid=\"ipPBxLwV\"\u003eI\u0026#39;ve previously predicted that within 5-10 years we\u0026#39;ll have AI systems that are more accurate than people for each of our senses -- vision, hearing, touch, etc, as well as things like language. It\u0026#39;s impressive how powerful the state of the art for these tools is becoming, and this year makes me more confident in my prediction.\u003cbr/\u003eAt the same time, we are still far off from understanding how learning works. Everything I did this year -- natural language, face recognition, speech recognition and so on -- are all variants of the same fundamental pattern recognition techniques. We know how to show a computer many examples of something so it can recognize it accurately, but we still do not know how to take an idea from one domain and apply it to something completely different. \u003cbr/\u003eTo put that in perspective, I spent about 100 hours building Jarvis this year, and now I have a pretty good system that understands me and can do lots of things. But even if I spent 1,000 more hours, I probably wouldn\u0026#39;t be able to build a system that could learn completely new skills on its own -- unless I made some fundamental breakthrough in the state of AI along the way. \u003cbr/\u003eIn a way, AI is both closer and farther off than we imagine. AI is closer to being able to do more powerful things than most people expect -- driving cars, curing diseases, discovering planets, understanding media. Those will each have a great impact on the world, but we\u0026#39;re still figuring out what real intelligence is.\u003cbr/\u003eOverall, this was a great challenge. These challenges have a way of teaching me more than I expected at the beginning. This year I thought I\u0026#39;d learn about AI, and I also learned about home automation and Facebook\u0026#39;s internal technology too. That\u0026#39;s what\u0026#39;s so interesting about these challenges. Thanks for following along with this challenge and I\u0026#39;m looking forward to sharing next year\u0026#39;s challenge in a few weeks.\u003c/blockquote\u003e\u003cp data-pid=\"9LN7sgzj\"\u003eMark说他自己花了100个小时做这个Jarvis 的AI, 就算再多花1000个小时他觉得也做不出来一个可以自主学习的高级AI除非AI技术有重大突破. \u003c/p\u003e\u003cp data-pid=\"cPd0Hkuf\"\u003e他通过做一个个人project已经清楚的认识到目前AI的各种问题.\u003c/p\u003e\u003cp data-pid=\"1Pq6L8_R\"\u003e另外这篇文章也算是介绍了facebook目前开源东西项目,吸引广大高端码农来AI.\u003c/p\u003e\u003cp data-pid=\"0MtiF86Z\"\u003e给我的感觉就是,就算Facebook倒了,就算当年他没有创业facebook.他也一定可以做出别的成功的产品,并不是因为抄袭了谁的想法而成功的.这是一个\u003cb\u003e学习能力\u003c/b\u003e和\u003cb\u003e执行力\u003c/b\u003e很强大的\u003cb\u003e天才\u003c/b\u003e. \u003c/p\u003e",
+                "topic_thumbnails_extra_info": [],
+                "relationship": {
+                    "is_thanked": false
+                }
+            }
+        },
+        {
+            "attached_info": "CjgQBBoJMzA5OTk2OTg5IOjMy/wFKAAwAEABUgdfYW5zd2VyWgg0Njg5ODE1NnIKMTUzOTU2ODQxOA==",
+            "type": "topic_feed",
+            "target_description": "",
+            "target": {
+                "is_labeled": false,
+                "from_source": "",
+                "excerpt": "100年之内",
+                "created_time": 1603462760,
+                "id": 1539568418,
+                "token": 1539568418,
+                "topic_thumbnails": [],
+                "author": {
+                    "id": "2e5005ea90f2b1c933a6d659782b8953",
+                    "url": "https://api.zhihu.com/people/key-65-79",
+                    "name": "sheet",
+                    "gender": 0,
+                    "headline": "设计师",
+                    "url_token": "key-65-79",
+                    "avatar_url_template": "https://picx.zhimg.com/v2-f603301fb7d7806d1c6ab7920f64f4e8_qhd.jpg?source=57bbeac9",
+                    "user_type": "people",
+                    "is_advertiser": false,
+                    "avatar_url": "https://picx.zhimg.com/50/v2-f603301fb7d7806d1c6ab7920f64f4e8_l.jpg?source=57bbeac9",
+                    "is_org": false,
+                    "type": "people",
+                    "badge_v2": {
+                        "title": "",
+                        "merged_badges": [],
+                        "detail_badges": [],
+                        "icon": "",
+                        "night_icon": ""
+                    },
+                    "edu_member_tag": {
+                        "type": "",
+                        "member_tag": ""
+                    },
+                    "badge": [],
+                    "is_following": false,
+                    "is_followed": false
+                },
+                "url": "http://api.zhihu.com/answers/1539568418",
+                "question": {
+                    "id": 380789328,
+                    "token": 380789328,
+                    "title": "现在集全世界之力多久才能造出Jarvis这样的人工智能？",
+                    "url": "http://api.zhihu.com/questions/380789328",
+                    "created": 1584607147,
+                    "updated_time": 1584607147,
+                    "is_following": false,
+                    "question_type": "normal",
+                    "created_time": 1584607147,
+                    "type": "question"
+                },
+                "updated_time": 1603462760,
+                "comment_count": 0,
+                "favlists_count": 0,
+                "answer_type": "NORMAL",
+                "voteup_count": 0,
+                "type": "answer",
+                "thumbnail": "",
+                "attachment": null,
+                "content": "\u003cp data-pid=\"PLscNvDA\"\u003e100年之内\u003c/p\u003e",
+                "topic_thumbnails_extra_info": [],
+                "relationship": {
+                    "is_thanked": false
+                }
+            }
+        },
+        {
+            "attached_info": "CjYQBBoINTAzNzA0OTkgtfXtwgUoBzANQAVSB19hbnN3ZXJaCDEzNzUyOTI5cgkxMzcxMTU4MDU=",
+            "type": "topic_feed",
+            "target_description": "",
+            "target": {
+                "is_labeled": false,
+                "from_source": "",
+                "excerpt": "更像是一个初级demo，完全没有被impressed到。。。像很多楼上人说的，很多人程序员和PhD用开源工具都能做个差不多鸡肋的系统。问题是：除了做一个初级demo，测试一下目前AI,CV,NLP发展水平距离钢铁侠电影中的差距，这有何意义？对不起，毒舌了一下，但事实就是如此，不能因为小扎是fb的CEO就做什么都拍手叫好。",
+                "created_time": 1482390197,
+                "id": 137115805,
+                "token": 137115805,
+                "topic_thumbnails": [],
+                "author": {
+                    "id": "fdddfdde5741c9f9bd08d7d2e46ae0ff",
+                    "url": "https://api.zhihu.com/people/ji-qi-xue-xi-666",
+                    "name": "你说啥研究我不懂",
+                    "gender": 1,
+                    "headline": "研究员",
+                    "url_token": "ji-qi-xue-xi-666",
+                    "avatar_url_template": "https://pica.zhimg.com/v2-abed1a8c04700ba7d72b45195223e0ff_qhd.jpg?source=57bbeac9",
+                    "user_type": "people",
+                    "is_advertiser": false,
+                    "avatar_url": "https://picx.zhimg.com/50/v2-abed1a8c04700ba7d72b45195223e0ff_l.jpg?source=57bbeac9",
+                    "is_org": false,
+                    "type": "people",
+                    "badge_v2": {
+                        "title": "",
+                        "merged_badges": [],
+                        "detail_badges": [],
+                        "icon": "",
+                        "night_icon": ""
+                    },
+                    "edu_member_tag": {
+                        "type": "",
+                        "member_tag": ""
+                    },
+                    "badge": [],
+                    "is_following": false,
+                    "is_followed": false
+                },
+                "url": "http://api.zhihu.com/answers/137115805",
+                "question": {
+                    "id": 53832840,
+                    "token": 53832840,
+                    "title": "如何评价扎克伯格自己写的 Jarvis AI？",
+                    "url": "http://api.zhihu.com/questions/53832840",
+                    "created": 1482200939,
+                    "updated_time": 1482334696,
+                    "is_following": false,
+                    "question_type": "normal",
+                    "created_time": 1482200939,
+                    "type": "question"
+                },
+                "updated_time": 1482390197,
+                "comment_count": 13,
+                "favlists_count": 0,
+                "answer_type": "NORMAL",
+                "voteup_count": 7,
+                "type": "answer",
+                "thumbnail": "",
+                "attachment": null,
+                "content": "\u003cp data-pid=\"1TdYMSma\"\u003e更像是一个初级demo，完全没有被impressed到。。。像很多楼上人说的，很多人程序员和PhD用开源工具都能做个差不多鸡肋的系统。问题是：除了做一个初级demo，测试一下目前AI,CV,NLP发展水平距离钢铁侠电影中的差距，这有何意义？对不起，毒舌了一下，但事实就是如此，不能因为小扎是fb的CEO就做什么都拍手叫好。\u003c/p\u003e",
+                "topic_thumbnails_extra_info": [],
+                "relationship": {
+                    "is_thanked": false
+                }
+            }
+        },
+        {
+            "attached_info": "CkQQYxoTMTQ1NTMxNTIwMTkxNDA2ODk5MiDG0/KNBigAMABABlIHX3p2aWRlb1oBMHITMTQ1NTMxNTIwMTkxNDA2ODk5Mg==",
+            "type": "topic_feed",
+            "target_description": "",
+            "target": {
+                "description": "漫威钢铁侠",
+                "author": {
+                    "id": "07a91d11f9de3437d7b30c74735120ae",
+                    "url": "https://api.zhihu.com/people/qqoa",
+                    "name": "qqoa",
+                    "gender": 0,
+                    "headline": "",
+                    "url_token": "qqoa",
+                    "avatar_url_template": "https://pic1.zhimg.com/v2-f68590ef8d3943004bb054c9f279ffa1_qhd.jpg?source=57bbeac9",
+                    "user_type": "people",
+                    "is_advertiser": false,
+                    "avatar_url": "https://pic1.zhimg.com/50/v2-f68590ef8d3943004bb054c9f279ffa1_l.jpg?source=57bbeac9",
+                    "is_org": false,
+                    "type": "people",
+                    "badge_v2": {
+                        "title": "",
+                        "merged_badges": [],
+                        "detail_badges": [],
+                        "icon": "",
+                        "night_icon": ""
+                    },
+                    "edu_member_tag": {
+                        "type": "",
+                        "member_tag": ""
+                    },
+                    "badge": [],
+                    "is_following": false,
+                    "is_followed": false
+                },
+                "created_at": 1639754182,
+                "title": "最懂托尼的应该就是贾维斯了吧",
+                "updated_at": 1639754491,
+                "published_at": 1639754230,
+                "video": {
+                    "id": 1455315199657603072,
+                    "width": 1280,
+                    "height": 720,
+                    "duration": 60.8,
+                    "video_id": "1455315199657603072",
+                    "thumbnail": "https://pica.zhimg.com/v2-9bb9991a363793b487031fa07b88ab77.jpg?source=382ee89a",
+                    "playlist": {
+                        "hd": {
+                            "width": 1280,
+                            "height": 720,
+                            "format": "mp4",
+                            "url": "https://vdn.vzuu.com/HD/4ae1ede2-5f4c-11ec-a594-7e46eb3e359d-v4_t10000011-vmrhBM1eGm.mp4?disable_local_cache=1\u0026bu=192d98f0\u0026c=avc.0.0\u0026f=mp4\u0026expiration=1696007670\u0026auth_key=1696007670-0-0-a44d8b8dd09de6d39787fc603f7d428b\u0026v=ali\u0026pu=da4bec50",
+                            "duration": 60.8,
+                            "bitrate": 1150,
+                            "size": 8745146
+                        },
+                        "ld": {
+                            "width": 848,
+                            "height": 476,
+                            "format": "mp4",
+                            "url": "https://vdn.vzuu.com/SD/4ae1ede2-5f4c-11ec-a594-7e46eb3e359d-v4_t10000011-vmrhBM1eGm.mp4?disable_local_cache=1\u0026bu=192d98f0\u0026c=avc.0.0\u0026f=mp4\u0026expiration=1696007670\u0026auth_key=1696007670-0-0-5f07069cf78b17ce3ed03c6deb7a51e1\u0026v=ali\u0026pu=da4bec50",
+                            "duration": 60.8,
+                            "bitrate": 645,
+                            "size": 4903307
+                        },
+                        "sd": {
+                            "width": 848,
+                            "height": 476,
+                            "format": "mp4",
+                            "url": "https://vdn.vzuu.com/SD/4ae1ede2-5f4c-11ec-a594-7e46eb3e359d-v4_t10000011-vmrhBM1eGm.mp4?disable_local_cache=1\u0026bu=192d98f0\u0026c=avc.0.0\u0026f=mp4\u0026expiration=1696007670\u0026auth_key=1696007670-0-0-5f07069cf78b17ce3ed03c6deb7a51e1\u0026v=ali\u0026pu=da4bec50",
+                            "duration": 60.8,
+                            "bitrate": 645,
+                            "size": 4903307
+                        }
+                    },
+                    "type": "video"
+                },
+                "type": "zvideo",
+                "id": "1455315201914068992",
+                "id_str": "1455315201914068992",
+                "url": "https://www.zhihu.com/zvideo/1455315201914068992",
+                "relationship": {
+                    "is_thanked": false
+                },
+                "play_count": 520,
+                "comment_count": 0,
+                "voteup_count": 0,
+                "favlists_count": 1
+            }
+        },
+        {
+            "attached_info": "CkQQYxoTMTIzMTMxNzk1MzA1MzYzMDQ2NCCUiLf0BSgAMABACVIHX3p2aWRlb1oBMHITMTIzMTMxNzk1MzA1MzYzMDQ2NA==",
+            "type": "topic_feed",
+            "target_description": "",
+            "target": {
+                "description": "",
+                "author": {
+                    "id": "253c59d7babed45d019de1f4ef92dec1",
+                    "url": "https://api.zhihu.com/people/tian-ya-xing-chen-69",
+                    "name": "星球杯大王",
+                    "gender": 0,
+                    "headline": "",
+                    "url_token": "tian-ya-xing-chen-69",
+                    "avatar_url_template": "https://picx.zhimg.com/v2-f87e1927e8698373e3eae2ed18598d9c_qhd.jpg?source=57bbeac9",
+                    "user_type": "people",
+                    "is_advertiser": false,
+                    "avatar_url": "https://pic1.zhimg.com/50/v2-f87e1927e8698373e3eae2ed18598d9c_l.jpg?source=57bbeac9",
+                    "is_org": false,
+                    "type": "people",
+                    "badge_v2": {
+                        "title": "",
+                        "merged_badges": [],
+                        "detail_badges": [],
+                        "icon": "",
+                        "night_icon": ""
+                    },
+                    "edu_member_tag": {
+                        "type": "",
+                        "member_tag": ""
+                    },
+                    "badge": [],
+                    "is_following": false,
+                    "is_followed": false
+                },
+                "created_at": 1586349076,
+                "title": "泥巴老之王Graham Jarvis",
+                "updated_at": 1586349076,
+                "published_at": 1586349076,
+                "video": {
+                    "id": 1229965453944479744,
+                    "width": 1280,
+                    "height": 720,
+                    "duration": 310.497,
+                    "video_id": "1229965453944479744",
+                    "thumbnail": "https://pica.zhimg.com/v2-ecb652ca90d5249cb85bca64812503a9.jpg?source=382ee89a",
+                    "playlist": {
+                        "hd": {
+                            "width": 1280,
+                            "height": 720,
+                            "format": "mp4",
+                            "url": "https://vdn.vzuu.com/HD/0df0c4a2-76a6-11ea-9439-66710cd4878f.mp4?disable_local_cache=1\u0026bu=192d98f0\u0026c=avc.0.0\u0026f=mp4\u0026expiration=1696007670\u0026auth_key=1696007670-0-0-b3407a90897f82357e5cf4a750d616cc\u0026v=ali\u0026pu=20a6dc5b",
+                            "duration": 310.497,
+                            "bitrate": 1358.664,
+                            "size": 52732662
+                        },
+                        "ld": {
+                            "width": 848,
+                            "height": 478,
+                            "format": "mp4",
+                            "url": "https://vdn.vzuu.com/SD/0df0c4a2-76a6-11ea-9439-66710cd4878f.mp4?disable_local_cache=1\u0026bu=192d98f0\u0026c=avc.0.0\u0026f=mp4\u0026expiration=1696007670\u0026auth_key=1696007670-0-0-40b55103ae8fedb4e18aa3b3af8a67a4\u0026v=ali\u0026pu=20a6dc5b",
+                            "duration": 310.497,
+                            "bitrate": 759.527,
+                            "size": 29478894
+                        },
+                        "sd": {
+                            "width": 848,
+                            "height": 478,
+                            "format": "mp4",
+                            "url": "https://vdn.vzuu.com/SD/0df0c4a2-76a6-11ea-9439-66710cd4878f.mp4?disable_local_cache=1\u0026bu=192d98f0\u0026c=avc.0.0\u0026f=mp4\u0026expiration=1696007670\u0026auth_key=1696007670-0-0-40b55103ae8fedb4e18aa3b3af8a67a4\u0026v=ali\u0026pu=20a6dc5b",
+                            "duration": 310.497,
+                            "bitrate": 759.527,
+                            "size": 29478894
+                        }
+                    },
+                    "type": "video"
+                },
+                "type": "zvideo",
+                "id": "1231317953053630464",
+                "id_str": "1231317953053630464",
+                "url": "https://www.zhihu.com/zvideo/1231317953053630464",
+                "relationship": {
+                    "is_thanked": false
+                },
+                "play_count": 270,
+                "comment_count": 0,
+                "voteup_count": 0,
+                "favlists_count": 0
+            }
+        },
+        {
+            "attached_info": "CjYQBBoINTAzNjYxODcggNntwgUoCDAAQApSB19hbnN3ZXJaCDEzNzUyOTI5cgkxMzcxMDUxMTU=",
+            "type": "topic_feed",
+            "target_description": "",
+            "target": {
+                "is_labeled": false,
+                "from_source": "",
+                "excerpt": "不得不说，小扎确实是个天才。而且是个一直很努力的天才，每年都会给自己定一个挑战，并竭尽所能完成它。 去年是每两周读一本书，今年则有两个，“ 全年跑步 587 公里 ” 以及 “ 开发一款能控制家庭环境的人工智能助手 ——贾维斯（Jarvis） ” 但是关于他的小助手贾维斯，有不少人也问过我。 三点看法： 第一，除了Facebook，苹果、亚马逊、谷歌都在智能家居发力，但实际大家主要瞄准的还是万物互联（IoT）下家居和人工智能这…",
+                "created_time": 1482386560,
+                "id": 137105115,
+                "token": 137105115,
+                "topic_thumbnails": [],
+                "author": {
+                    "id": "f10c4d46efa60818e1cf0f365aacf7dd",
+                    "url": "https://api.zhihu.com/people/liu-zong-ru-93",
+                    "name": "刘宗孺",
+                    "gender": 1,
+                    "headline": "BroadLink CEO",
+                    "url_token": "liu-zong-ru-93",
+                    "avatar_url_template": "https://pic1.zhimg.com/v2-c1e6b7f007213596d5df10aad4c1622d_qhd.jpg?source=57bbeac9",
+                    "user_type": "people",
+                    "is_advertiser": false,
+                    "avatar_url": "https://pica.zhimg.com/50/v2-c1e6b7f007213596d5df10aad4c1622d_l.jpg?source=57bbeac9",
+                    "is_org": false,
+                    "type": "people",
+                    "badge_v2": {
+                        "title": "",
+                        "merged_badges": [],
+                        "detail_badges": [],
+                        "icon": "",
+                        "night_icon": ""
+                    },
+                    "edu_member_tag": {
+                        "type": "",
+                        "member_tag": ""
+                    },
+                    "badge": [],
+                    "is_following": false,
+                    "is_followed": false
+                },
+                "url": "http://api.zhihu.com/answers/137105115",
+                "question": {
+                    "id": 53832840,
+                    "token": 53832840,
+                    "title": "如何评价扎克伯格自己写的 Jarvis AI？",
+                    "url": "http://api.zhihu.com/questions/53832840",
+                    "created": 1482200939,
+                    "updated_time": 1482334696,
+                    "is_following": false,
+                    "question_type": "normal",
+                    "created_time": 1482200939,
+                    "type": "question"
+                },
+                "updated_time": 1482386560,
+                "comment_count": 0,
+                "favlists_count": 4,
+                "answer_type": "NORMAL",
+                "voteup_count": 8,
+                "type": "answer",
+                "thumbnail": "",
+                "attachment": null,
+                "content": "\u003cp data-pid=\"2ta4j1-D\"\u003e不得不说，小扎确实是个天才。而且是个一直很努力的天才，每年都会给自己定一个挑战，并竭尽所能完成它。\u003c/p\u003e\u003cp data-pid=\"1gg2Zp7U\"\u003e去年是每两周读一本书，今年则有两个，“ 全年跑步 587 公里 ” 以及 “ 开发一款能控制家庭环境的人工智能助手 ——贾维斯（Jarvis） ”\u003c/p\u003e\u003cp data-pid=\"3m5sVkDk\"\u003e但是关于他的小助手贾维斯，有不少人也问过我。\u003c/p\u003e\u003cp data-pid=\"bgJNdd9a\"\u003e三点看法：\u003c/p\u003e\u003cp data-pid=\"SpzzTY4v\"\u003e第一，除了Facebook，苹果、亚马逊、谷歌都在智能家居发力，但实际大家主要瞄准的还是万物互联（IoT）下家居和人工智能这两个的结合点。\u003c/p\u003e\u003cp data-pid=\"LJdU6usH\"\u003e第二，扎克伯格的这个系统相对比较简单（当然有各种原因，小扎是自己在编程并没有动用公司力量），FB是一个软件公司，这套AI里面用到了各种不同的系统。扎克伯格在一篇文章里抱怨过，这些系统没有给他们完整的开放接口——标准的SDK、标准的API，不能使他们的编程变得更简单。\u003cbr/\u003e\u003c/p\u003e\u003cp data-pid=\"YS8vVuNG\"\u003e这说明万物互联在海外发展的比较慢，反而国内走的很快，包括京东、阿里等互联网公司，也包括我们本身在做的互联互通的生态圈。足够多的产品已经互通了，在编程上是有优势的。\u003c/p\u003e\u003cp data-pid=\"-WITmZVi\"\u003e第三，他虽然做了一些数据的记忆学习，其实还是比较早期的，尤其在人工智能部分，在怎么理解人及让机器变得更聪明这块其实非常初级。开灯、开音乐这些功能都非常简单，对物体点对点的控制或者对场景的控制在国内普遍存在，大家已经做得非常好了。\u003c/p\u003e\u003cp data-pid=\"fHslKmE1\"\u003e扎克伯格里面提到让贾维斯根据简单的个人喜好去做一些事情，这个还算比较初级的，因为实现时产品是不互通的，所以产品数据拿的不够多。在国内，比如我们已经联通了足够多的设备，有横向的非常多的数据，已经实现了按照用户画像建立不同模型，场景化的为用户服务。\u003cbr/\u003e\u003c/p\u003e\u003cp data-pid=\"ktxs0TTG\"\u003e总结一下，所有人需要突破的：一是互联互通，不互通就没有足够多的设备被控制和收集数据；二是通过横向（设备和设备、设备和传感器、设备和网络之间）和纵向的数据（用户的历史使用习惯）让产品更智能。\u003c/p\u003e\u003cp data-pid=\"WEp2kkJ7\"\u003e不管怎么说，这是一个大方向，越来越多的科技巨头对这个感兴趣，对整个行业来说都是一个利好消息。大家除了做好产品的互通性、稳定性，更重要的是让系统真正的智能起来，把机器学习加进去，让机器更懂人。\u003c/p\u003e\u003cp data-pid=\"fOXLf1vm\"\u003e所以说，国外其实还不如国内做得好，或者说，国外和我们差的至少有两代。\u003c/p\u003e",
+                "topic_thumbnails_extra_info": [],
+                "relationship": {
+                    "is_thanked": false
+                }
+            }
+        },
+        {
+            "attached_info": "CjEQBxoJMjIzMTkzMzQyIMaiy58GKAAwAEAOUghfYXJ0aWNsZVoBMHIJNjA3Nzc1ODE0",
+            "type": "topic_feed",
+            "target_description": "",
+            "target": {
+                "id": 607775814,
+                "token": 607775814,
+                "image_url": "",
+                "updated": 1676857670,
+                "is_labeled": false,
+                "excerpt": "Jarvis是一个Python语音助手库，可以通过语音命令来执行各种操作，如打开文件、播放音乐、发送电子邮件等。以下是一个简单的使用Jarvis库的示例代码： import jarvis # 创建一个Jarvis对象 assistant = jarvis.Jarvis() # 定义命令，例如打开记事本 @assistant.command('open notepad') def open_notepad(): jarvis.speak(\"正在打开记事本\") jarvis.process(\"notepad\") # 启动语音助手 assistant.run() 在这个示例中，我们首先使…",
+                "excerpt_title": "python 的Jarvis库如何使用",
+                "voteup_count": 0,
+                "author": {
+                    "id": "b151fc95c990bba72531b20ccb58cd42",
+                    "url": "https://api.zhihu.com/people/guan-fu-v2",
+                    "name": "照无常",
+                    "gender": 1,
+                    "headline": "我的私人博客openwin.top",
+                    "url_token": "guan-fu-v2",
+                    "avatar_url_template": "https://pic1.zhimg.com/v2-e05969c239c1ef515645485542243daa_qhd.jpg?source=57bbeac9",
+                    "user_type": "people",
+                    "is_advertiser": false,
+                    "avatar_url": "https://picx.zhimg.com/50/v2-e05969c239c1ef515645485542243daa_l.jpg?source=57bbeac9",
+                    "is_org": false,
+                    "type": "people",
+                    "badge_v2": {
+                        "title": "",
+                        "merged_badges": [],
+                        "detail_badges": [],
+                        "icon": "",
+                        "night_icon": ""
+                    },
+                    "edu_member_tag": {
+                        "type": "",
+                        "member_tag": ""
+                    },
+                    "badge": [],
+                    "is_following": false,
+                    "is_followed": false
+                },
+                "url": "https://zhuanlan.zhihu.com/p/607775814",
+                "created": 1676857670,
+                "comment_count": 0,
+                "title": "python 的Jarvis库如何使用",
+                "topic_thumbnails": [],
+                "type": "article",
+                "content": "\u003cp data-pid=\"GxXOg866\"\u003eJarvis是一个Python语音助手库，可以通过语音命令来执行各种操作，如打开文件、播放音乐、发送电子邮件等。以下是一个简单的使用Jarvis库的示例代码：\u003c/p\u003e\u003cdiv class=\"highlight\"\u003e\u003cpre\u003e\u003ccode class=\"language-text\"\u003eimport jarvis\n\n# 创建一个Jarvis对象\nassistant = jarvis.Jarvis()\n\n# 定义命令，例如打开记事本\n@assistant.command(\u0026#39;open notepad\u0026#39;)\ndef open_notepad():\n    jarvis.speak(\u0026#34;正在打开记事本\u0026#34;)\n    jarvis.process(\u0026#34;notepad\u0026#34;)\n\n# 启动语音助手\nassistant.run()\n\u003c/code\u003e\u003c/pre\u003e\u003c/div\u003e\u003cp data-pid=\"mNcfkQmL\"\u003e在这个示例中，我们首先使用\u003ccode\u003ejarvis.Jarvis()\u003c/code\u003e创建了一个Jarvis对象。然后，我们使用\u003ccode\u003e@assistant.command()\u003c/code\u003e方法定义了一个命令，即打开记事本。在命令的函数体内，我们使用\u003ccode\u003ejarvis.speak()\u003c/code\u003e方法来发出语音提示，并使用\u003ccode\u003ejarvis.process()\u003c/code\u003e方法来执行打开记事本的操作。最后，我们使用\u003ccode\u003eassistant.run()\u003c/code\u003e方法启动语音助手。\u003c/p\u003e\u003cp data-pid=\"keXfX0xp\"\u003e除了上面的示例，Jarvis还支持许多其他的命令和功能，例如语音识别、文字转语音、自定义命令等。您可以通过查看Jarvis库的官方文档，进一步了解这些功能的详细信息，并构建自己的语音助手应用程序。\u003c/p\u003e\u003cp data-pid=\"uFrl8ytx\"\u003eJarvis库使用的是Google Cloud Speech-to-Text API作为其语音识别引擎。Google Cloud Speech-to-Text API是Google Cloud Platform上的一项语音识别服务，可以将语音转换为文本。这个服务支持多种语言，包括英语、中文、日语、韩语等等。\u003c/p\u003e\u003cp data-pid=\"zdW8f_Pp\"\u003e在使用Jarvis时，您需要使用自己的Google Cloud Platform账户，并在其中启用Google Cloud Speech-to-Text API服务。然后，您可以使用\u003ccode\u003ejarvis.listen()\u003c/code\u003e方法来启动语音识别，将用户的语音转换为文本，并将其传递给自定义命令来执行相应的操作。\u003c/p\u003e\u003cp data-pid=\"XUfLbrH-\"\u003e需要注意的是，使用Google Cloud Speech-to-Text API服务需要一定的费用，并且在某些国家和地区可能存在访问限制。因此，如果您无法使用Google Cloud Speech-to-Text API，可以考虑使用其他的语音识别引擎，例如上一个回答中提到的SpeechRecognition库。\u003c/p\u003e\u003cp data-pid=\"njKQoBXc\"\u003e\u003ca href=\"https://www.zhihu.com/column/c_1603670042683564032\" class=\"internal\"\u003epython库的简单实例及介绍\u003c/a\u003e\u003c/p\u003e\u003cp data-pid=\"8uFk5XeM\"\u003e\u003ca href=\"https://www.zhihu.com/column/c_1579383072646291456\" class=\"internal\"\u003epython傻瓜式入门\u003c/a\u003e\u003c/p\u003e\u003cp data-pid=\"kULZjStv\"\u003e\u003ca href=\"https://www.zhihu.com/column/c_1581650594984656896\" class=\"internal\"\u003e人间清醒\u003c/a\u003e\u003c/p\u003e\u003cp data-pid=\"5z1-fOSJ\"\u003e\u003ca href=\"https://www.zhihu.com/column/c_1603767509940973568\" class=\"internal\"\u003e量化交易策略介绍\u003c/a\u003e\u003c/p\u003e",
+                "topic_thumbnails_extra_info": [],
+                "favlists_count": 0,
+                "relationship": {
+                    "is_thanked": false
+                }
+            }
+        },
+        {
+            "attached_info": "CjYQBBoINTAzNjYxNjkg7tjtwgUoBzACQA9SB19hbnN3ZXJaCDEzNzUyOTI5cgkxMzcxMDUwNzE=",
+            "type": "topic_feed",
+            "target_description": "",
+            "target": {
+                "is_labeled": false,
+                "from_source": "",
+                "excerpt": "有点想翻译一下扎克伯格的原文，但是不知道是不是已经有其他知友在翻译了，也不知道有多少人想看。先抛个砖翻译一段看看。 ============================================================= [图片] 开发Jarvis我的个人2016挑战是开发一个简单的AI家庭系统 --就像钢铁侠里的Jarvis。 (500字未完成...) 项目启动：连接家里的设备(500字未完成...) 自然语言(500字未完成...) 视觉与人脸识别(500字未完成...) 聊天机器人(500字未完成...) …",
+                "created_time": 1482386542,
+                "id": 137105071,
+                "token": 137105071,
+                "topic_thumbnails": [
+                    "https://pic1.zhimg.com/v2-f2ed211dff3850d1e99d79e3896cf9ec_720w.jpg?source=7e7ef6e2"
+                ],
+                "author": {
+                    "id": "c962df131fe441cb85246bec9e632d9c",
+                    "url": "https://api.zhihu.com/people/lian-qiao",
+                    "name": "连乔",
+                    "gender": 1,
+                    "headline": "现Uber，前Facebook工程师",
+                    "url_token": "lian-qiao",
+                    "avatar_url_template": "https://picx.zhimg.com/f6c044961_qhd.jpg?source=57bbeac9",
+                    "user_type": "people",
+                    "is_advertiser": false,
+                    "avatar_url": "https://picx.zhimg.com/50/f6c044961_l.jpg?source=57bbeac9",
+                    "is_org": false,
+                    "type": "people",
+                    "badge_v2": {
+                        "title": "",
+                        "merged_badges": [],
+                        "detail_badges": [],
+                        "icon": "",
+                        "night_icon": ""
+                    },
+                    "edu_member_tag": {
+                        "type": "",
+                        "member_tag": ""
+                    },
+                    "badge": [],
+                    "is_following": false,
+                    "is_followed": false
+                },
+                "url": "http://api.zhihu.com/answers/137105071",
+                "question": {
+                    "id": 53832840,
+                    "token": 53832840,
+                    "title": "如何评价扎克伯格自己写的 Jarvis AI？",
+                    "url": "http://api.zhihu.com/questions/53832840",
+                    "created": 1482200939,
+                    "updated_time": 1482334696,
+                    "is_following": false,
+                    "question_type": "normal",
+                    "created_time": 1482200939,
+                    "type": "question"
+                },
+                "updated_time": 1482386663,
+                "comment_count": 2,
+                "favlists_count": 4,
+                "answer_type": "NORMAL",
+                "voteup_count": 7,
+                "type": "answer",
+                "thumbnail": "https://pic1.zhimg.com/v2-f2ed211dff3850d1e99d79e3896cf9ec_720w.jpg?source=7e7ef6e2",
+                "attachment": null,
+                "content": "\u003cp data-pid=\"hfnHTAP9\"\u003e有点想翻译一下扎克伯格的原文，但是不知道是不是已经有其他知友在翻译了，也不知道有多少人想看。先抛个砖翻译一段看看。\u003c/p\u003e\u003cp data-pid=\"cTM6EVIX\"\u003e=============================================================\u003c/p\u003e\u003cfigure\u003e\u003cimg src=\"https://pica.zhimg.com/50/v2-f2ed211dff3850d1e99d79e3896cf9ec_720w.jpg?source=1940ef5c\" data-rawwidth=\"982\" data-rawheight=\"395\" data-original-token=\"v2-f2ed211dff3850d1e99d79e3896cf9ec\" class=\"origin_image zh-lightbox-thumb\" width=\"982\" data-original=\"https://pica.zhimg.com/v2-f2ed211dff3850d1e99d79e3896cf9ec_r.jpg?source=1940ef5c\"/\u003e\u003c/figure\u003e\u003cp data-pid=\"g3b0r3Ms\"\u003e\u003cb\u003e\u003cu\u003e开发Jarvis\u003c/u\u003e\u003c/b\u003e\u003c/p\u003e\u003cp data-pid=\"0ICTStJ3\"\u003e我的个人2016挑战是开发一个简单的AI家庭系统 --就像钢铁侠里的Jarvis。\u003c/p\u003e\u003cp data-pid=\"1KM9fXgu\"\u003e(500字未完成...)\u003c/p\u003e\u003cp data-pid=\"EUAjY7r2\"\u003e\u003cb\u003e项目启动：连接家里的设备\u003c/b\u003e\u003c/p\u003e\u003cp data-pid=\"n3j89NSQ\"\u003e(500字未完成...)\u003c/p\u003e\u003cp data-pid=\"zZG5hrCM\"\u003e\u003cb\u003e自然语言\u003c/b\u003e\u003c/p\u003e\u003cp data-pid=\"8zS9_PPl\"\u003e(500字未完成...)\u003c/p\u003e\u003cp data-pid=\"wahAqP-M\"\u003e\u003cb\u003e视觉与人脸识别\u003c/b\u003e\u003c/p\u003e\u003cp data-pid=\"GhT3FMTT\"\u003e(500字未完成...)\u003c/p\u003e\u003cp data-pid=\"44qKig1Y\"\u003e\u003cb\u003e聊天机器人\u003c/b\u003e\u003c/p\u003e\u003cp data-pid=\"MR7BDhY4\"\u003e(500字未完成...)\u003c/p\u003e\u003cp data-pid=\"5pLEXH_D\"\u003e让我出乎意料的是当我与Jarvis交流时，我选择文字而非语音的次数比预想得多很多。这有很多原因，最主要的是文字让我感觉不会打扰到我身边的人。当我要让Jarvis为所有人做一些事，比如为大家播放音乐，那么语音是可以的，而其他时候，文字让我感觉更舒服。类似的，当Jarvis给我反馈信息，我也比较喜欢文字而非语音。因为语音更加中断式，而文字更能控制自己去看他的时间。当我用手机与Jarvis沟通，我也更喜欢文字往来。\u003c/p\u003e\u003cp data-pid=\"pHo6g3D2\"\u003e这个文字而非语音的选择跟我们在Messenger和WhatsApp里看到的模式一致，文字消息的增长速度远高于语音消息。这说明未来的AI产品不能仅仅依赖语音，也需要考虑一个私密的文字消息界面。当你要开发消息界面，使用一个类似Messenger这样的现有平台也好过从头制作一个新的App。我一向对AI聊天机器人很乐观，与Jarvis的交互增强了这个信念，未来我们都会与类似Jarvis这样的聊天机器人交互。\u003c/p\u003e\u003cp data-pid=\"0fWQc_cd\"\u003e\u003cb\u003e语音识别\u003c/b\u003e\u003c/p\u003e\u003cbr/\u003e\u003cp data-pid=\"8u1CCVXc\"\u003e(500字未完成...)\u003c/p\u003e\u003cp data-pid=\"SvPzcIdZ\"\u003e\u003cb\u003eFacebook的工程环境\u003c/b\u003e\u003c/p\u003e\u003cp data-pid=\"4g0fhZ24\"\u003e(500字未完成...)\u003c/p\u003e\u003cp data-pid=\"mIDN9zn6\"\u003e\u003cb\u003e下一步\u003c/b\u003e\u003c/p\u003e\u003cp data-pid=\"jTW7rqcP\"\u003e(400字未完成...)\u003c/p\u003e\u003cp data-pid=\"_2Ts-0nN\"\u003e\u003cb\u003e结论\u003c/b\u003e\u003c/p\u003e\u003cp data-pid=\"zqfnF2BK\"\u003e(500字未完成...)\u003c/p\u003e",
+                "topic_thumbnails_extra_info": [],
+                "relationship": {
+                    "is_thanked": false
+                }
+            }
+        },
+        {
+            "attached_info": "CjYQBBoINTAzNzI2OTMgkoPuwgUoADAAQBBSB19hbnN3ZXJaCDEzNzUyOTI5cgkxMzcxMjEyOTU=",
+            "type": "topic_feed",
+            "target_description": "",
+            "target": {
+                "is_labeled": false,
+                "from_source": "",
+                "excerpt": "传感器，技术基本上可以满足要求。 机器的自然语言识别，这个微软每年都有新的技术爆出来。 然后就是，自然语言转化为可以驱动设备的命令语句了，这个，目前看来，有点困难。根据设备的功能复杂性，有的设备只需要开关两个动作，比如电灯，比如面包机，开关门窗，打开窗帘等等。有的复杂得多，比如冷热水龙头，需要温度高低，水量大小，水满以后自动关闭，需要设置几套不同的动作流程。至于，各种设备的联动，这个相对来讲，更简…",
+                "created_time": 1482391954,
+                "id": 137121295,
+                "token": 137121295,
+                "topic_thumbnails": [],
+                "author": {
+                    "id": "1983730ec2cbd25bb935df18b39ff3e6",
+                    "url": "https://api.zhihu.com/people/yu-ming-jie-60-27",
+                    "name": "Vassili",
+                    "gender": 1,
+                    "headline": "眼镜制造与测试",
+                    "url_token": "yu-ming-jie-60-27",
+                    "avatar_url_template": "https://pic1.zhimg.com/v2-e55755ba58a6f0e32b29ad685f44bb95_qhd.jpg?source=57bbeac9",
+                    "user_type": "people",
+                    "is_advertiser": false,
+                    "avatar_url": "https://pic1.zhimg.com/50/v2-e55755ba58a6f0e32b29ad685f44bb95_l.jpg?source=57bbeac9",
+                    "is_org": false,
+                    "type": "people",
+                    "badge_v2": {
+                        "title": "",
+                        "merged_badges": [],
+                        "detail_badges": [],
+                        "icon": "",
+                        "night_icon": ""
+                    },
+                    "edu_member_tag": {
+                        "type": "",
+                        "member_tag": ""
+                    },
+                    "badge": [],
+                    "is_following": false,
+                    "is_followed": false
+                },
+                "url": "http://api.zhihu.com/answers/137121295",
+                "question": {
+                    "id": 53832840,
+                    "token": 53832840,
+                    "title": "如何评价扎克伯格自己写的 Jarvis AI？",
+                    "url": "http://api.zhihu.com/questions/53832840",
+                    "created": 1482200939,
+                    "updated_time": 1482334696,
+                    "is_following": false,
+                    "question_type": "normal",
+                    "created_time": 1482200939,
+                    "type": "question"
+                },
+                "updated_time": 1482391954,
+                "comment_count": 0,
+                "favlists_count": 0,
+                "answer_type": "NORMAL",
+                "voteup_count": 0,
+                "type": "answer",
+                "thumbnail": "",
+                "attachment": null,
+                "content": "\u003cp data-pid=\"7ChRsEZn\"\u003e传感器，技术基本上可以满足要求。\u003c/p\u003e\u003cp data-pid=\"kLeABmvG\"\u003e机器的自然语言识别，这个微软每年都有新的技术爆出来。\u003c/p\u003e\u003cp data-pid=\"UcB-X8v4\"\u003e然后就是，自然语言转化为可以驱动设备的命令语句了，这个，目前看来，有点困难。根据设备的功能复杂性，有的设备只需要开关两个动作，比如电灯，比如面包机，开关门窗，打开窗帘等等。有的复杂得多，比如冷热水龙头，需要温度高低，水量大小，水满以后自动关闭，需要设置几套不同的动作流程。至于，各种设备的联动，这个相对来讲，更简单一点。\u003c/p\u003e\u003cp data-pid=\"k2jXqA8R\"\u003e在这个实现流程里面，我觉得最难的是机器的自然语言理解与转化命令。\u003c/p\u003e\u003cp data-pid=\"fqSibfNI\"\u003e如果能在这方面做出突破，相信，贾维斯的实现就在不远的将来。\u003c/p\u003e",
+                "topic_thumbnails_extra_info": [],
+                "relationship": {
+                    "is_thanked": false
+                }
+            }
+        },
+        {
+            "attached_info": "CjYQBBoINTA2NDEwNjYgrdaEwwUoADAAQBNSB19hbnN3ZXJaCDEzNzUyOTI5cgkxMzc3OTEzNTk=",
+            "type": "topic_feed",
+            "target_description": "",
+            "target": {
+                "is_labeled": false,
+                "from_source": "",
+                "excerpt": "[图片] 看了小扎的代码之后，我想说的是 小扎，你用atom 不卡么",
+                "created_time": 1482763053,
+                "id": 137791359,
+                "token": 137791359,
+                "topic_thumbnails": [
+                    "https://pica.zhimg.com/v2-d1e8413f7dfba66ccde08d3aaaf1cb48_720w.jpg?source=7e7ef6e2"
+                ],
+                "author": {
+                    "id": "a7960f8775c17ee7e7f0307093707c49",
+                    "url": "https://api.zhihu.com/people/cedarxi",
+                    "name": "成希",
+                    "gender": 1,
+                    "headline": "企服创业者",
+                    "url_token": "cedarxi",
+                    "avatar_url_template": "https://pica.zhimg.com/v2-30d343d4012a0b1cc31f142e40f9d38f_qhd.jpg?source=57bbeac9",
+                    "user_type": "people",
+                    "is_advertiser": false,
+                    "avatar_url": "https://picx.zhimg.com/50/v2-30d343d4012a0b1cc31f142e40f9d38f_l.jpg?source=57bbeac9",
+                    "is_org": false,
+                    "type": "people",
+                    "badge_v2": {
+                        "title": "",
+                        "merged_badges": [],
+                        "detail_badges": [],
+                        "icon": "",
+                        "night_icon": ""
+                    },
+                    "edu_member_tag": {
+                        "type": "",
+                        "member_tag": ""
+                    },
+                    "badge": [],
+                    "is_following": false,
+                    "is_followed": false
+                },
+                "url": "http://api.zhihu.com/answers/137791359",
+                "question": {
+                    "id": 53832840,
+                    "token": 53832840,
+                    "title": "如何评价扎克伯格自己写的 Jarvis AI？",
+                    "url": "http://api.zhihu.com/questions/53832840",
+                    "created": 1482200939,
+                    "updated_time": 1482334696,
+                    "is_following": false,
+                    "question_type": "normal",
+                    "created_time": 1482200939,
+                    "type": "question"
+                },
+                "updated_time": 1482763054,
+                "comment_count": 0,
+                "favlists_count": 0,
+                "answer_type": "NORMAL",
+                "voteup_count": 0,
+                "type": "answer",
+                "thumbnail": "https://pica.zhimg.com/v2-d1e8413f7dfba66ccde08d3aaaf1cb48_720w.jpg?source=7e7ef6e2",
+                "attachment": null,
+                "content": "\u003cfigure\u003e\u003cimg src=\"https://picx.zhimg.com/50/v2-d1e8413f7dfba66ccde08d3aaaf1cb48_720w.jpg?source=1940ef5c\" data-rawwidth=\"600\" data-rawheight=\"275\" data-original-token=\"v2-d1e8413f7dfba66ccde08d3aaaf1cb48\" class=\"origin_image zh-lightbox-thumb\" width=\"600\" data-original=\"https://pica.zhimg.com/v2-d1e8413f7dfba66ccde08d3aaaf1cb48_r.jpg?source=1940ef5c\"/\u003e\u003c/figure\u003e\u003cp data-pid=\"BnjsfkDf\"\u003e看了小扎的代码之后，我想说的是\u003c/p\u003e\u003cp data-pid=\"Hkfk8p0g\"\u003e小扎，你用atom 不卡么\u003c/p\u003e",
+                "topic_thumbnails_extra_info": [],
+                "relationship": {
+                    "is_thanked": false
+                }
+            }
+        }
+    ],
+    "interaction_version": "2.0"
+}

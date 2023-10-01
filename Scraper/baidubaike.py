@@ -2,7 +2,7 @@ from bs4 import BeautifulSoup
 import requests
 import json
 import time
-import random
+import randomNum
 import io
 import os.path
 from pathlib import Path

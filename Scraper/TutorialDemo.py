@@ -5,7 +5,7 @@ from bs4 import BeautifulSoup
 import json
 import os
 import io
-import random
+import randomNum
 
 # 如何进行一次网络访问
 # 输入: 网址

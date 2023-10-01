@@ -1,10 +1,11 @@
+import random
 from importlib import reload
 
 from bs4 import BeautifulSoup
 import requests
 import json
 import time
-import random
+import randomNum
 import io
 import os.path
 from pathlib import Path
@@ -14,14 +15,19 @@ import urllib
 import re
 import sys
 import Scraper.Analyser
-from Scraper.Analyser import ZhihuAnalyser
+from Scraper.Analyser.QuestionAnalyser import QuestionAnalyser
 from Scraper.Analyser.AnswerAnalyser import AnswerAnalyser
-
-reload(sys)
-sys.setdefaultencoding('utf-8')
+from Scraper.Analyser.RelatedQuestionAnalyser import RelatedQuestionAnalyser
+from Scraper.Analyser.FavorListAnalyser import FavorListAnalyser
+from Scraper.Analyser.TopicAnalyser import TopicAnalyser
+from Utils.CommonUtils import CommonUtils
+from Utils.ZhihuTaskManager import ZhihuTaskManager
+#
+# reload(sys)
+# sys.setdefaultencoding('utf-8')
 
 requestConfig = {
-    "user-agent": "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/102.0.0.0 Safari/537.36",
+    "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/117.0.0.0 Safari/537.36",
     "cookie": "lastCity=101010100; sid=sem_pz_bdpc_dasou_title; __g=sem_pz_bdpc_dasou_title; Hm_lvt_194df3105ad7148dcf2b98a91b5e727a=1656859923; Hm_lvt_f97992073bffedfa462561a24c99eb83=1656859926; wd_guid=cc8e9532-4f44-48c2-9535-31be86a90f2b; historyState=state; wljssdk_cross_new_user=1; Hm_lpvt_194df3105ad7148dcf2b98a91b5e727a=1656859962; wt2=DK6-CZbTlbdKFd4zsOaNwECsVo8RIpukEWjw5e3dPHGf7MBuTHee0Via5-9F4gKkGJ7--erfBecAIj9dVO9-Ytg~~; wbg=0; warlockjssdkcross={\"distinct_id\":\"52851058\",\"first_id\":\"181c48c1e62a36-00030193961745-6a7c2b1b-2073600-181c48c1e63100f\",\"props\":{},\"device_id\":\"181c48c1e62a36-00030193961745-6a7c2b1b-2073600-181c48c1e63100f\"}; __zp_seo_uuid__=f547d254-79c3-436f-897b-f5bf5eae0830; __l=r=https://youle.zhipin.com/questions/b8ce106c235ff3actnVy2dW5GVo~.html&l=/wapi/moment/preview/qrCode?bossUrl=https%3A%2F%2Fwww.zhipin.com%2Fmpa%2Fhtml%2Fget%2Fgrowth-system%2Findex&s=1; Hm_lpvt_f97992073bffedfa462561a24c99eb83=1656862905; __c=1656859923; __a=38993184.1656859923..1656859923.7.1.7.7"
 }
 
@@ -122,10 +128,6 @@ for i in range(0, len(proxyList)):
 index = 0
 maxLine = 10000
 
-dataBasePath = os.path.abspath('../Resource/task/zhihu/')
-target = os.path.join(dataBasePath, "data")
-
-topicInfoPath = os.path.join(dataBasePath, "topic.txt")
 
 handler = None
 lineCount = 0
@@ -133,33 +135,15 @@ lineCount = 0
 qSet = set()
 duplicated = 0
 
-scrapedQid = set()
-scrapedTopic = set()
-
-scrapedQidPath = os.path.join(target, "scraped_question.txt")
-scrapedTopicPath = os.path.join(target, "scraped_topic.txt")
-
-waitQid = set()
-waitingTopic = set()
-
 #
 # qidQueue = []
 # topicQueue = []
 
-taskQueuePath = os.path.join(target, "taskqueue.txt")
 
-taskQueue = []
+dataBasePath = os.path.abspath('../Resource/task/zhihu/')
+target = os.path.join(dataBasePath, 'data/data')
 
-waitQidPath = os.path.join(target, "waiting_question.txt")
-waitTopicPath = os.path.join(target, "waiting_topic.txt")
-
-failedQid = set()
-failedTopic = set()
-
-failedQidPath = os.path.join(target, "failed_question.txt")
-failedTopicPath = os.path.join(target, "failed_topic.txt")
-
-flagPath = os.path.join(target, "stop.txt")
+flagPath = os.path.join(dataBasePath, "stop.txt")
 scrapeCounter = 0
 
 # drop proxy ip when X times failure occurred
@@ -178,21 +162,13 @@ topicInfoDict = {}
 def stopFlag():
     return Path(flagPath).exists()
 
-def saveList(list, path):
-    file = Path(path)
-    if file.exists():
-        os.remove(path)
-    with open(path, 'w') as writer:
-        for line in list:
-            writer.write(line + "\n")
-    pass
 
 def openf():
     global lineCount,index,handler,target
     pth = target+"_"+str(index)+".txt"
-    # if not Path(pth).exists():
-    #     open(Path(pth),'n',encoding='utf-8').close()
-    handler = open(target+"_"+str(index)+".txt", 'a')
+    if not Path(pth).exists():
+        open(Path(pth),'x',encoding='utf-8').close()
+    handler = open(target+"_"+str(index)+".txt", 'a', encoding='utf-8')
     index += 1
     lineCount = 0
 
@@ -207,14 +183,6 @@ def record(msg):
     if lineCount > maxLine:
         closef()
         openf()
-
-def saveStatus():
-    saveList(list(scrapedQid), scrapedQidPath)
-    saveList(list(scrapedTopic), scrapedTopicPath)
-    saveList(taskQueue, taskQueuePath)
-    # saveList(topicQueue, waitTopicPath)
-    saveList(failedQid, failedQidPath)
-    saveList(failedTopic, failedTopicPath)
 
 
 def voteAndBlacklistProxy(proxyVal):
@@ -238,7 +206,11 @@ def afterNoProxyStrategy(keepGoing):
             if not proxyList.__contains__(entry):
                 proxyList.append(entry)
     else:
-        saveStatus()
+        ZhihuTaskManager.saveStatus()
+
+rand = random.Random()
+def randNum():
+    return rand.random()
 
 def scrapeSingle(task, builder, callback):
     retry = 3
@@ -246,7 +218,7 @@ def scrapeSingle(task, builder, callback):
     takebreak = False
     success = True
     while tried < retry:
-        proxy = proxyList[int(random.random() * len(proxyList))]
+        proxy = proxyList[int(randNum() * len(proxyList))]
         if len(proxyList) == 0:
             afterNoProxyStrategy(True)
             # return
@@ -275,8 +247,7 @@ def scrapeMultiIteration(taskQueue, taskSet, builderlist, callbacklist, alldonec
     counter = 0
     maxRound = 2000
     while len(taskQueue) > 0 and counter < maxRound:
-        print("qid queue: " + str(len(qidQueue)))
-        print("topic queue: " + str(len(topicQueue)))
+        print("task queue: " + str(len(ZhihuTaskManager.taskQueue)))
         print("Scraped: " + str(scrapeCounter))
         print("proxy survived: " + str(len(proxyList)))
         if len(proxyList) == 0:
@@ -292,14 +263,14 @@ def scrapeMultiIteration(taskQueue, taskSet, builderlist, callbacklist, alldonec
             s = scrapeSingle(task, builder, callback)
             if not s:
                 success = False
-            time.sleep(int(random.random() * 3))
+            time.sleep(int(randNum() * 3))
 
         alldonecallback(task, success)
         if stopFlag():
             return
         counter += 1
         if counter % 50 == 0:
-            saveStatus()
+            ZhihuTaskManager.saveStatus()
             try:
                 saveTopicInfo()
             except Exception as e:
@@ -313,7 +284,7 @@ def scrape(taskQueue, taskSet, builder, callback):
 
     while len(taskQueue) > 0:
         print("qid queue: " + str(len(qidQueue)))
-        print("topic queue: " + str(len(topicQueue)))
+        print("topic queue: " + str(len(ZhihuTaskManager.taskQueue)))
         tried = 0
         success = False
         takebreak = False
@@ -328,7 +299,7 @@ def scrape(taskQueue, taskSet, builder, callback):
         while tried < retry:
             if len(proxyList) == 0:
                 afterNoProxyStrategy(True)
-            proxy = proxyList[int(random.random() * len(proxyList))]
+            proxy = proxyList[int(randNum() * len(proxyList))]
             try:
                 url, header = builder(task)
                 response = requests.get(url, headers=header, proxies=proxy)
@@ -346,22 +317,19 @@ def scrape(taskQueue, taskSet, builder, callback):
                 print(task)
                 voteAndBlacklistProxy(proxy)
         if not success:
-            if not failedQid.__contains__(task):
-                failedQid.add(task)
+            ZhihuTaskManager.failedTask(task)
         if stopFlag():
             return
         if takebreak:
             time.sleep(21)
-        time.sleep(int(random.random() * 3))
+        time.sleep(int(randNum() * 3))
 
     pass
 
 def scrapeGlobal(builder, callback):
     retry = 3
-    global qidQueue,waitQid
-    while len(qidQueue) > 0:
-        print("qid queue: " + str(len(qidQueue)))
-        print("topic queue: " + str(len(topicQueue)))
+    while len(ZhihuTaskManager.taskQueue) > 0:
+        print("qid queue: " + str(len(ZhihuTaskManager.taskQueue)))
         tried = 0
         success = False
         takebreak = False
@@ -369,14 +337,12 @@ def scrapeGlobal(builder, callback):
         print("Proxy survived: " + str(len(proxyList)))
         if len(proxyList) == 0:
             afterNoProxyStrategy(True)
-        task = qidQueue[0]
-        qidQueue = qidQueue[1:]
-        if waitQid.__contains__(task):
-            waitQid.remove(task)
+        task = ZhihuTaskManager.taskQueue[0]
+        ZhihuTaskManager.taskQueue = ZhihuTaskManager.taskQueue[1:]
         while tried < retry:
             if len(proxyList) == 0:
                 afterNoProxyStrategy(True)
-            proxy = proxyList[int(random.random() * len(proxyList))]
+            proxy = proxyList[int(randNum() * len(proxyList))]
             try:
                 url, header = builder(task)
                 response = requests.get(url, headers=header, proxies=proxy)
@@ -394,23 +360,14 @@ def scrapeGlobal(builder, callback):
                 print(task)
                 voteAndBlacklistProxy(proxy)
         if not success:
-            if not failedQid.__contains__(task):
-                failedQid.add(task)
+            ZhihuTaskManager.failedTask(task)
         if stopFlag():
             return
         if takebreak:
             time.sleep(21)
-        time.sleep(int(random.random() * 3))
-
+        time.sleep(int(randNum() * 3))
     pass
 
-def loadList(path):
-    try:
-        with open(path, 'r') as f:
-            list = f.readlines()
-            return list
-    except Exception as ex:
-        return []
 
 # def prepareQidList():
 #     list = loadList(qidPath)
@@ -426,26 +383,6 @@ def stripId(str):
 def stripTopic(str):
     return str.split("https://youle.zhipin.com/topic/")[-1].split(".html")[0]
 
-def restoreScrapeDataQueue():
-    list = [l.replace('\n','') for l in loadList(taskQueuePath)]
-    for l in list:
-        taskQueue.append(l)
-
-    list = [l.replace('\n','') for l in loadList(waitQidPath)]
-    for l in list:
-        waitQid.add(l)
-
-    list = [l.replace('\n','') for l in loadList(waitTopicPath)]
-    for l in list:
-        waitingTopic.add(l)
-
-    list = [l.replace('\n','') for l in loadList(scrapedQidPath)]
-    for l in list:
-        scrapedQid.add(l)
-
-    list = [l.replace('\n','') for l in loadList(scrapedTopicPath)]
-    for l in list:
-        scrapedTopic.add(l)
 
 def scrapeBossRelatedTopic():
     pass
@@ -553,7 +490,7 @@ def scrapeBossQuestionListByTopic():
                 failedTopic.add(topicid)
 
     scrapeMultiIteration(topicQueue, waitingTopic, funcList, callbackList, alldone)
-    saveStatus()
+    ZhihuTaskManager.saveStatus()
     pass
 
 def topicInfoToDict(topicId, topicName, qCount, fCount):
@@ -597,69 +534,129 @@ class IdType:
     question:str = 'question'
     topic:str = 'topic'
     favorlist:str = 'favorlist'
-    fullset = [answer,question,topic,favorlist]
+    relatedquestion:str = 'relatedquestion'
+    fullset = [answer,question,topic,favorlist,relatedquestion]
 
+    @staticmethod
     def getType(qid: str):
         for tp in IdType.fullset:
-            if qid.startswith(IdType.answer):
-                return IdType.answer
+            if qid.startswith(tp):
+                return tp
         pass
+    @staticmethod
+    def convertId(type:str, id):
+        return f'{type}_{id}'
+
+    @staticmethod
+    def convertAnswer(questionId:str, answerId:str):
+        id = f'{questionId}_{answerId}'
+        return IdType.convertId(IdType.answer,id)
+
+    @staticmethod
+    def stripId(rawId: str):
+        return '_'.join(rawId.split('_')[1:])
     pass
 
 
 
-def scrapeBossDetail():
+def scrapeZhihu():
     def buildRequest(qid):
-        url = qid # targetUrl["detailprefix"].replace("[qid]", qid)
-        header = {"user-agent": requestConfig["user-agent"]}
+        # url = qid # targetUrl["detailprefix"].replace("[qid]", qid)
+        header = {
+            "User-Agent": requestConfig["user-agent"],
+            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,"
+                      "application/signed-exchange;v=b3;q=0.7",
+            "Accept-Encoding": "gzip, deflate, br",
+            "Accept-Language": "zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6",
+            "Cookie": "__snaker__id=kz4NFu3D5cvOrK21; _zap=a76ce729-4a8d-49d8-b447-8161ebfb0956; "
+                      "d_c0=AFATjOukcRePTmL_1bARTis9Bys9xPP9QB0=|1695543525; "
+                      "YD00517437729195%3AWM_TID=Ap6FvWBKH3lABVEUBQaF3KA8ZWcXHhIi; "
+                      "_xsrf=ac5a7a98-ddd2-4381-9eb0-172a12528115; "
+                      "Hm_lvt_98beee57fd2ef70ccdd5ca52b9740c49=1695543525,1695982812; "
+                      "Hm_lpvt_98beee57fd2ef70ccdd5ca52b9740c49=1696046093; "
+                      "captcha_session_v2=2|1:0|10:1696046095|18:captcha_session_v2|88"
+                      ":RllNY3UxVHdIZDB4WkZ0QWw0YTlXaGlRV1lrUi9POFEvMXlDb1JKcEdkV1Q2NVhEOHhjT2xtTFJnR0o4dEhmRw"
+                      "==|1e96bd9adfdc41ace448856a95c8f7433bc3b10e831f4ab2be66cb408125b544; "
+                      "YD00517437729195%3AWM_NI=G3FII7ntiLenx3tukd489q8oYi%2FzGhGvJNFHTOPVeRQo7Q1RaV6eS3w7Cv"
+                      "%2FIu9NqKi8PnDke8iyiIbfijY0zy7zawqVTaFcvg1HdN9lAPWSIryFPa2H5Hzmlz%2F5qeERJMXk%3D; "
+                      "YD00517437729195%3AWM_NIKE"
+                      "=9ca17ae2e6ffcda170e2e6eea6ef4391ae8bb6e273b1ac8ba2c54a869e8ab0d43a90b698b6cc54b7aa9c92b82af0fea7c3b92a85ed8aaacc3daeaca7ade866bcedbc96ea70f8e8f792bb659bb7e19bc66485aa86afc5449891a0b7e85a93b1f9b2b45aa38afa86d239b5e98d97ae43b7e78292ca63fc90a2a5ea6ffcb7b78acc6aa6b7a6bab372bbe9b682f67b968cafa7e27ea5ef8885cd33b09fa0b8d243b2a78ab1e43a8ceb889bf068baf1fb92e84f929683b9ea37e2a3; gdxidpyhxdE=Vf6kflyVyHxDCM2HZ8ecws%2Bx2j9R4Dhbstofr%2Fr6E0C79xSJx%2FGeCDWNAp7sAOyijlH%5CcNtbX%2Fga5GRrdXoazMeqZP1kVGu1bUMIjoneiZGoCO%5CPTMGckuC141UV2iZtx%2FJNo6K%5C4P3OOgpU07o3wq1JcfvAoRCBi6aBTxv1fVLMiLHH%3A1696147794305; KLBRSID=76ae5fb4fba0f519d97e594f1cef9fab|1696146949|1696146881"
+        }
+        id = IdType.stripId(qid)
+        if IdType.getType(qid) == IdType.answer:
+            url = AnswerAnalyser.buildRequestURL(id)
+            pass
+        if IdType.getType(qid) == IdType.question:
+            url = QuestionAnalyser.buildRequestURL(id)
+            pass
+        if IdType.getType(qid) == IdType.topic:
+            url = TopicAnalyser.buildRequestURL(id)
+            pass
+        if IdType.getType(qid) == IdType.favorlist:
+            url = FavorListAnalyser.buildRequestURL(id)
+            pass
+        if IdType.getType(qid) == IdType.relatedquestion:
+            url = RelatedQuestionAnalyser.buildRequestURL(id)
         return url, header
 
     def recordAndDiscover(response, qid):
         dataStr = response.text
         if IdType.getType(qid) == IdType.answer:
             result = AnswerAnalyser.extractAndDiscover(dataStr)
-            qTitle = result["titleText"]
-            qContent = result["qContentText"]
-            answer = result["answerText"]
-            topics = result["topics"]
+            qTitle = result.titleText
+            qContent = result.qContentText
+            answer = result.answerText
+            topics = result.topicIdList
+
+            # new topics
+            topicIds = [IdType.convertId(IdType.topic, topic) for topic in topics]
+            for topicid in topicIds:
+                ZhihuTaskManager.newTask(topicid)
             outputrow = qTitle + '\t' + qContent + '\t' + answer
-        # bs = BeautifulSoup(dataStr, 'html.parser')
-        # summary = bs.select(".lemma-summary")
-        # title = bs.select(".J-lemma-title")
-        # titleStr = ""
-        # if len(title) > 0:
-        #     h1 = title[0].select("h1")
-        #     if len(h1) > 0:
-        #         titleStr = stripHtmlTag(h1[0].text)
-        # if len(summary) > 0:
-        #     paragraphs = summary[0].select('.para')
-        #     SummaryList = []
-        #     for p in paragraphs:
-        #         SummaryList.append(stripHtmlTag(p.text))
-        #         newLink = discoverLink(p)
-        #         for l in newLink:
-        #             newQid(l)
-        #     joinedStr = convertNewLineAndTable('[SEP]'.join([p.text for p in paragraphs]))
-        #     outputLine = titleStr + "\t" + joinedStr
-        #     print(outputLine)
-        #     record(outputLine)
+            print(outputrow)
+            record(outputrow)
+        if IdType.getType(qid) == IdType.question:
+            result = QuestionAnalyser.extractAndDiscover(dataStr)
+            question = result.questionId
+            for answer in result.answeridlist:
+                answerId = IdType.convertAnswer(question, answer)
+                ZhihuTaskManager.newTask(answerId)
+            pass
+        if IdType.getType(qid) == IdType.topic:
+            pass
+        if IdType.getType(qid) == IdType.favorlist:
+            pass
+        if IdType.getType(qid) == IdType.relatedquestion:
+            pass
         # state saving
-        if not scrapedQid.__contains__(qid):
-            scrapedQid.add(qid)
+        ZhihuTaskManager.doneTask(qid)
         return False, True
     # stripedQueue = [q[-1] for q in qidQueue]
     scrapeGlobal(buildRequest, recordAndDiscover)
-    saveStatus()
+    ZhihuTaskManager.saveStatus()
 
 def newQid(qid):
     if not scrapedQid.__contains__(qid) and not waitQid.__contains__(qid):
         waitQid.add(qid)
         taskQueue.append(qid)
 
-def newTopic(topicId):
-    if not scrapedTopic.__contains__(topicId) and not waitingTopic.__contains__(topicId) and len(topicId) > 0:
-        waitingTopic.add(topicId)
-        taskQueue.append(topicId)
+def newTopic(topics):
+    for topicId in topics:
+        if not scrapedTopic.__contains__(topicId) and not waitingTopic.__contains__(topicId) and len(topicId) > 0:
+            waitingTopic.add(topicId)
+            taskQueue.append(topicId)
+
+def newQuestion(question):
+    pass
+
+def newRelatedQuestion(question):
+    pass
+
+def newAnswer(question, answer):
+    pass
+
+def newFavorList(question):
+    pass
 
 def scrapeBossList():
     iter = 1
@@ -671,7 +668,7 @@ def scrapeBossList():
         alldup = False
         while tried < retry:
             try:
-                prox = proxyList[int(random.random() * len(proxyList))]
+                prox = proxyList[int(randNum() * len(proxyList))]
                 response = requests.get(targetUrl["list"].replace("[page_index]", str(iter)), headers={"user-agent": requestConfig["user-agent"], "cookie": requestConfig["cookie"]})
                 data = json.loads(response.text)
                 list = None
@@ -707,7 +704,7 @@ def scrapeBossList():
         if alldup:
             time.sleep(21)
             iter = 1
-        time.sleep(int(random.random() * 3))
+        time.sleep(int(randNum() * 3))
     pass
 
 
@@ -759,11 +756,17 @@ def scrapeSeedUrlBykey():
 
 def main():
     # scrapeSeedUrlBykey()
-    restoreScrapeDataQueue()
+    ZhihuTaskManager.loadStatus()
     # scrapeBossQuestionListByTopic()
-    scrapeBossDetail()
+    scrapeZhihu()
     # scrapeBossList()
 
-openf()
-main()
-closef()
+if __name__ == '__main__':
+    # waitingpath = os.path.abspath('../Resource/task/zhihu/waiting.txt')
+    # list = CommonUtils.loadList(waitingpath)
+    # for i in range(0, len(list)):
+    #     list[i] = IdType.convertId(IdType.question, list[i])
+    # CommonUtils.saveList(list,waitingpath)
+    openf()
+    main()
+    closef()
