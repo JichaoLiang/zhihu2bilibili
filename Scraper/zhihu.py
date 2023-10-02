@@ -5,6 +5,8 @@ from bs4 import BeautifulSoup
 import requests
 import json
 import time
+
+import TutorialDemo
 import randomNum
 import io
 import os.path
@@ -20,7 +22,9 @@ from Scraper.Analyser.AnswerAnalyser import AnswerAnalyser
 from Scraper.Analyser.RelatedQuestionAnalyser import RelatedQuestionAnalyser
 from Scraper.Analyser.FavorListAnalyser import FavorListAnalyser
 from Scraper.Analyser.TopicAnalyser import TopicAnalyser
+from Scraper.Enums.QuestionDomain import QuestionDomain
 from Utils.CommonUtils import CommonUtils
+from Utils.DBUtils import DBUtils
 from Utils.ZhihuTaskManager import ZhihuTaskManager
 #
 # reload(sys)
@@ -128,6 +132,7 @@ for i in range(0, len(proxyList)):
 index = 0
 maxLine = 10000
 
+database = DBUtils()
 
 handler = None
 lineCount = 0
@@ -365,7 +370,7 @@ def scrapeGlobal(builder, callback):
             return
         if takebreak:
             time.sleep(21)
-        time.sleep(int(randNum() * 3))
+        time.sleep(int(randNum() * 8))
     pass
 
 
@@ -558,8 +563,29 @@ class IdType:
     pass
 
 
+def checkAndInsertDB(answerId, result ,scenario='default'):
+    qTitle = result.titleText
+    qContent = result.qContentText
+    answer = result.answerText
+    topics = result.topicIdList
+    topicname = result.topics
+    voteCount = result.voteCount
+    commentCount = result.commentCount
+    updated = result.updated
+    isCollapsed = result.isCollapsed
 
-def scrapeZhihu():
+    decision = AnswerAnalyser.dataPickStrategy(result)
+    if decision != 'ok':
+        print(f'answer {answerId} will not be inserted into db due to reason: {decision}')
+        print(decision)
+        return
+    exists = database.answerExists(answerId)
+    if not exists:
+        database.newAnswer(answerId,qTitle,qContent,answer,updated,topicname,topics,voteCount,commentCount,scenario,isCollapsed)
+    pass
+
+
+def scrapeZhihu(tagmark):
     def buildRequest(qid):
         # url = qid # targetUrl["detailprefix"].replace("[qid]", qid)
         header = {
@@ -607,6 +633,11 @@ def scrapeZhihu():
             qContent = result.qContentText
             answer = result.answerText
             topics = result.topicIdList
+            topicname = result.topics
+            voteCount = result.voteCount
+            commentCount = result.commentCount
+            updated = result.updated
+            isCollapsed = result.isCollapsed
 
             # new topics
             topicIds = [IdType.convertId(IdType.topic, topic) for topic in topics]
@@ -615,12 +646,13 @@ def scrapeZhihu():
             outputrow = qTitle + '\t' + qContent + '\t' + answer
             print(outputrow)
             record(outputrow)
+            checkAndInsertDB(qid, result, tagmark)
         if IdType.getType(qid) == IdType.question:
             result = QuestionAnalyser.extractAndDiscover(dataStr)
             question = result.questionId
             for answer in result.answeridlist:
                 answerId = IdType.convertAnswer(question, answer)
-                ZhihuTaskManager.newTask(answerId)
+                ZhihuTaskManager.newTaskImmediate(answerId)
             pass
         if IdType.getType(qid) == IdType.topic:
             pass
@@ -645,18 +677,6 @@ def newTopic(topics):
         if not scrapedTopic.__contains__(topicId) and not waitingTopic.__contains__(topicId) and len(topicId) > 0:
             waitingTopic.add(topicId)
             taskQueue.append(topicId)
-
-def newQuestion(question):
-    pass
-
-def newRelatedQuestion(question):
-    pass
-
-def newAnswer(question, answer):
-    pass
-
-def newFavorList(question):
-    pass
 
 def scrapeBossList():
     iter = 1
@@ -761,12 +781,25 @@ def main():
     scrapeZhihu()
     # scrapeBossList()
 
+# period = week / day / hour
+def scrapeRoutineJob(topicIdList, tagmark='default', period='day'):
+    ZhihuTaskManager.loadScrapedAndFailed()
+    for topic in topicIdList:
+        result = TutorialDemo.run(topic,period)
+        questionIdList= [IdType.convertId(IdType.question, row[2]) for row in result]
+        ZhihuTaskManager.taskQueue += questionIdList
+    print(f'question list generated, {len(ZhihuTaskManager.taskQueue)} total.')
+    scrapeZhihu(tagmark)
+
 if __name__ == '__main__':
-    # waitingpath = os.path.abspath('../Resource/task/zhihu/waiting.txt')
-    # list = CommonUtils.loadList(waitingpath)
-    # for i in range(0, len(list)):
-    #     list[i] = IdType.convertId(IdType.question, list[i])
-    # CommonUtils.saveList(list,waitingpath)
     openf()
-    main()
+    # main()
+
+    topicIdList = [
+        QuestionDomain.liangxing,
+        QuestionDomain.qinggan
+    ]
+    localtime = time.localtime(time.time())
+    tagmark = '_'.join([str(item) for item in topicIdList]) + "_" + time.strftime('%Y-%m-%d',localtime)
+    scrapeRoutineJob(topicIdList,tagmark,period='day')
     closef()

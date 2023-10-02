@@ -18,6 +18,12 @@ class ZhihuTaskManager:
         ZhihuTaskManager.failedSet = set(CommonUtils.loadList(ZhihuTaskManager.failedPath))
         pass
     @staticmethod
+    def loadScrapedAndFailed():
+        ZhihuTaskManager.scrapedSet = set(CommonUtils.loadList(ZhihuTaskManager.scrapedPath))
+        ZhihuTaskManager.failedSet = set(CommonUtils.loadList(ZhihuTaskManager.failedPath))
+        pass
+
+    @staticmethod
     def saveStatus():
         CommonUtils.saveList(ZhihuTaskManager.taskQueue, ZhihuTaskManager.waitingPath)
         CommonUtils.saveList(ZhihuTaskManager.scrapedSet, ZhihuTaskManager.scrapedPath)
@@ -47,7 +53,7 @@ class ZhihuTaskManager:
     def newTaskImmediate(id):
         if ZhihuTaskManager.taskQueue.__contains__(id):
             ZhihuTaskManager.taskQueue.remove(id)
-        ZhihuTaskManager.taskQueue.index(id,0)
+        ZhihuTaskManager.taskQueue = [id] + ZhihuTaskManager.taskQueue
         pass
 
     @staticmethod

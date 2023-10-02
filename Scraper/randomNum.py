@@ -12,5 +12,9 @@ def produceRandomNumWithOutDuplicated():
     print(number[0]*1000 + number[1] * 100 + number[2] * 10 + number[3])
     pass
 
+def random01()->float:
+    rand = random.Random()
+    return rand.random()
+
 if __name__ == '__main__':
     produceRandomNumWithOutDuplicated()
