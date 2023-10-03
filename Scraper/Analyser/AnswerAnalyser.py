@@ -15,7 +15,7 @@ class AnswerAnalyser():
         pass
 
     @staticmethod
-    def extractAndDiscover(dataStr:str):
+    def extractAndDiscover(dataStr:str, taskId: str):
         # extract
         bs = BeautifulSoup(dataStr, 'html.parser')
         questioncard = bs.select('.QuestionHeader-main')[0]
@@ -42,7 +42,8 @@ class AnswerAnalyser():
                 commentCount = defaultAnswer['commentCount']
                 collapsed = defaultAnswer['isCollapsed']
                 updatedTime = defaultAnswer['updatedTime']
-        except:
+        except Exception as e:
+            print('parse error: ' + str(e))
             qContentText = ''
             voteCount = 0
             commentCount = 0

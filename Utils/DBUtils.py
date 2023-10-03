@@ -106,7 +106,7 @@ class DBUtils:
 
     @staticmethod
     def escapeSql(string:str)->str:
-        return string.replace('\n','').replace('\r','').replace('\'','\'\'')
+        return string.replace('\n','').replace('\r','').replace('\'','\'\'').replace('"', ' ')
         pass
 
 if __name__ == '__main__':

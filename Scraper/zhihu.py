@@ -26,6 +26,7 @@ from Scraper.Enums.QuestionDomain import QuestionDomain
 from Utils.CommonUtils import CommonUtils
 from Utils.DBUtils import DBUtils
 from Utils.ZhihuTaskManager import ZhihuTaskManager
+from Scraper.Enums.IdType import IdType
 #
 # reload(sys)
 # sys.setdefaultencoding('utf-8')
@@ -392,111 +393,6 @@ def stripTopic(str):
 def scrapeBossRelatedTopic():
     pass
 
-def scrapeBossQuestionListByTopic():
-    funcList = []
-    def buildRequest(topicId):
-        url = targetUrl["topicprefix"].replace("[topicid]", topicId).replace('[pageindex]', str(1))
-        header = {"user-agent": requestConfig["user-agent"]}
-        return url, header
-    funcList.append(buildRequest)
-    def buildRequest(topicId):
-        url = targetUrl["topicprefix"].replace("[topicid]", topicId).replace('[pageindex]', str(2))
-        header = {"user-agent": requestConfig["user-agent"]}
-        return url, header
-    funcList.append(buildRequest)
-    def buildRequest(topicId):
-        url = targetUrl["topicprefix"].replace("[topicid]", topicId).replace('[pageindex]', str(3))
-        header = {"user-agent": requestConfig["user-agent"]}
-        return url, header
-    funcList.append(buildRequest)
-    def buildRequest(topicId):
-        url = targetUrl["topicprefix"].replace("[topicid]", topicId).replace('[pageindex]', str(4))
-        header = {"user-agent": requestConfig["user-agent"]}
-        return url, header
-    funcList.append(buildRequest)
-    def buildRequest(topicId):
-        url = targetUrl["topicprefix"].replace("[topicid]", topicId).replace('[pageindex]', str(5))
-        header = {"user-agent": requestConfig["user-agent"]}
-        return url, header
-    funcList.append(buildRequest)
-    def buildRequest(topicId):
-        url = targetUrl["topicprefix"].replace("[topicid]", topicId).replace('[pageindex]', str(6))
-        header = {"user-agent": requestConfig["user-agent"]}
-        return url, header
-    funcList.append(buildRequest)
-    def buildRequest(topicId):
-        url = targetUrl["topicprefix"].replace("[topicid]", topicId).replace('[pageindex]', str(7))
-        header = {"user-agent": requestConfig["user-agent"]}
-        return url, header
-    funcList.append(buildRequest)
-    def buildRequest(topicId):
-        url = targetUrl["topicprefix"].replace("[topicid]", topicId).replace('[pageindex]', str(8))
-        header = {"user-agent": requestConfig["user-agent"]}
-        return url, header
-    funcList.append(buildRequest)
-    def buildRequest(topicId):
-        url = targetUrl["topicprefix"].replace("[topicid]", topicId).replace('[pageindex]', str(9))
-        header = {"user-agent": requestConfig["user-agent"]}
-        return url, header
-    funcList.append(buildRequest)
-    def buildRequest(topicId):
-        url = targetUrl["topicprefix"].replace("[topicid]", topicId).replace('[pageindex]', str(10))
-        header = {"user-agent": requestConfig["user-agent"]}
-        return url, header
-    funcList.append(buildRequest)
-
-    def buildRelatedSearchRequest(topicId):
-        url = targetUrl["relatedtopicprefix"].replace("[topicid]", topicId)
-        header = {"user-agent": requestConfig["user-agent"]}
-        return url, header
-    funcList.append(buildRelatedSearchRequest)
-
-    callbackList = []
-    for i in range(0, 10):
-        def recordAndDiscover(response, topicid):
-            dataStr = response.text
-            data = json.loads(dataStr)
-            qnaList = data["zpData"]["list"]
-            for qna in qnaList:
-                questionInfo = qna["questionInfo"]
-                content = questionInfo["content"]
-                answerCount = questionInfo["answerCount"]
-                questionId = questionInfo["questionId"]
-                if not scrapedQid.__contains__(questionId) and not waitQid.__contains__(questionId):
-                    print(questionId + "\t" + content + "\t" + str(answerCount))
-                newQid(questionId)
-            return False,True
-        callbackList.append(recordAndDiscover)
-
-    def recordAndDiscoverNewTopic(response, topicid):
-        dataStr = response.text
-        bs = BeautifulSoup(dataStr, 'html.parser')
-        ul = bs.select('.related-list')[0]
-        li_list = ul.select('.topicItem')
-        for li in li_list:
-            relatedTopicId = stripTopic(li.a["href"])
-            relatedTopicName = li.a.text.replace("\n","").strip()
-            countInfo = li.select(".count_info > span")
-            questionCount = countInfo[0].text
-            focusCount = countInfo[1].text
-            topicInfoToDict(relatedTopicId, relatedTopicName, questionCount, focusCount)
-            if not scrapedTopic.__contains__(relatedTopicId) and not waitingTopic.__contains__(relatedTopicId):
-                print(relatedTopicId + "\t" + relatedTopicName + "\t" + questionCount + "\t" + focusCount)
-            newTopic(relatedTopicId)
-        return False,True
-    callbackList.append(recordAndDiscoverNewTopic)
-
-    def alldone(topicid, success):
-        if success:
-            if not scrapedTopic.__contains__(topicid):
-                scrapedTopic.add(topicid)
-        else:
-            if not failedTopic.__contains__(topicid):
-                failedTopic.add(topicid)
-
-    scrapeMultiIteration(topicQueue, waitingTopic, funcList, callbackList, alldone)
-    ZhihuTaskManager.saveStatus()
-    pass
 
 def topicInfoToDict(topicId, topicName, qCount, fCount):
     if topicInfoDict.get(topicId) == None:
@@ -533,35 +429,6 @@ def discoverLink(p):
             href = link.attrs['href']
             resultlist.append(targetUrl["baikePrefix"] + href)
     return resultlist
-
-class IdType:
-    answer:str = 'answer'
-    question:str = 'question'
-    topic:str = 'topic'
-    favorlist:str = 'favorlist'
-    relatedquestion:str = 'relatedquestion'
-    fullset = [answer,question,topic,favorlist,relatedquestion]
-
-    @staticmethod
-    def getType(qid: str):
-        for tp in IdType.fullset:
-            if qid.startswith(tp):
-                return tp
-        pass
-    @staticmethod
-    def convertId(type:str, id):
-        return f'{type}_{id}'
-
-    @staticmethod
-    def convertAnswer(questionId:str, answerId:str):
-        id = f'{questionId}_{answerId}'
-        return IdType.convertId(IdType.answer,id)
-
-    @staticmethod
-    def stripId(rawId: str):
-        return '_'.join(rawId.split('_')[1:])
-    pass
-
 
 def checkAndInsertDB(answerId, result ,scenario='default'):
     qTitle = result.titleText
@@ -628,7 +495,7 @@ def scrapeZhihu(tagmark):
     def recordAndDiscover(response, qid):
         dataStr = response.text
         if IdType.getType(qid) == IdType.answer:
-            result = AnswerAnalyser.extractAndDiscover(dataStr)
+            result = AnswerAnalyser.extractAndDiscover(dataStr, qid)
             qTitle = result.titleText
             qContent = result.qContentText
             answer = result.answerText
@@ -640,7 +507,7 @@ def scrapeZhihu(tagmark):
             isCollapsed = result.isCollapsed
 
             # new topics
-            topicIds = [IdType.convertId(IdType.topic, topic) for topic in topics]
+            topicIds = [IdType.convertId(IdType.topic, topic)[0] for topic in topics]
             for topicid in topicIds:
                 ZhihuTaskManager.newTask(topicid)
             outputrow = qTitle + '\t' + qContent + '\t' + answer
@@ -648,11 +515,17 @@ def scrapeZhihu(tagmark):
             record(outputrow)
             checkAndInsertDB(qid, result, tagmark)
         if IdType.getType(qid) == IdType.question:
-            result = QuestionAnalyser.extractAndDiscover(dataStr)
+            result = QuestionAnalyser.extractAndDiscover(dataStr, qid)
             question = result.questionId
             for answer in result.answeridlist:
                 answerId = IdType.convertAnswer(question, answer)
                 ZhihuTaskManager.newTaskImmediate(answerId)
+            sessionid = result.sessionid
+            lastcursor = result.lastcursor
+            batch = result.batch
+            if batch >= 0:
+                taskId = IdType.convertQuestion(question,batch, lastcursor, sessionid)
+                ZhihuTaskManager.newTaskImmediate(taskId)
             pass
         if IdType.getType(qid) == IdType.topic:
             pass
@@ -787,7 +660,8 @@ def scrapeRoutineJob(topicIdList, tagmark='default', period='day'):
     for topic in topicIdList:
         result = TutorialDemo.run(topic,period)
         questionIdList= [IdType.convertId(IdType.question, row[2]) for row in result]
-        ZhihuTaskManager.taskQueue += questionIdList
+        for qid in questionIdList:
+            ZhihuTaskManager.taskQueue += qid
     print(f'question list generated, {len(ZhihuTaskManager.taskQueue)} total.')
     scrapeZhihu(tagmark)
 
@@ -797,7 +671,8 @@ if __name__ == '__main__':
 
     topicIdList = [
         QuestionDomain.liangxing,
-        QuestionDomain.qinggan
+        QuestionDomain.muyingqinzi,
+        # QuestionDomain.qinggan
     ]
     localtime = time.localtime(time.time())
     tagmark = '_'.join([str(item) for item in topicIdList]) + "_" + time.strftime('%Y-%m-%d',localtime)
