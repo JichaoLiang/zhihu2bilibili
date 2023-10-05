@@ -5,7 +5,8 @@ class IdType:
     topic:str = 'topic'
     favorlist:str = 'favorlist'
     relatedquestion:str = 'relatedquestion'
-    fullset = [answer,question,topic,favorlist,relatedquestion]
+    search:str = 'search'
+    fullset = [answer,question,topic,favorlist,relatedquestion, search]
 
     @staticmethod
     def getType(qid: str):

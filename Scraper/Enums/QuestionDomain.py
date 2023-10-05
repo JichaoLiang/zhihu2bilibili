@@ -8,6 +8,7 @@ class QuestionDomain:
     falv = 100007
     junshi = 100008
     qiche = 100009
+    #人文社科
     renwensheke = 100010
     zirankexue = 100011
     gongchengjishu = 100012

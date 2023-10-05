@@ -21,6 +21,7 @@ from Scraper.Analyser.QuestionAnalyser import QuestionAnalyser
 from Scraper.Analyser.AnswerAnalyser import AnswerAnalyser
 from Scraper.Analyser.RelatedQuestionAnalyser import RelatedQuestionAnalyser
 from Scraper.Analyser.FavorListAnalyser import FavorListAnalyser
+from Scraper.Analyser.SearchKeywordAnalyser import SearchKeywordAnalyser
 from Scraper.Analyser.TopicAnalyser import TopicAnalyser
 from Scraper.Enums.QuestionDomain import QuestionDomain
 from Utils.CommonUtils import CommonUtils
@@ -490,6 +491,8 @@ def scrapeZhihu(tagmark):
             pass
         if IdType.getType(qid) == IdType.relatedquestion:
             url = RelatedQuestionAnalyser.buildRequestURL(id)
+        if IdType.getType(qid) == IdType.search:
+            url,header = SearchKeywordAnalyser.buildRequestURL(id,header)
         return url, header
 
     def recordAndDiscover(response, qid):
@@ -533,6 +536,15 @@ def scrapeZhihu(tagmark):
             pass
         if IdType.getType(qid) == IdType.relatedquestion:
             pass
+        if IdType.getType(qid) == IdType.search:
+            result = SearchKeywordAnalyser.extractAndDiscover(dataStr, qid)
+            qnalist = result.idlist
+            for qna in qnalist:
+                answer = qna[0]
+                question = qna[1]
+                questionjobid = IdType.convertQuestion(question, -1, '', '')
+                ZhihuTaskManager.newTask(questionjobid)
+                pass
         # state saving
         ZhihuTaskManager.doneTask(qid)
         return False, True
@@ -655,7 +667,7 @@ def main():
     # scrapeBossList()
 
 # period = week / day / hour
-def scrapeRoutineJob(topicIdList, tagmark='default', period='day'):
+def scrapeRoutineJob(topicIdList, tagmark='hottopic', period='day'):
     ZhihuTaskManager.loadScrapedAndFailed()
     for topic in topicIdList:
         result = TutorialDemo.run(topic,period)
@@ -665,16 +677,28 @@ def scrapeRoutineJob(topicIdList, tagmark='default', period='day'):
     print(f'question list generated, {len(ZhihuTaskManager.taskQueue)} total.')
     scrapeZhihu(tagmark)
 
+def scrapeKeywords(keywords:list, tagmark='search'):
+    ZhihuTaskManager.loadScrapedAndFailed()
+    for keyword in keywords:
+        taskId = IdType.convertId(IdType.search, keyword)[0]
+        ZhihuTaskManager.taskQueue.append(taskId)
+        print(f'task generated: id={taskId}')
+    if tagmark=='search':
+        tagmark = f'search_{",".join(keywords)}_{CommonUtils.now_short_string()}'
+    scrapeZhihu(tagmark)
+    pass
+
 if __name__ == '__main__':
     openf()
     # main()
 
     topicIdList = [
-        QuestionDomain.liangxing,
-        QuestionDomain.muyingqinzi,
+        QuestionDomain.dongmanyouxi
+        # QuestionDomain.muyingqinzi,
         # QuestionDomain.qinggan
     ]
-    localtime = time.localtime(time.time())
-    tagmark = '_'.join([str(item) for item in topicIdList]) + "_" + time.strftime('%Y-%m-%d',localtime)
-    scrapeRoutineJob(topicIdList,tagmark,period='day')
+    tagmark = '_'.join([str(item) for item in topicIdList]) + "_" + CommonUtils.now_short_string()
+    scrapeRoutineJob(topicIdList, tagmark, period='day')
+
+    # scrapeKeywords(['悲剧','纠结'])
     closef()

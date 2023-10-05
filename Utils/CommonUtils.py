@@ -1,11 +1,24 @@
 import os
+import time
 from pathlib import Path
+from urllib.parse import urlencode
 
 import bs4
 from bs4 import ResultSet
 
 
 class CommonUtils:
+
+    @staticmethod
+    def urlencodestring(string:str):
+        data = urlencode({'aaa': string})
+        return '='.join(data.split('=')[1:])
+
+    @staticmethod
+    def now_short_string():
+        localtime = time.localtime(time.time())
+        return time.strftime('%Y-%m-%d', localtime)
+
     @staticmethod
     def tryFetch(jsonelement, attrlist:list):
         pointer = jsonelement
