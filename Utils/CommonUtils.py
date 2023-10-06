@@ -1,4 +1,5 @@
 import os
+import shutil
 import time
 from pathlib import Path
 from urllib.parse import urlencode
@@ -58,14 +59,6 @@ class CommonUtils:
         return ''.join(tokens).replace('\n', '').replace('\t', '')
         pass
 
-    @staticmethod
-    def cleanList(path):
-        data = CommonUtils.loadList(path)
-        for i in range(0, len(data)):
-            line = data[i]
-            if line.__contains__('/'):
-                data[i] = line.split('/')[-1]
-        CommonUtils.saveList(data, path)
 
     @staticmethod
     def loadList(path):
@@ -87,6 +80,16 @@ class CommonUtils:
             for line in list:
                 writer.write(line + "\n")
         pass
+
+    @staticmethod
+    def cleanList(path):
+        data = CommonUtils.loadList(path)
+        for i in range(0, len(data)):
+            line = data[i]
+            if line.__contains__('/'):
+                data[i] = line.split('/')[-1]
+        CommonUtils.saveList(data, path)
+
     pass
 
 class UrlType():

@@ -60,6 +60,7 @@ class SadTalkerCli:
 
         request.driven_audio = os.path.abspath('../../Resource/Product/dev/tts_0.wav')
         request.source_image = './SadTalkerMain/examples/source_image/happy.png'
+        request.ref_eyeblink = './SadTalkerMain/examples/ref_video/WDA_KatieHill_000.mp4'
         request.ref_pose = './SadTalkerMain/examples/ref_video/shuai.mp4'
         # request.ref_pose = './SadTalkerMain/examples/ref_video/WDA_KatieHill_000.mp4'
         # request.ref_pose = './SadTalkerMain/examples/ref_video/WDA_AlexandriaOcasioCortez_000.mp4'

@@ -550,6 +550,7 @@ def scrapeZhihu(tagmark):
         return False, True
     # stripedQueue = [q[-1] for q in qidQueue]
     scrapeGlobal(buildRequest, recordAndDiscover)
+    database.close()
     ZhihuTaskManager.saveStatus()
 
 def newQid(qid):
