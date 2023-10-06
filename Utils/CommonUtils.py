@@ -2,6 +2,7 @@ import os
 import shutil
 import time
 from pathlib import Path
+from random import random
 from urllib.parse import urlencode
 
 import bs4
@@ -89,7 +90,10 @@ class CommonUtils:
             if line.__contains__('/'):
                 data[i] = line.split('/')[-1]
         CommonUtils.saveList(data, path)
-
+    @staticmethod
+    def random01() -> float:
+        rand = random.Random()
+        return rand.random()
     pass
 
 class UrlType():

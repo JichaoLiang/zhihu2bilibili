@@ -71,9 +71,9 @@ class BackendManagement:
 
     @staticmethod
     def test():
-        folderpath = 'G:\\DonaldTrump_male'
+        folderpath = 'G:\\import\\randomgirl_female'
         # convert files in folder from 1 to n, if the character booked manually, do not call this which will mess up the order
-        # BackendManagement.indexfolder(folderpath)
+        BackendManagement.indexfolder(folderpath)
         BackendManagement.newCharacterFromDirectory(folderpath)
         pass
     pass

@@ -155,8 +155,27 @@ class DBUtils:
             task = tasklist[i]
             sql = (f'INSERT INTO `zhihu2bilibili`.`ttstask`'
                    f'(`taskId`,`qnaid`,`characterid`,`voice`,`textchunk`,`textindex`)'
-                   f'VALUES({taskid},{tasklist.answerid},{tasklist.characterid},{tasklist.voice},{tasklist.text},{i});')
+                   f'VALUES({taskid},{task.qnaid},{task.characterid},"{task.voice}","{task.text}",{i});')
+            sqllist.append(sql)
         self.doCommands(sqllist)
+
+    def randomCharacter(self):
+        sql = (f'SELECT * FROM zhihu2bilibili.character order by rand() limit 1;')
+        return self.doQuery(sql)[0]
+
+    def randomMale(self):
+        sql = (f'SELECT * FROM zhihu2bilibili.character where gender=1 order by rand() limit 1;')
+        return self.doQuery(sql)[0]
+
+    def randomFemale(self):
+        sql = (f'SELECT * FROM zhihu2bilibili.character where gender=0 order by rand() limit 1;')
+        return self.doQuery(sql)[0]
+
+    def getPicListByCharacterId(self, id):
+        sql = (f'select picgroupid from zhihu2bilibili.character where idcharacter={id}')
+        groupid = self.doQuery(sql)[0][0]
+        sql = (f'select picgroupid, relpath from zhihu2bilibili.picresourcedata where picgroupid="{groupid}" order by indexingroup asc')
+        return self.doQuery(sql)
 
     @staticmethod
     def escapeSql(string: str) -> str:
