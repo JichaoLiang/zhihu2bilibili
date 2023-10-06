@@ -2,30 +2,39 @@ from bs4 import BeautifulSoup
 import os
 import json
 import Utils
+import munch
+from Utils import CommonUtils as ut
 
 # target url sample
-# https://www.zhihu.com/api/v4/questions/323196827/similar-questions?include=data%5B*%5D.answer_count%2Cauthor%2Cfollower_count&limit=5
+# https://www.zhihu.com/api/v4/questions/323196827/similar-questions?include=data%5B*%5D.answer_count%2Cauthor%2Cfollower_count&limit=5&offset=0
+
 class RelatedQuestionAnalyser():
     @staticmethod
-    def extractAndDiscover(dataStr:str)->dict:
+    def buildRequestURL(id:str)->str:
+        return f'https://www.zhihu.com/api/v4/questions/{id}/similar-questions?include=data%5B*%5D.answer_count%2Cauthor%2Cfollower_count&limit=10&offset=0'
+        pass
+
+    @staticmethod
+    def extractAndDiscover(dataStr:str)->list:
         # extract
         jsonobj = json.loads(dataStr)
         # discover
         data = jsonobj['data']
-        title = ''
-        if len(data) > 0:
-            question = Utils.CommonUtils.tryFetch(data[0],['target','question'])
-            id = Utils.CommonUtils.tryFetch(question, ['id'])
-        answerlist = [Utils.CommonUtils.tryFetch(item,['target','id']) for item in data]
-        return {
-            'questionId': id,
-            'answeridlist': answerlist,
-        }
+        answerlist = [munch.DefaultMunch.fromDict(
+            {
+                'id': ut.CommonUtils.tryFetch(item, ['id']),
+                'title': ut.CommonUtils.tryFetch(item, ['title']),
+                'time': ut.CommonUtils.tryFetch(item, ['updated_time']),
+                'answers': ut.CommonUtils.tryFetch(item, ['answer_count']),
+                'comments': ut.CommonUtils.tryFetch(item, ['comment_count']),
+                'followers':ut.CommonUtils.tryFetch(item, ['follower_count'])
+            }) for item in data]
+        return answerlist
         pass
 
     @staticmethod
     def test():
-        path = os.path.abspath('../')
+        path = os.path.abspath('../../')
         html = os.path.join(path, 'resource/relatedquestions.json')
         with open(html,encoding='utf-8') as f:
             lines = f.readlines()
@@ -34,19 +43,6 @@ class RelatedQuestionAnalyser():
         print(result)
         pass
 
-    @staticmethod
-    def postProcess(p):
-        tokens = []
-        while p.__contains__('<') or p.__contains__('>'):
-            tks = p.split('<')
-            tokens.append(tks[0])
-            p = '<'.join(tks[1:])
-            tks = p.split('>')
-            p = '>'.join(tks[1:])
-        tokens.append(p)
-
-        return ''.join(tokens).replace('\n', '').replace('\t', '')
-        pass
     pass
 
 
