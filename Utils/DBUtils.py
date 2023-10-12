@@ -132,6 +132,18 @@ class DBUtils:
         self.doCommands(commlist)
         pass
 
+    def newVideoCharacter(self, name, gender, voice, picGroupList):
+        if len(picGroupList) == 0:
+            raise Exception('no video to character is not allowed')
+        groupid = picGroupList[0][0]
+        commlist = [('insert into `zhihu2bilibili`.`videoresourcedata` (VideoGroupId, IndexInGroup, RelPath, Tag)'
+                     f' values ("{pic[0]}", {pic[1]},"{pic[2]}","{pic[3]}");')
+                    for pic in picGroupList]
+        commlist.append((f'insert into `zhihu2bilibili`.`character` (name, gender, voice, picgroupid) '
+                         f'values ("{name}", {gender}, "{voice}", "{groupid}");'))
+        self.doCommands(commlist)
+        pass
+
     def taskRemaining(self):
         sql = ("select count(1) from zhihu2bilibili.taskstatus where TTSSuccess = 0"
                " or CharacterSuccess = 0"
@@ -155,13 +167,77 @@ class DBUtils:
             task = tasklist[i]
             sql = (f'INSERT INTO `zhihu2bilibili`.`ttstask`'
                    f'(`taskId`,`qnaid`,`characterid`,`voice`,`textchunk`,`textindex`)'
-                   f'VALUES({taskid},{tasklist.answerid},{tasklist.characterid},{tasklist.voice},{tasklist.text},{i});')
+                   f'VALUES({taskid},{task.qnaid},{task.characterid},"{task.voice}","{task.text}",{i});')
+            sqllist.append(sql)
         self.doCommands(sqllist)
+
+    def randomCharacter(self):
+        sql = (f'SELECT * FROM zhihu2bilibili.character order by rand() limit 1;')
+        return self.doQuery(sql)[0]
+
+    def randomMale(self):
+        sql = (f'SELECT * FROM zhihu2bilibili.character where gender=1 order by rand() limit 1;')
+        return self.doQuery(sql)[0]
+
+    def randomFemale(self):
+        sql = (f'SELECT * FROM zhihu2bilibili.character where gender=0 order by rand() limit 1;')
+        return self.doQuery(sql)[0]
+
+    def getPicListByCharacterId(self, id):
+        sql = (f'select picgroupid from zhihu2bilibili.character where idcharacter={id}')
+        groupid = self.doQuery(sql)[0][0]
+        sql = (
+            f'select picgroupid, relpath from zhihu2bilibili.picresourcedata where picgroupid="{groupid}" order by indexingroup asc')
+        return self.doQuery(sql)
+
+    def setQnaStatus(self, qnaID: str, status: int):
+        sql = (f'update zhihu2bilibili.qna '
+               f'set `taskGenerated`={status} '
+               f'where `idQnA` in ({",".join(qnaID)})')
+        self.doCommand(sql)
+        pass
+
+    def setTaskStatus(self, taskId: str, ttsStatus: int, aiGeneratedStatus: int, movieGenerated: int):
+        if ttsStatus < 0 and aiGeneratedStatus < 0 and movieGenerated < 0:
+            return
+        setfield = []
+        if ttsStatus > 0:
+            setfield.append(f'`ttssuccess`={ttsStatus}')
+        if aiGeneratedStatus > 0:
+            setfield.append(f'`charactersuccess`={aiGeneratedStatus}')
+        if movieGenerated > 0:
+            setfield.append(f'`moviesuccess`={movieGenerated}')
+
+        sql = (f'update zhihu2bilibili.taskstatus '
+               f'set '
+               f'{",".join(setfield)} '
+               f'where idTaskStatus={taskId}')
+        self.doCommand(sql)
+        pass
+
+    def fetchTTSJob(self):
+        sql = (f'select * from zhihu2bilibili.ttstask'
+               f' where wavpath=""')
+        return self.doQuery(sql)
+
+    def updateVoicePath(self, id, wavId):
+        sql = (f'update zhihu2bilibili.ttstask '
+               f'set wavpath="{wavId}" where idttstask={id}')
+        self.doCommand(sql)
+        pass
+
+    def bookVideoChunkJob(self, id):
+        sql = (f'insert into zhihu2bilibili.videochunk'
+               f'(ttstaskid) '
+               f'values({id})')
+        self.doCommand(sql)
+        pass
 
     @staticmethod
     def escapeSql(string: str) -> str:
         return string.replace('\n', '').replace('\r', '').replace('\'', '\'\'').replace('"', ' ')
         pass
+
 
 
 if __name__ == '__main__':

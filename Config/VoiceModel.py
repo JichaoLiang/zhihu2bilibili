@@ -1,4 +1,8 @@
+from Utils.CommonUtils import CommonUtils
+
+
 class VoiceModel:
+
     voicelist = [{'Locale': 'zh-HK', 'Gender': 'Female', 'ShortName': 'zh-HK-HiuGaaiNeural',
                   'FriendlyName': 'Microsoft HiuGaai Online (Natural) - Chinese (Cantonese Traditional)'},
                  {'Locale': 'zh-HK', 'Gender': 'Female', 'ShortName': 'zh-HK-HiuMaanNeural',
@@ -55,5 +59,20 @@ class VoiceModel:
                           'FriendlyName': 'Microsoft YunJhe Online (Natural) - Chinese (Taiwan)'}
     zh_TW_HsiaoYuNeural = {'Locale': 'zh-TW', 'Gender': 'Female', 'ShortName': 'zh-TW-HsiaoYuNeural',
                            'FriendlyName': 'Microsoft HsiaoYu Online (Natural) - Chinese (Taiwanese Mandarin)'}
-    zh_TW_HsiaoYuNeural = {'Locale': 'zh-CN-shaanxi', 'Gender': 'Female', 'ShortName': 'zh-CN-shaanxi-XiaoniNeural',
+    zh_CN_shaanxi_XiaoniNeural = {'Locale': 'zh-CN-shaanxi', 'Gender': 'Female', 'ShortName': 'zh-CN-shaanxi-XiaoniNeural',
                            'FriendlyName': 'Microsoft Xiaoni Online (Natural) - Chinese (Zhongyuan Mandarin Shaanxi)'}
+
+    default_male = zh_CN_YunxiNeural
+    default_female = zh_CN_XiaoyiNeural
+
+    @staticmethod
+    def randomVoice(isMale):
+        malelist = [item for item in VoiceModel.voicelist if item['Gender'].lower() == 'male']
+        femalelist= [item for item in VoiceModel.voicelist if item['Gender'].lower() == 'female']
+
+        list = femalelist
+        if isMale:
+            list = malelist
+        randIndex = int(CommonUtils.random01() * len(list))
+        return list[randIndex]['ShortName']
+        pass
