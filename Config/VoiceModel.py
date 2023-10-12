@@ -59,7 +59,7 @@ class VoiceModel:
                           'FriendlyName': 'Microsoft YunJhe Online (Natural) - Chinese (Taiwan)'}
     zh_TW_HsiaoYuNeural = {'Locale': 'zh-TW', 'Gender': 'Female', 'ShortName': 'zh-TW-HsiaoYuNeural',
                            'FriendlyName': 'Microsoft HsiaoYu Online (Natural) - Chinese (Taiwanese Mandarin)'}
-    zh_TW_HsiaoYuNeural = {'Locale': 'zh-CN-shaanxi', 'Gender': 'Female', 'ShortName': 'zh-CN-shaanxi-XiaoniNeural',
+    zh_CN_shaanxi_XiaoniNeural = {'Locale': 'zh-CN-shaanxi', 'Gender': 'Female', 'ShortName': 'zh-CN-shaanxi-XiaoniNeural',
                            'FriendlyName': 'Microsoft Xiaoni Online (Natural) - Chinese (Zhongyuan Mandarin Shaanxi)'}
 
     default_male = zh_CN_YunxiNeural

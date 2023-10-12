@@ -17,12 +17,27 @@ class DataStorageUtils:
 
     @staticmethod
     def generatePicPathId(extName = 'jpg'):
-        return DataStorageUtils.generatePathId(extName,'PicData')
+        return DataStorageUtils.generateFileId('PicData', extName)
         pass
 
     @staticmethod
-    def pathById(picId: str)->str:
-        tokens = picId.split('_')
+    def generateVoicePathId(extName = 'wav'):
+        return DataStorageUtils.generateFileId('Voice', extName)
+        pass
+
+    @staticmethod
+    def generateMoviePathId(extName = 'mp4'):
+        return DataStorageUtils.generateFileId('Movie', extName)
+        pass
+
+    @staticmethod
+    def generateFileId(field, extName = 'jpg'):
+        return DataStorageUtils.generatePathId(extName, field)
+        pass
+
+    @staticmethod
+    def getPathById(field, id: str)->str:
+        tokens = id.split('_')
         year = tokens[0]
         mon = tokens[1]
         day = tokens[2]
@@ -31,7 +46,19 @@ class DataStorageUtils:
         sec = tokens[5]
         millisec = tokens[6]
 
-        destPath = os.path.join(Config.dataPath,f'PicData/{year}_{mon}/{day}/{picId}')
+        destPath = os.path.join(Config.dataPath,f'{field}/{year}_{mon}/{day}/{id}')
         return destPath
+
+    @staticmethod
+    def picPathById(picId: str)->str:
+        return DataStorageUtils.getPathById('PicData', picId)
+        pass
+    @staticmethod
+    def voicePathById(picId: str)->str:
+        return DataStorageUtils.getPathById('Voice', picId)
+        pass
+    @staticmethod
+    def moviePathById(picId: str)->str:
+        return DataStorageUtils.getPathById('Movie', picId)
         pass
     pass

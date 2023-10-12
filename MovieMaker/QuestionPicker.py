@@ -4,6 +4,7 @@ from Config.VoiceModel import VoiceModel
 from MovieMaker import TTS
 from MovieMaker.Character import Character
 from MovieMaker.TTSAgent import TTSAgent
+from Scraper.Enums import Status
 from Scraper.Enums.IdType import IdType
 from Utils.DBUtils import DBUtils
 
@@ -42,13 +43,13 @@ class QuestionPicker:
                 piece = questionPieces[i]
                 ttsTask = TTSTaskEntry()
                 ttsTask.qnaid = 0
-                ttsTask.answerid = IdType.convertQuestion(questionid, -1,'','')
+                ttsTask.answerid = IdType.convertQuestion(questionid, -1, '', '')
                 ttsTask.characterid = leader.id
                 ttsTask.text = piece
                 ttsTask.voice = leader.voice
                 tasklist.append(ttsTask)
 
-            for i in range(0,len(top3answer)):
+            for i in range(0, len(top3answer)):
                 entry = top3answer[i]
                 qnaid = entry[0]
                 answerid = entry[1]
@@ -71,14 +72,15 @@ class QuestionPicker:
             conclusion = '听完了各位的回答，这次大家对他们的回答有什么想法呢？欢迎到评论区发出你的想法，咱们下期再见！'
 
             ttsTask = TTSTaskEntry()
-            ttsTask.qnaid=0
+            ttsTask.qnaid = 0
             ttsTask.answerid = IdType.convertQuestion(questionid, -1, '', '')
             ttsTask.characterid = leader.id
             ttsTask.text = conclusion
             ttsTask.voice = leader.voice
             tasklist.append(ttsTask)
             db = DBUtils()
-            db.newTask(questionid, [str(item[1]) for item in top3answer],tasklist)
+            db.newTask(questionid, [str(item[1]) for item in top3answer], tasklist)
+            db.setQnaStatus([ele[0] for ele in top3answer], Status.taskStatus.complete)
             db.close()
         pass
 
