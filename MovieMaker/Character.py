@@ -7,7 +7,9 @@ class Character:
     gender = 0
     voice = ''
     picgroupid = ''
+    videogroupid = ''
     piclist = []
+    videolist = []
 
     @staticmethod
     def randomCharacter():
@@ -19,7 +21,9 @@ class Character:
         instance.gender = randCharacter[2]
         instance.voice = randCharacter[3]
         instance.picgroupid = randCharacter[4]
+        instance.videogroupid = randCharacter[5]
         instance.getPiclist()
+        instance.getVideoList()
         db.close()
         return instance
 
@@ -33,7 +37,9 @@ class Character:
         instance.gender = randCharacter[2]
         instance.voice = randCharacter[3]
         instance.picgroupid = randCharacter[4]
+        instance.videogroupid = randCharacter[5]
         instance.getPiclist()
+        instance.getVideoList()
         db.close()
         return instance
 
@@ -47,7 +53,9 @@ class Character:
         instance.gender = randCharacter[2]
         instance.voice = randCharacter[3]
         instance.picgroupid = randCharacter[4]
+        instance.videogroupid = randCharacter[5]
         instance.getPiclist()
+        instance.getVideoList()
         db.close()
         return instance
 
@@ -61,5 +69,17 @@ class Character:
         } for item in list]
         self.piclist = piclist
         return piclist
+        pass
+
+    def getVideoList(self):
+        db = DBUtils
+        list = db.getVideoListByCharacterId(self.id)
+        db.close()
+        videolist = [{
+            "videogroupid": item[0],
+            "path": item[1]
+        } for item in list]
+        self.videolist = videolist
+        return videolist
         pass
 

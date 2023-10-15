@@ -120,15 +120,34 @@ class DBUtils:
 
     pass
 
-    def newCharacter(self, name, gender, voice, picGroupList):
-        if len(picGroupList) == 0:
-            raise Exception('no pic to character is not allowed')
-        groupid = picGroupList[0][0]
-        commlist = [('insert into `zhihu2bilibili`.`picresourcedata` (PicGroupId, IndexInGroup, RelPath, Tag)'
-                     f' values ("{pic[0]}", {pic[1]},"{pic[2]}","{pic[3]}");')
-                    for pic in picGroupList]
-        commlist.append((f'insert into `zhihu2bilibili`.`character` (name, gender, voice, picgroupid) '
-                         f'values ("{name}", {gender}, "{voice}", "{groupid}");'))
+    def newCharacter(self, name, gender, voice, picGroupList, videoGroupList):
+        if len(picGroupList) == 0 and len(videoGroupList) == 0:
+            raise Exception('no pic and no video to character is not allowed')
+
+        groupid = None
+        videogroupid = None
+        commlist = []
+        if len(picGroupList) > 0:
+            groupid = picGroupList[0][0]
+            commlist += [('insert into `zhihu2bilibili`.`picresourcedata` (PicGroupId, IndexInGroup, RelPath, Tag)'
+                         f' values ("{pic[0]}", {pic[1]},"{pic[2]}","{pic[3]}");')
+                        for pic in picGroupList]
+        if len(videoGroupList) > 0:
+            videogroupid = videoGroupList[0][0]
+            commlist += [('insert into `zhihu2bilibili`.`videoresourcedata` (VideoGroupId, IndexInGroup, RelPath, Tag)'
+                         f' values ("{video[0]}", {video[1]},"{video[2]}","{video[3]}");')
+                        for video in videoGroupList]
+        if groupid != None and videogroupid != None:
+            targetFieldName = 'picgroupid, videogroupid'
+            targetVal = f'"{groupid}", "{videogroupid}"'
+        elif groupid != None:
+            targetFieldName = 'picgroupid'
+            targetVal = f'"{groupid}"'
+        elif videogroupid != None:
+            targetFieldName = 'videogroupid'
+            targetVal = f'"{videogroupid}"'
+        commlist.append((f'insert into `zhihu2bilibili`.`character` (name, gender, voice, {targetFieldName}) '
+                         f'values ("{name}", {gender}, "{voice}", {targetVal});'))
         self.doCommands(commlist)
         pass
 
@@ -189,6 +208,14 @@ class DBUtils:
         sql = (
             f'select picgroupid, relpath from zhihu2bilibili.picresourcedata where picgroupid="{groupid}" order by indexingroup asc')
         return self.doQuery(sql)
+
+    def getVideoListByCharacterId(self, id):
+        sql = (f'select videogroupid from zhihu2bilibili.character where idcharacter={id}')
+        groupid = self.doQuery(sql)[0][0]
+        sql = (
+            f'select videogroupid, relpath from zhihu2bilibili.videoresourcedata where videogroupid="{groupid}" order by indexingroup asc')
+        return self.doQuery(sql)
+        pass
 
     def setQnaStatus(self, qnaID: str, status: int):
         sql = (f'update zhihu2bilibili.qna '
