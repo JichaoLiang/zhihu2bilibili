@@ -12,7 +12,7 @@ from MovieMaker.SadTalker.SadTalkerMain.src.generate_batch import get_data
 from MovieMaker.SadTalker.SadTalkerMain.src.generate_facerender_batch import get_facerender_data
 from MovieMaker.SadTalker.SadTalkerMain.src.utils.init_path import init_path
 
-def main(args):
+def main(args, toPath=None):
     #torch.backends.cudnn.enabled = False
 
     pic_path = args.source_image
@@ -86,7 +86,8 @@ def main(args):
     
     result = animate_from_coeff.generate(data, save_dir, pic_path, crop_info, \
                                 enhancer=args.enhancer, background_enhancer=args.background_enhancer, preprocess=args.preprocess, img_size=args.size)
-    
+    if toPath is not None:
+        shutil.copy(result, toPath)
     shutil.move(result, save_dir+'.mp4')
     print('The generated video is named:', save_dir+'.mp4')
 

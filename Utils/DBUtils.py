@@ -3,6 +3,8 @@ import uuid
 
 import pymysql
 
+from Scraper.Enums import Status
+
 
 class DBUtils:
     @staticmethod
@@ -120,15 +122,34 @@ class DBUtils:
 
     pass
 
-    def newCharacter(self, name, gender, voice, picGroupList):
-        if len(picGroupList) == 0:
-            raise Exception('no pic to character is not allowed')
-        groupid = picGroupList[0][0]
-        commlist = [('insert into `zhihu2bilibili`.`picresourcedata` (PicGroupId, IndexInGroup, RelPath, Tag)'
-                     f' values ("{pic[0]}", {pic[1]},"{pic[2]}","{pic[3]}");')
-                    for pic in picGroupList]
-        commlist.append((f'insert into `zhihu2bilibili`.`character` (name, gender, voice, picgroupid) '
-                         f'values ("{name}", {gender}, "{voice}", "{groupid}");'))
+    def newCharacter(self, name, gender, voice, picGroupList, videoGroupList):
+        if len(picGroupList) == 0 and len(videoGroupList) == 0:
+            raise Exception('no pic and no video to character is not allowed')
+
+        groupid = None
+        videogroupid = None
+        commlist = []
+        if len(picGroupList) > 0:
+            groupid = picGroupList[0][0]
+            commlist += [('insert into `zhihu2bilibili`.`picresourcedata` (PicGroupId, IndexInGroup, RelPath, Tag)'
+                          f' values ("{pic[0]}", {pic[1]},"{pic[2]}","{pic[3]}");')
+                         for pic in picGroupList]
+        if len(videoGroupList) > 0:
+            videogroupid = videoGroupList[0][0]
+            commlist += [('insert into `zhihu2bilibili`.`videoresourcedata` (VideoGroupId, IndexInGroup, RelPath, Tag)'
+                          f' values ("{video[0]}", {video[1]},"{video[2]}","{video[3]}");')
+                         for video in videoGroupList]
+        if groupid != None and videogroupid != None:
+            targetFieldName = 'picgroupid, videogroupid'
+            targetVal = f'"{groupid}", "{videogroupid}"'
+        elif groupid != None:
+            targetFieldName = 'picgroupid'
+            targetVal = f'"{groupid}"'
+        elif videogroupid != None:
+            targetFieldName = 'videogroupid'
+            targetVal = f'"{videogroupid}"'
+        commlist.append((f'insert into `zhihu2bilibili`.`character` (name, gender, voice, {targetFieldName}) '
+                         f'values ("{name}", {gender}, "{voice}", {targetVal});'))
         self.doCommands(commlist)
         pass
 
@@ -171,6 +192,10 @@ class DBUtils:
             sqllist.append(sql)
         self.doCommands(sqllist)
 
+    def characterById(self, id):
+        sql = (f'SELECT * FROM zhihu2bilibili.character where idcharacter={id}')
+        return self.doQuery(sql)[0]
+
     def randomCharacter(self):
         sql = (f'SELECT * FROM zhihu2bilibili.character order by rand() limit 1;')
         return self.doQuery(sql)[0]
@@ -187,8 +212,16 @@ class DBUtils:
         sql = (f'select picgroupid from zhihu2bilibili.character where idcharacter={id}')
         groupid = self.doQuery(sql)[0][0]
         sql = (
-            f'select picgroupid, relpath from zhihu2bilibili.picresourcedata where picgroupid="{groupid}" order by indexingroup asc')
+            f'select picgroupid, relpath, tag from zhihu2bilibili.picresourcedata where picgroupid="{groupid}" order by indexingroup asc')
         return self.doQuery(sql)
+
+    def getVideoListByCharacterId(self, id):
+        sql = (f'select videogroupid from zhihu2bilibili.character where idcharacter={id}')
+        groupid = self.doQuery(sql)[0][0]
+        sql = (
+            f'select videogroupid, relpath, tag from zhihu2bilibili.videoresourcedata where videogroupid="{groupid}" order by indexingroup asc')
+        return self.doQuery(sql)
+        pass
 
     def setQnaStatus(self, qnaID: str, status: int):
         sql = (f'update zhihu2bilibili.qna '
@@ -220,9 +253,44 @@ class DBUtils:
                f' where wavpath=""')
         return self.doQuery(sql)
 
+    def fetchVideoChunk(self, taskstatusidlist):
+        sql = (f'select * from zhihu2bilibili.videochunk'
+               f' where taskstatusid in ({",".join([str(ids) for ids in taskstatusidlist])})')
+        return self.doQuery(sql)
+
+    def fetchVideoChunkList(self, taskstatusid):
+        sql = (f'select * from zhihu2bilibili.videochunk'
+               f' where taskstatusid = {taskstatusid} order by index asc')
+        return self.doQuery(sql)
+
+    def fetchVideoGenerationJob(self):
+        sql = (f'select idTaskStatus from zhihu2bilibili.taskstatus'
+               f' where TTSSuccess="{Status.taskStatus.complete}" and CharacterSuccess="{Status.taskStatus.waiting}"')
+        return self.doQuery(sql)
+        pass
+
+    def fetchMovieMakerJob(self):
+        sql = (f'select idTaskStatus from zhihu2bilibili.taskstatus'
+               f' where CharacterSuccess="{Status.taskStatus.complete}" and MovieSuccess="{Status.taskStatus.waiting}"')
+        return self.doQuery(sql)
+        pass
+
+    def fetchVideoGenerationVoiceList(self, taskid):
+        sql = (f'select * from zhihu2bilibili.ttstask'
+               f' where taskid={taskid} order by textindex asc')
+        return self.doQuery(sql)
+        pass
+
     def updateVoicePath(self, id, wavId):
         sql = (f'update zhihu2bilibili.ttstask '
                f'set wavpath="{wavId}" where idttstask={id}')
+        self.doCommand(sql)
+        pass
+
+    def newVideoChunkPath(self, task, charater, index, fileid):
+        sql = (f'insert into zhihu2bilibili.videochunk'
+               f'(taskStatusId,videochunkpath, characterid, `index`) '
+               f'values({task},"{fileid}",{charater},{index})')
         self.doCommand(sql)
         pass
 
@@ -237,7 +305,6 @@ class DBUtils:
     def escapeSql(string: str) -> str:
         return string.replace('\n', '').replace('\r', '').replace('\'', '\'\'').replace('"', ' ')
         pass
-
 
 
 if __name__ == '__main__':

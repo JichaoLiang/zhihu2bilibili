@@ -76,10 +76,12 @@ class BackendManagement:
         if len(tokens) > 2:
             voice = tokens[2]
         picGroupId = uuid.uuid1()
+        videoGroupId = uuid.uuid1()
 
         files = os.listdir(dataDirPath)
         files = [os.path.join(dataDirPath, f) for f in files]
         picinfolist = []
+        videoinfolist = []
         for file in files:
             filePath = Path(file)
             if filePath.is_file():
@@ -100,9 +102,23 @@ class BackendManagement:
                     shutil.copyfile(filePath, destPath)
                     picdata = (picGroupId, picindex, id, tag)
                     picinfolist.append(picdata)
+                elif extendName in ['mp4']:
+                    nameInfoTokens = fileName.split('_')
+                    videoindex = int(nameInfoTokens[0])
+                    if len(nameInfoTokens) > 1:
+                        tag = nameInfoTokens[1]
+                    else:
+                        tag = ''
+                    id, destPath = DataStorageUtils.generateMoviePathId(extendName)
+                    destDir = os.path.dirname(destPath)
+                    if not Path(destDir).exists():
+                        os.makedirs(destDir)
+                    shutil.copyfile(filePath, destPath)
+                    videodata = (videoGroupId, videoindex, id, tag)
+                    videoinfolist.append(videodata)
 
         db = DBUtils()
-        db.newCharacter(name, isMale, voice, picinfolist)
+        db.newCharacter(name, isMale, voice, picinfolist, videoinfolist)
         db.close()
         pass
     @staticmethod
@@ -118,9 +134,9 @@ class BackendManagement:
 
     @staticmethod
     def test():
-        folderpath = 'G:\\import\\randomgirl_female'
+        folderpath = 'R:/import/trump_male'
         # convert files in folder from 1 to n, if the character booked manually, do not call this which will mess up the order
-        BackendManagement.indexfolder(folderpath)
+        # BackendManagement.indexfolder(folderpath)
         BackendManagement.newCharacterFromDirectory(folderpath)
         pass
     pass
