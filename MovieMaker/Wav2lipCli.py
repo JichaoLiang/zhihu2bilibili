@@ -15,10 +15,11 @@ class Wav2lipCli:
 
     @staticmethod
     def test():
-        audio = 'g:\\shortsample_shanxi.wav'
-        video = 'D:/MyWork/data/sucai/dushuai/talk.mp4'
-        to = 'r:/shuai.mp4'
+        audio = 'r:\\output_5.wav'
+        video = 'D:\\MyWork\\data\\sucai\\lijiaqi\\clip1_truncated.mp4'
+        to = 'r:/ljq3.mp4'
         Wav2lipCli.wav2lip(audio, video, to)
+
 
 
 if __name__ == '__main__':
