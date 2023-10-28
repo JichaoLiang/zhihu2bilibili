@@ -3,6 +3,7 @@ import os
 from Config.VoiceModel import VoiceModel
 from MovieMaker import TTS
 from MovieMaker.Character import Character
+from MovieMaker.Strategy import Strategy
 from MovieMaker.TTSAgent import TTSAgent
 from Scraper.Enums import Status
 from Scraper.Enums.IdType import IdType
@@ -13,6 +14,7 @@ class QuestionPicker:
     @staticmethod
     def process():
         pickedData = QuestionPicker.pickQuestion()
+        print(f'picked data: {[p["questiontext"] for p in pickedData]}. {len(pickedData)} total')
         QuestionPicker.bookTask(pickedData)
         pass
 
@@ -38,7 +40,7 @@ class QuestionPicker:
 
             # question
             questionPieces = TTSAgent.splitText(question)
-            leader = Character.randomCharacter()
+            leader = Character.fromId(Strategy.getSpeechHostCharacterId()) # Character.randomCharacter()
             for i in range(0, len(questionPieces)):
                 piece = questionPieces[i]
                 ttsTask = TTSTaskEntry()
@@ -49,6 +51,7 @@ class QuestionPicker:
                 ttsTask.voice = leader.voice
                 tasklist.append(ttsTask)
 
+            characterIdLIst = Strategy.getSpeechActorIdList()
             for i in range(0, len(top3answer)):
                 entry = top3answer[i]
                 qnaid = entry[0]
@@ -56,7 +59,7 @@ class QuestionPicker:
                 answer = entry[2]
                 voteupcount = entry[3]
 
-                answerer = Character.randomCharacter()
+                answerer = Character.fromId(characterIdLIst[i])
                 answerPieces = TTSAgent.splitText(answer)
                 for j in range(0, len(answerPieces)):
                     piece = answerPieces[j]
@@ -80,31 +83,47 @@ class QuestionPicker:
             tasklist.append(ttsTask)
             db = DBUtils()
             db.newTask(questionid, [str(item[1]) for item in top3answer], tasklist)
-            db.setQnaStatus([ele[0] for ele in top3answer], Status.taskStatus.complete)
+            print(f'new task set. {len(tasklist)} total.')
+            db.setQnaStatus([str(ele[0]) for ele in top3answer], Status.taskStatus.complete)
             db.close()
         pass
 
     @staticmethod
     def pickQuestion() -> list:
-        recalldata = QuestionPicker.recall(20)
+        recalldata = QuestionPicker.recall(30)
         filtereddata = [item for item in recalldata if QuestionPicker.filter(item)]
-        rankedData = QuestionPicker.rank(filtereddata)
+        answerfiltereddata = QuestionPicker.answerfiltereddata(filtereddata)
+        rankedData = QuestionPicker.rank(answerfiltereddata)
         return rankedData
         pass
 
     @staticmethod
-    def recall(limit: int):
+    def rankanswer(answerlist):
+        return answerlist
+
+    @staticmethod
+    def answerfiltereddata(data, take = 3):
+        for d in data:
+            answerlist = QuestionPicker.rankanswer(d['answerlist'])
+            d['answerlist'] = answerlist[0:take]
+        return data
+
+    @staticmethod
+    def recall(limit: int, minlength:int = 50):
         db = DBUtils()
         result = db.doQuery(
             f'select QuestionTitle, Sum(VoteUpCount) as votesum, count(1) as cnt, sum(taskgenerated) as taskgen from '
             f'(SELECT idQnA, AnswerId, QuestionTitle, Answer, VoteUpCount, taskgenerated FROM zhihu2bilibili.qna where length(answer) > 100 and VoteUpCount > 10) availableData '
             f'group by QuestionTitle having cnt >= 3 and taskgen = 0 order by votesum desc limit {limit}')
         resultlist = []
+        print(f'question fetched: {[q[0] for q in result]}')
         for row in result:
             question = row[0]
             top3answer = db.doQuery(
-                f'select idqna, answerid, Answer , voteupcount from zhihu2bilibili.qna where questiontitle = "{question}" order by voteupcount desc limit 3')
+                f'select idqna, answerid, Answer , voteupcount from zhihu2bilibili.qna where questiontitle = "{question}" and length(Answer) > {minlength} order by voteupcount desc limit 5')
             zhihuqid = IdType.stripId(top3answer[0][1]).split('_')[0]
+            if len(top3answer) < 3:
+                continue
             resultlist.append({
                 'questionid': zhihuqid,
                 'questiontext': question,
@@ -117,7 +136,8 @@ class QuestionPicker:
 
     @staticmethod
     def filter(data) -> list:
-        return True
+        answerlist = data['answerlist']
+        return len(answerlist) >= 3
         pass
 
     @staticmethod

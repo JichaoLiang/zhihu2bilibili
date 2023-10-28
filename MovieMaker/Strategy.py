@@ -33,10 +33,3 @@ class Strategy:
         return -1
         pass
 
-    @staticmethod
-    def getEndScenario():
-        trump = Character.fromId(15)
-        endvideopath = trump.randomVideoByTag(['end'])
-        return endvideopath
-        pass
-

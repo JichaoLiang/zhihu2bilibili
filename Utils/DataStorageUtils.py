@@ -1,5 +1,6 @@
 import os
 import time
+from pathlib import Path
 
 from Config.Config import Config
 
@@ -13,6 +14,9 @@ class DataStorageUtils:
         now = time.localtime(fnow)
         id = f'{now.tm_year}_{now.tm_mon}_{now.tm_mday}_{now.tm_hour}_{now.tm_min}_{now.tm_sec}_{milliSec}.{extName}'
         destPath = os.path.join(Config.dataPath,f'{namespacefolder}/{now.tm_year}_{now.tm_mon}/{now.tm_mday}/{id}')
+        destDir = os.path.dirname(destPath)
+        if not Path(destDir).exists():
+            os.makedirs(destDir)
         return id,  destPath
 
     @staticmethod
@@ -62,3 +66,17 @@ class DataStorageUtils:
         return DataStorageUtils.getPathById('Movie', picId)
         pass
     pass
+
+    @staticmethod
+    def tempFile(extName):
+        fnow = time.time()
+        intNow = int(fnow * 1000)
+        milliSec = intNow % 1000
+        now = time.localtime(fnow)
+        id = f'{now.tm_year}_{now.tm_mon}_{now.tm_mday}_{now.tm_hour}_{now.tm_min}_{now.tm_sec}_{milliSec}.{extName}'
+        destPath = os.path.join(Config.tempPath,f'{id}')
+        destDir = os.path.dirname(destPath)
+        if not Path(destDir).exists():
+            os.makedirs(destDir)
+        return id, destPath
+        pass

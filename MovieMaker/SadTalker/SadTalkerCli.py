@@ -47,6 +47,19 @@ class SadTalkerCli:
 
     @staticmethod
     def produceSadTalkerVideo(characterImagePath, voicePath, toPath: str):
+        request = SadTalkerInputEntity()
+        request.preprocess = 'full'
+
+        request.driven_audio = voicePath
+        request.source_image = characterImagePath #'./SadTalkerMain/examples/source_image/happy.png'
+        request.ref_eyeblink = './SadTalkerMain/examples/ref_video/WDA_KatieHill_000.mp4'
+        request.ref_pose = './SadTalkerMain/examples/ref_video/shuai.mp4'
+        request.still = False
+        # request.ref_pose = './SadTalkerMain/examples/ref_video/WDA_KatieHill_000.mp4'
+        # request.ref_pose = './SadTalkerMain/examples/ref_video/WDA_AlexandriaOcasioCortez_000.mp4'
+
+        inference.main(request, toPath)
+        return toPath
         pass
 
     @staticmethod
@@ -56,12 +69,13 @@ class SadTalkerCli:
     @staticmethod
     def test():
         request = SadTalkerInputEntity()
-        request.preprocess = 'crop'
+        request.preprocess = 'full'
 
         request.driven_audio = os.path.abspath('../../Resource/Product/dev/tts_0.wav')
         request.source_image = './SadTalkerMain/examples/source_image/happy.png'
         request.ref_eyeblink = './SadTalkerMain/examples/ref_video/WDA_KatieHill_000.mp4'
         request.ref_pose = './SadTalkerMain/examples/ref_video/shuai.mp4'
+        request.still = True
         # request.ref_pose = './SadTalkerMain/examples/ref_video/WDA_KatieHill_000.mp4'
         # request.ref_pose = './SadTalkerMain/examples/ref_video/WDA_AlexandriaOcasioCortez_000.mp4'
 
@@ -70,4 +84,7 @@ class SadTalkerCli:
     pass
 
 if __name__ == '__main__':
-    SadTalkerCli.test()
+    img = 'g:/test.png'
+    audio = 'r:/output_8.wav'
+    to = img + '.mp4'
+    SadTalkerCli.produceSadTalkerVideo(img, audio, to)

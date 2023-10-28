@@ -1,5 +1,14 @@
+import os.path
+from random import Random
+
+from Config.Config import Config
 from MovieMaker import TTS
+from MovieMaker.Character import Character
+from MovieMaker.Strategy import Strategy
+from MovieMaker.Wav2lipCli import Wav2lipCli
 from Scraper.Enums.Status import taskStatus
+from Utils.AudioUtils import AudioUtils
+from Utils.CommonUtils import CommonUtils
 from Utils.DBUtils import DBUtils
 from Utils.DataStorageUtils import DataStorageUtils
 
@@ -7,27 +16,74 @@ class CharacterMovieAgent:
     @staticmethod
     def process():
         db = DBUtils()
-        job = db.fetchTTSJob()
-        for jobEntry in job:
-            id = jobEntry[0]
-            voiceName = jobEntry[4]
-            textChunk = jobEntry[5]
-            wavId, destpath = DataStorageUtils.generateVoicePathId()
-            TTS.edgeTTS(textChunk,voiceName,destpath)
-            db.updateVoicePath(id, wavId)
+        job = [j[0] for j in list(db.fetchVideoGenerationJob())]
+        voicequeue = []
+        currentQna = None
+        for task in job:
+            try:
+                leaderSpeech = True
+                datalist = db.fetchVideoGenerationVoiceList(task)
+                index = 0
+                for data in datalist:
+                    qnaid = data[2]
+                    character = data[3]
+                    wavpath = data[7]
+                    if currentQna is None:
+                        currentQna = qnaid
+                        voicequeue.append(wavpath)
+                    elif currentQna == qnaid:
+                        voicequeue.append(wavpath)
+                    elif currentQna != qnaid:
+                        specifiedIndex = -1
+                        if leaderSpeech:
+                            specifiedIndex = Strategy.getLeaderVideoIndex(character)
+                            leaderSpeech = False
+                        id, videofile = CharacterMovieAgent.produceVideoChuck(character, voicequeue, specifiedIndex)
+                        db.newVideoChunkPath(task, character, index, id)
+                        index += 1
+                        voicequeue.clear()
+                        currentQna = None
+                if len(voicequeue) > 0:
+                    specifiedIndex = -1
+                    if leaderSpeech:
+                        specifiedIndex = Strategy.getLeaderVideoIndex(character)
+                        leaderSpeech = False
+                    id, videofile = CharacterMovieAgent.produceVideoChuck(character, voicequeue, specifiedIndex)
+                    db.newVideoChunkPath(task, character, index, id)
+                    index += 1
+                    voicequeue.clear()
+                    currentQna = None
+            except Exception as ex:
+                print(str(ex))
+                db.setTaskStatus(task, -1, taskStatus.failed, -1)
         db.close()
-        CharacterMovieAgent.checkStatus(set([ele[1] for ele in job]))
+        CharacterMovieAgent.checkStatus(set(job))
         pass
 
     @staticmethod
     def checkStatus(taskIdSet):
         db = DBUtils()
-        job = db.fetchTTSJob()
+        job = db.fetchVideoChunk(list(taskIdSet))
         for taskid in taskIdSet:
             match = [jb for jb in job if jb[1]==taskid]
-            if len(match) == 0:
-                db.setTaskStatus(taskid,taskStatus.complete, -1, -1)
+            if len(match[3]) > 0:
+                db.setTaskStatus(taskid,-1, taskStatus.complete, -1)
         db.close()
+        pass
+
+    @classmethod
+    def produceVideoChuck(cls, character, voicequeue, specifiedIndex = -1):
+        character = Character.fromId(character)
+        tempWav, tempWavPath = DataStorageUtils.tempFile('wav')
+        AudioUtils.concatewavlist([DataStorageUtils.voicePathById(voice) for voice in voicequeue], tempWavPath)
+        # pick a video face
+        if specifiedIndex < 0:
+            pickedVideo = character.randomVideoByTag([''])
+        else:
+            pickedVideo = DataStorageUtils.moviePathById(character.videolist[specifiedIndex]['path'])
+        id, path = DataStorageUtils.generateMoviePathId()
+        Wav2lipCli.wav2lip(tempWavPath, pickedVideo, path)
+        return id, path
         pass
 
 
