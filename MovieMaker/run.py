@@ -10,7 +10,8 @@ def process():
     TTSAgent.process()
     print('video character job start.')
     CharacterMovieAgent.process()
-    # MovieMakerAgent.process()
+    print('moviemaker job start')
+    MovieMakerAgent.process()
 
 if __name__ == '__main__':
     process()

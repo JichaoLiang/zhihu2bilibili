@@ -1,3 +1,4 @@
+import os.path
 import time
 import uuid
 
@@ -63,8 +64,12 @@ class DBUtils:
     def doQuery(self, sql):
         connect = self.tryConnect()
         with connect.cursor() as cursor:
-            cursor.execute(sql)
-            result = cursor.fetchall()
+            try:
+                cursor.execute(sql)
+                result = cursor.fetchall()
+            except Exception as ex:
+                print(f'debug sql: {sql}')
+                raise ex
         return result
 
     def doCommand(self, sql):
@@ -223,7 +228,7 @@ class DBUtils:
         return self.doQuery(sql)
         pass
 
-    def setQnaStatus(self, qnaID: str, status: int):
+    def setQnaStatus(self, qnaID, status: int):
         sql = (f'update zhihu2bilibili.qna '
                f'set `taskGenerated`={status} '
                f'where `idQnA` in ({",".join(qnaID)})')
@@ -304,6 +309,33 @@ class DBUtils:
     @staticmethod
     def escapeSql(string: str) -> str:
         return string.replace('\n', '').replace('\r', '').replace('\'', '\'\'').replace('"', ' ')
+        pass
+
+    def getAnswersByTaskstatusId(self, taskid):
+        sql = f'select answerid from zhihu2bilibili.taskstatus where idtaskstatus = {taskid}'
+        result = self.doQuery(sql)
+        return result
+        pass
+
+    def getQnaByAnswerId(self, answerid):
+        sql = f'select * from zhihu2bilibili.qna where answerid ="{answerid}"'
+        return self.doQuery(sql)
+        pass
+
+    def newAudio(self, name, groupid, index, pathid, tag):
+        sql = (f'insert into zhihu2bilibili.audioresourcedata(audiogroupid,name,indexingroup,relpath,tag)'
+               f' values("{groupid}","{name}",{index}, "{pathid}", "{tag}")')
+        self.doCommand(sql)
+        pass
+
+    def getVoiceByTag(self, tag):
+        sql = f'select * from zhihu2bilibili.audioresourcedata where tag="{tag}"'
+        return self.doQuery(sql)
+        pass
+
+    def getVideoListByTag(self, tag):
+        sql = f'select * from zhihu2bilibili.videoresourcedata where tag="{tag}"'
+        return self.doQuery(sql)
         pass
 
 

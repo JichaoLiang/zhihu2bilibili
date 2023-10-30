@@ -1,5 +1,8 @@
 import os.path
+import shutil
 from random import Random
+
+from moviepy.video.io.VideoFileClip import VideoFileClip
 
 from Config.Config import Config
 from MovieMaker import TTS
@@ -11,6 +14,8 @@ from Utils.AudioUtils import AudioUtils
 from Utils.CommonUtils import CommonUtils
 from Utils.DBUtils import DBUtils
 from Utils.DataStorageUtils import DataStorageUtils
+from Utils.MovieMakerUtils import MovieMakerUtils
+
 
 class CharacterMovieAgent:
     @staticmethod
@@ -18,6 +23,7 @@ class CharacterMovieAgent:
         db = DBUtils()
         job = [j[0] for j in list(db.fetchVideoGenerationJob())]
         voicequeue = []
+        textqueue = []
         currentQna = None
         for task in job:
             try:
@@ -27,28 +33,31 @@ class CharacterMovieAgent:
                 for data in datalist:
                     qnaid = data[2]
                     character = data[3]
+                    text = data[5]
                     wavpath = data[7]
                     if currentQna is None:
                         currentQna = qnaid
                         voicequeue.append(wavpath)
+                        textqueue.append(text)
                     elif currentQna == qnaid:
                         voicequeue.append(wavpath)
+                        textqueue.append(text)
                     elif currentQna != qnaid:
-                        specifiedIndex = -1
+                        specifiedTaglist = None
                         if leaderSpeech:
-                            specifiedIndex = Strategy.getLeaderVideoIndex(character)
+                            specifiedTaglist = ['speech']
                             leaderSpeech = False
-                        id, videofile = CharacterMovieAgent.produceVideoChuck(character, voicequeue, specifiedIndex)
+                        id, videofile = CharacterMovieAgent.produceVideoChuck(character, voicequeue, specifiedTaglist, textCaption=' '.join(textqueue))
                         db.newVideoChunkPath(task, character, index, id)
                         index += 1
                         voicequeue.clear()
+                        textqueue.clear()
                         currentQna = None
+                # conclusion
                 if len(voicequeue) > 0:
-                    specifiedIndex = -1
-                    if leaderSpeech:
-                        specifiedIndex = Strategy.getLeaderVideoIndex(character)
-                        leaderSpeech = False
-                    id, videofile = CharacterMovieAgent.produceVideoChuck(character, voicequeue, specifiedIndex)
+                    # specify conclusion character
+                    specifiedTaglist = ['speech']
+                    id, videofile = CharacterMovieAgent.produceVideoChuck(character, voicequeue, specifiedTaglist, textCaption=' '.join(textqueue))
                     db.newVideoChunkPath(task, character, index, id)
                     index += 1
                     voicequeue.clear()
@@ -62,6 +71,8 @@ class CharacterMovieAgent:
 
     @staticmethod
     def checkStatus(taskIdSet):
+        if len(taskIdSet) == 0:
+            return
         db = DBUtils()
         job = db.fetchVideoChunk(list(taskIdSet))
         for taskid in taskIdSet:
@@ -72,17 +83,24 @@ class CharacterMovieAgent:
         pass
 
     @classmethod
-    def produceVideoChuck(cls, character, voicequeue, specifiedIndex = -1):
+    def produceVideoChuck(cls, character, voicequeue, specifiedTags = None, textCaption=None):
         character = Character.fromId(character)
         tempWav, tempWavPath = DataStorageUtils.tempFile('wav')
+        tempVideo, tempVideoPath = DataStorageUtils.tempFile('mp4')
         AudioUtils.concatewavlist([DataStorageUtils.voicePathById(voice) for voice in voicequeue], tempWavPath)
         # pick a video face
-        if specifiedIndex < 0:
-            pickedVideo = character.randomVideoByTag([''])
+        if specifiedTags is None:
+            pickedVideo = character.randomVideoByTag(['', 'speech'])
         else:
-            pickedVideo = DataStorageUtils.moviePathById(character.videolist[specifiedIndex]['path'])
+            pickedVideo = character.randomVideoByTag(specifiedTags) # DataStorageUtils.moviePathById(character.videolist[specifiedIndex]['path'])
         id, path = DataStorageUtils.generateMoviePathId()
-        Wav2lipCli.wav2lip(tempWavPath, pickedVideo, path)
+        Wav2lipCli.wav2lip(tempWavPath, pickedVideo, tempVideoPath)
+        if textCaption is None:
+            shutil.copyfile(tempVideoPath, path)
+        else:
+            clip = VideoFileClip(tempVideoPath)
+            clip = MovieMakerUtils.captionTextToVideoClip(clip, textCaption)
+            clip.write_videofile(path)
         return id, path
         pass
 

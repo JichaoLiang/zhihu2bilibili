@@ -62,8 +62,8 @@ class VoiceModel:
     zh_CN_shaanxi_XiaoniNeural = {'Locale': 'zh-CN-shaanxi', 'Gender': 'Female', 'ShortName': 'zh-CN-shaanxi-XiaoniNeural',
                            'FriendlyName': 'Microsoft Xiaoni Online (Natural) - Chinese (Zhongyuan Mandarin Shaanxi)'}
 
-    default_male = zh_CN_YunxiNeural
-    default_female = zh_CN_XiaoyiNeural
+    default_male = zh_CN_YunyangNeural
+    default_female = zh_CN_XiaoxiaoNeural
 
     @staticmethod
     def randomVoice(isMale):

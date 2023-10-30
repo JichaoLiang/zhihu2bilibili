@@ -6,6 +6,7 @@ import MovieMaker.TTS
 import uuid
 
 from Config.Config import Config
+from Config.VoiceModel import VoiceModel
 from Utils.CommonUtils import CommonUtils
 from Utils.DBUtils import DBUtils
 from Utils.DataStorageUtils import DataStorageUtils
@@ -60,6 +61,29 @@ class BackendManagement:
         pass
 
     @staticmethod
+    def newBGM(filpath):
+        BackendManagement.newVoice(filpath,tag="bgm")
+
+    @staticmethod
+    def newVoice(filepath, name=None, specifiedgroupid=None, tag=''):
+        extName = filepath.split('.')[-1]
+        id, destPath = DataStorageUtils.generateVoicePathId(extName)
+        shutil.copyfile(filepath, destPath)
+
+        groupid = specifiedgroupid
+
+        if name is None:
+            name = str(os.path.basename(filepath)).split('.')[0]
+
+        if specifiedgroupid is None:
+            groupid = uuid.uuid1()
+        # single mode
+        index = 0
+        db = DBUtils()
+        db.newAudio(name, groupid, index, id, tag)
+        pass
+
+    @staticmethod
     def newCharacterFromDirectory(dataDirPath: str):
         pathName = os.path.basename(dataDirPath)
         tokens = pathName.split('_')
@@ -68,10 +92,10 @@ class BackendManagement:
         if len(tokens) > 1 and tokens[1].lower() != 'male':
             isMale = 0
         if isMale:
-            voice = Config.voice_male_default
+            voice = VoiceModel.default_male['ShortName'] # Config.voice_male_default
             pass
         else:
-            voice = Config.voice_female_default
+            voice = VoiceModel.default_female['ShortName'] # Config.voice_female_default
             pass
         if len(tokens) > 2:
             voice = tokens[2]
@@ -134,7 +158,7 @@ class BackendManagement:
 
     @staticmethod
     def test():
-        folderpath = 'R:/import/trump_male'
+        folderpath = 'H:/character_import/trump_male'
         # convert files in folder from 1 to n, if the character booked manually, do not call this which will mess up the order
         # BackendManagement.indexfolder(folderpath)
         BackendManagement.newCharacterFromDirectory(folderpath)
@@ -142,4 +166,5 @@ class BackendManagement:
     pass
 
 if __name__ == '__main__':
-    BackendManagement.test()
+    BackendManagement.newBGM("G:/test/Happy Whistling Ukulele.mp3")
+    # BackendManagement.test()

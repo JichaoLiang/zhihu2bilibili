@@ -1,5 +1,6 @@
 import os
 
+from Config.Config import Config
 from Config.VoiceModel import VoiceModel
 from MovieMaker import TTS
 from MovieMaker.Character import Character
@@ -36,7 +37,7 @@ class QuestionPicker:
             top3answer = questionEntity['answerlist']
 
             # render question
-            question = f'{question}, 我精心挑选了三个热心网友回答，大家看看谁聊得更精彩，那么咱们现在开始吧！'
+            question = Config.hostspeech.replace('{question}', question) # f'{question}, 我精心挑选了三个热心网友的回答，大家看看谁聊得更精彩，那么咱们现在开始吧！'
 
             # question
             questionPieces = TTSAgent.splitText(question)
@@ -72,7 +73,7 @@ class QuestionPicker:
                     tasklist.append(ttsTask)
 
             # conclusion
-            conclusion = '听完了各位的回答，这次大家对他们的回答有什么想法呢？欢迎到评论区发出你的想法，咱们下期再见！'
+            conclusion = Config.conclusionspeech
 
             ttsTask = TTSTaskEntry()
             ttsTask.qnaid = 0
@@ -90,7 +91,7 @@ class QuestionPicker:
 
     @staticmethod
     def pickQuestion() -> list:
-        recalldata = QuestionPicker.recall(30)
+        recalldata = QuestionPicker.recall(Config.recalllimit)
         filtereddata = [item for item in recalldata if QuestionPicker.filter(item)]
         answerfiltereddata = QuestionPicker.answerfiltereddata(filtereddata)
         rankedData = QuestionPicker.rank(answerfiltereddata)
@@ -137,7 +138,9 @@ class QuestionPicker:
     @staticmethod
     def filter(data) -> list:
         answerlist = data['answerlist']
-        return len(answerlist) >= 3
+        answerlongenough = [l for l in answerlist if Config.minAnswerLength < len(l[2]) < Config.maxAnswerlength]
+        data['answerlist'] = answerlongenough
+        return len(answerlongenough) >= 3
         pass
 
     @staticmethod
