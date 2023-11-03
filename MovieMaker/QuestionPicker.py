@@ -37,11 +37,12 @@ class QuestionPicker:
             top3answer = questionEntity['answerlist']
 
             # render question
-            question = Config.hostspeech.replace('{question}', question) # f'{question}, 我精心挑选了三个热心网友的回答，大家看看谁聊得更精彩，那么咱们现在开始吧！'
+            question = Config.hostspeech.replace('{question}',
+                                                 question)  # f'{question}, 我精心挑选了三个热心网友的回答，大家看看谁聊得更精彩，那么咱们现在开始吧！'
 
             # question
             questionPieces = TTSAgent.splitText(question)
-            leader = Character.fromId(Strategy.getSpeechHostCharacterId()) # Character.randomCharacter()
+            leader = Character.fromId(Strategy.getSpeechHostCharacterId())  # Character.randomCharacter()
             for i in range(0, len(questionPieces)):
                 piece = questionPieces[i]
                 ttsTask = TTSTaskEntry()
@@ -93,8 +94,11 @@ class QuestionPicker:
     def pickQuestion() -> list:
         recalldata = QuestionPicker.recall(Config.recalllimit)
         filtereddata = [item for item in recalldata if QuestionPicker.filter(item)]
+        # 给已审过滤的结果打标
+        QuestionPicker.ignoreSignToDroppedRecall(recalldata, filtereddata)
         answerfiltereddata = QuestionPicker.answerfiltereddata(filtereddata)
         rankedData = QuestionPicker.rank(answerfiltereddata)
+        postprocessedData = QuestionPicker.postprocess(answerfiltereddata)
         return rankedData
         pass
 
@@ -103,15 +107,16 @@ class QuestionPicker:
         return answerlist
 
     @staticmethod
-    def answerfiltereddata(data, take = 3):
+    def answerfiltereddata(data, take=3):
         for d in data:
             answerlist = QuestionPicker.rankanswer(d['answerlist'])
             d['answerlist'] = answerlist[0:take]
         return data
 
     @staticmethod
-    def recall(limit: int, minlength:int = 50):
+    def recall(limit: int, minlength: int = 50):
         db = DBUtils()
+        # touchedQuestions = db.doQuery('select QuestionTitle from zhihu2bilibili.qna where taskgen != 0')
         result = db.doQuery(
             f'select QuestionTitle, Sum(VoteUpCount) as votesum, count(1) as cnt, sum(taskgenerated) as taskgen from '
             f'(SELECT idQnA, AnswerId, QuestionTitle, Answer, VoteUpCount, taskgenerated FROM zhihu2bilibili.qna where length(answer) > 100 and VoteUpCount > 10) availableData '
@@ -138,7 +143,7 @@ class QuestionPicker:
     @staticmethod
     def filter(data) -> list:
         answerlist = data['answerlist']
-        answerlongenough = [l for l in answerlist if Config.minAnswerLength < len(l[2]) < Config.maxAnswerlength]
+        answerlongenough = [l for l in answerlist if Strategy.filterAnswer(l[2])]
         data['answerlist'] = answerlongenough
         return len(answerlongenough) >= 3
         pass
@@ -159,6 +164,33 @@ class QuestionPicker:
         #     toPath = os.path.abspath(f'../Resource/Product/dev/tts_{i}.wav')
         #     TTS.edgeTTS(template, 'zh-CN-YunxiNeural', toPath)
         #     i += 1
+
+    @staticmethod
+    def ignoreSignToDroppedRecall(recalldata, filtereddata):
+        questionset = set([q['questiontext'] for q in recalldata])
+        filteredQuestionSet = set([q['questiontext'] for q in filtereddata])
+        db = DBUtils()
+        for q in questionset:
+            if not filteredQuestionSet.__contains__(q):
+                db.updateQnaTaskStatusByQuestionText(q, Status.taskStatus.failed)
+        db.close()
+        pass
+
+    # 后处理
+    @staticmethod
+    def postprocess(answerfiltereddata):
+        for qnapair in answerfiltereddata:
+            answerlist = qnapair['answerlist']
+            for i in range(0,len(answerlist)):
+                answer = answerlist[i]
+                answerlist[i] = QuestionPicker.postprocessAnswer(answer)
+        return answerfiltereddata
+        pass
+
+    @staticmethod
+    def postprocessAnswer(answer):
+        return answer
+        pass
 
 
 # zh-CN-XiaoyiNeural 女

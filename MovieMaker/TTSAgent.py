@@ -2,7 +2,7 @@ from MovieMaker import TTS
 from Scraper.Enums.Status import taskStatus
 from Utils.DBUtils import DBUtils
 from Utils.DataStorageUtils import DataStorageUtils
-
+import re
 
 class TTSAgent:
     @staticmethod
@@ -43,10 +43,18 @@ class TTSAgent:
             char = text[i]
             temp += char
             if char in splitor:
-                result.append(temp)
+                if not TTSAgent.regularchineseABCabc(temp):
+                    if len(result) > 0:
+                        result[-1] = result[-1] + temp
+                else:
+                    result.append(temp)
                 temp = ''
         if temp != '':
-            result.append(temp)
+            if not TTSAgent.regularchineseABCabc(temp):
+                if len(result) > 0:
+                    result[-1] = result[-1] + temp
+            else:
+                result.append(temp)
         return result
         pass
 
@@ -86,6 +94,13 @@ class TTSAgent:
         taskidlist = db.doQuery(f'select idttstask from zhihu2bilibili.ttstask where wavpath != ""')
         for t in taskidlist:
             db.bookVideoChunkJob(t[0])
+        pass
+
+    @staticmethod
+    def regularchineseABCabc(temp):
+        # re.compile(r'[\u4e00-\u9fa5_a-zA-Z0-9]+')
+        group = re.search(r'[\u4e00-\u9fa5_a-zA-Z0-9]+', temp)
+        return group is not None
         pass
 
 

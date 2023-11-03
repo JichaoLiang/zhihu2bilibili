@@ -7,6 +7,7 @@ import uuid
 
 from Config.Config import Config
 from Config.VoiceModel import VoiceModel
+from Utils.BaidunetdiskUtils import BaidunetdiskUtils
 from Utils.CommonUtils import CommonUtils
 from Utils.DBUtils import DBUtils
 from Utils.DataStorageUtils import DataStorageUtils
@@ -165,6 +166,9 @@ class BackendManagement:
         pass
     pass
 
+
+
+
 if __name__ == '__main__':
-    BackendManagement.newBGM("G:/test/Happy Whistling Ukulele.mp3")
-    # BackendManagement.test()
+    BackendManagement.newBGM(r"Q:\迅雷下载\A Good Bass for Gambling.mp3")
+    BackendManagement.newBGM(r"Q:\迅雷下载\Alls Fair In Love.mp3")

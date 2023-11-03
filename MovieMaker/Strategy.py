@@ -1,6 +1,7 @@
 import random
 from random import Random
 
+from Config.Config import Config
 from MovieMaker.Character import Character
 from Utils.DBUtils import DBUtils
 from Utils.DataStorageUtils import DataStorageUtils
@@ -34,7 +35,14 @@ class Strategy:
     def getEndScenario():
         db = DBUtils()
         endrows = [row[3] for row in db.getVideoListByTag('end')]
-        return DataStorageUtils.voicePathById(random.Random().choice(endrows))
+        return DataStorageUtils.moviePathById(random.Random().choice(endrows))
+    # 回答过滤器
+    @staticmethod
+    def filterAnswer(answer):
+        longenough = Config.minAnswerLength < len(answer) < Config.maxAnswerlength
+        wordblacklist = []
+        return longenough
+        pass
 
 
 if __name__ == '__main__':

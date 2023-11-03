@@ -15,9 +15,9 @@ class Wav2lipCli:
 
     @staticmethod
     def test():
-        audio = 'g:/shortsample_5.wav'
-        video = 'J:/MyWork/data/sucai/trump/clip.mp4'
-        to = 'g:/resulttest.mp4'
+        audio = 'r:/output_4.wav'
+        video = 'd:/MyWork/data/sucai/trump/clip.mp4'
+        to = 'r:/resulttest.mp4'
         Wav2lipCli.wav2lip(audio, video, to)
 
 

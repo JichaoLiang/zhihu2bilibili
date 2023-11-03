@@ -231,7 +231,7 @@ class DBUtils:
     def setQnaStatus(self, qnaID, status: int):
         sql = (f'update zhihu2bilibili.qna '
                f'set `taskGenerated`={status} '
-               f'where `idQnA` in ({",".join(qnaID)})')
+               f'where `idQnA` in ({",".join([str(q) for q in qnaID])})')
         self.doCommand(sql)
         pass
 
@@ -265,7 +265,7 @@ class DBUtils:
 
     def fetchVideoChunkList(self, taskstatusid):
         sql = (f'select * from zhihu2bilibili.videochunk'
-               f' where taskstatusid = {taskstatusid} order by index asc')
+               f' where taskstatusid = {taskstatusid} order by `index` asc')
         return self.doQuery(sql)
 
     def fetchVideoGenerationJob(self):
@@ -336,6 +336,11 @@ class DBUtils:
     def getVideoListByTag(self, tag):
         sql = f'select * from zhihu2bilibili.videoresourcedata where tag="{tag}"'
         return self.doQuery(sql)
+        pass
+
+    def updateQnaTaskStatusByQuestionText(self, question, status):
+        sql = f'update zhihu2bilibili.qna set taskGenerated={status} where QuestionTitle="{question}"'
+        self.doCommand(sql)
         pass
 
 

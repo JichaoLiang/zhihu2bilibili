@@ -10,6 +10,7 @@ from MovieMaker.Character import Character
 from MovieMaker.Strategy import Strategy
 from Scraper.Enums import Status
 from Scraper.Enums.Status import taskStatus
+from Utils.BaidunetdiskUtils import BaidunetdiskUtils
 from Utils.DBUtils import DBUtils
 from Utils.DataStorageUtils import DataStorageUtils
 from Utils.MovieMakerUtils import MovieMakerUtils
@@ -23,14 +24,19 @@ class MovieMakerAgent:
         voicequeue = []
         currentQna = None
         for task in job:
+            datalist = db.fetchVideoChunkList(task)
+            questionText =  MovieMakerAgent.getQuestionTextByTaskId(datalist[0][1])
             try:
-                datalist = db.fetchVideoChunkList(task)
                 MovieMakerAgent.processJobByIdlist(datalist)
                 db.setTaskStatus(task, -1, -1, Status.taskStatus.complete)
+                db.updateQnaTaskStatusByQuestionText(questionText, status=Status.taskStatus.complete)
+                # db.setQnaStatus([task], Status.taskStatus.complete) # 直接回写到qna
             except Exception as ex:
-                db.setQnaStatus(task, -1, -1, Status.taskStatus.failed)
+                print(ex)
+                db.setTaskStatus(task, -1, -1, Status.taskStatus.failed)
+                db.updateQnaTaskStatusByQuestionText(questionText, status=Status.taskStatus.failed)
         db.close()
-        MovieMakerAgent.checkStatus(set([ele[1] for ele in job]))
+        # MovieMakerAgent.checkStatus(set(job))
         pass
 
     @staticmethod
@@ -55,11 +61,11 @@ class MovieMakerAgent:
 
         cliplist = []  # VideoFileClip(filepath)
         for row in datalist[1:-1]:
-            actorId = row[0]
+            actorId = row[2]
             actorCharacter = Character.fromId(actorId)
-            waitingVideoChunk = actorCharacter.randomVideoByTag('opening')
+            waitingVideoChunk = actorCharacter.randomVideoByTag(['opening'])
             waitingVideoClip = VideoFileClip(waitingVideoChunk)
-            videoChunk = DataStorageUtils.getPathById(row[3])
+            videoChunk = DataStorageUtils.moviePathById(row[3])
             newClip = VideoFileClip(videoChunk)
             cliplist.append((waitingVideoClip, newClip))
 
@@ -71,17 +77,18 @@ class MovieMakerAgent:
 
         finalClip = MovieMakerAgent.directProduct(hostclip, cliplist, conclustionClip, endClip, context)
         filetext = f'{questionText}.mp4'
-        finalClip.write_videofile(os.path.join(Config.productPath, filetext))
-
+        destpath = os.path.join(Config.productPath, filetext)
+        finalClip.write_videofile(destpath)
+        BaidunetdiskUtils.upload(destpath)
         pass
 
     @staticmethod
     def getQuestionTextByTaskId(taskid):
         db = DBUtils()
-        answers: str = db.getAnswersByTaskstatusId(taskid)
-        answerid = answers.split(',')[0]
+        answers: str = db.getAnswersByTaskstatusId(taskid)[0]
+        answerid = answers[0].split(',')[0]
         qna = db.getQnaByAnswerId(answerid)
-        question = qna[2]
+        question = qna[0][2]
         return question
         pass
 
@@ -93,8 +100,9 @@ class MovieMakerAgent:
         job = db.fetchVideoChunk(taskIdSet)
         for taskid in taskIdSet:
             match = [jb for jb in job if jb[1] == taskid]
-            if len(match[3]) > 0:
+            if len(match) > 0:
                 db.setTaskStatus(taskid, -1, taskStatus.complete, -1)
+                db.setQnaStatus([taskid], Status.taskStatus.failed)
         db.close()
         pass
 
@@ -136,6 +144,7 @@ class MovieMakerAgent:
         finalClip.write_videofile(output)
         pass
 
+
     @staticmethod
     def predictTotalDuration(hostclip, cliplist, conclusionClip, endClip, openinglatencyseconds):
         duration = hostclip.duration
@@ -170,10 +179,10 @@ class MovieMakerAgent:
         # bgcolorClip: ColorClip = ColorClip((1920, 1080), (0, 0, 0)).set_duration(totallength)
         fittedClip = MovieMakerUtils.extendRotateDuration(hostclip.resize((960, 540)).set_position((0, 0)), totallength,
                                                           True)
-        hostclip = MovieMakerUtils.captionTextToVideoClip(hostclip, question)
+        hostclip = MovieMakerUtils.captionTextToVideoClip(hostclip, Config.hostspeech.replace('{question}', question))
 
-        titleClip = TextClip(question, font='华文隶书', color='yellow2',
-                             align='center', stroke_color='black', stroke_width=1, fontsize=30, size=hostclip.size)
+        titleClip = TextClip(MovieMakerUtils.seperatetextbynewline(question,charcount=10), font=Config.headerfont, color='yellow2',
+                             align='center', stroke_color='black', stroke_width=1, fontsize=80 / 1280 * hostclip.size[0], size=hostclip.size)
         titleClip = titleClip.set_duration(2)
         compostedhost = CompositeVideoClip([hostclip, titleClip])
         headlineClip = compostedhost.resize((1920, 1080)).set_position((0, 0)).without_audio()
@@ -232,10 +241,18 @@ class MovieMakerAgent:
             [bgcolorClip, fittedClip, open1, open2, open3, toTopLeftHeadline, animate1, animate2, animate3,
              conclustionAnimate])
         if bgmClip is not None:
-            composited = MovieMakerUtils.setBGM(composited, bgmClip, 0.4)
+            composited = MovieMakerUtils.setBGM(composited, bgmClip, Config.bgmvol)
         return composited
         pass
 
+    @staticmethod
+    def test2():
+        videoclip = VideoFileClip('R:\\workspace\\zhihu2bilibili\\Resource\\Data\\Movie\\2023_10\\29\\2023_10_29_19_28_27_786.mp4')
+        videoclip = videoclip.resize((1920,1080))
+        videoclip.write_videofile('r:/testreadfile.mp4')
+
 
 if __name__ == '__main__':
-    MovieMakerAgent.test()
+    # MovieMakerAgent.test2()
+    MovieMakerAgent.process()
+    # MovieMakerAgent.test()

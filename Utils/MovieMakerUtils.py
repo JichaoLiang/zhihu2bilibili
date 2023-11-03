@@ -9,6 +9,7 @@ from moviepy.editor import CompositeAudioClip
 # from moviepy.video.compositing import *
 from moviepy.video.VideoClip import TextClip
 
+import Config.Config
 from MovieMaker.TTSAgent import TTSAgent
 
 
@@ -91,7 +92,7 @@ class MovieMakerUtils:
                 neww = w + w * speed * t
                 newh = h + h * speed * t
 
-                print(f'{neww},{newh}')
+                # print(f'{neww},{newh}')
                 if speed > 0:
                     if neww > targetSize[0]:
                         return (neww, newh)
@@ -117,7 +118,7 @@ class MovieMakerUtils:
         def sizef(t):
             ts = 0
             for i in range(0, len(tickStamp)):
-                print(tickStamp[i])
+                # print(tickStamp[i])
                 if t < tickStamp[i]:
                     return sizefuncArray[i](t - ts)
                 ts = tickStamp[i]
@@ -195,9 +196,9 @@ class MovieMakerUtils:
         pass
 
     @staticmethod
-    def setBGM(video:VideoClip, audio:AudioClip, vol=0.8):
+    def setBGM(video:VideoClip, audio:AudioClip, vol=Config.Config.Config.bgmvol):
         audio1 = video.audio
-        looped = afx.audio_loop(audio.volumex(vol), duration=audio1.duration)
+        looped = afx.audio_loop(audio.volumex(vol), duration=video.duration)
         mixed = CompositeAudioClip([audio1, looped])
         return video.set_audio(mixed)
         pass
@@ -257,11 +258,11 @@ class MovieMakerUtils:
         pass
 
     @staticmethod
-    def seperatetextbynewline(question, sizewidth=1920, fontsize=80):
+    def seperatetextbynewline(question, sizewidth=1920, fontsize=80, charcount=20):
         result = ''
         for i in range(0, len(question)):
             result += question[i]
-            if i > 0 and i % 20 == 0:
+            if i > 0 and i % charcount == 0:
                 result += '\n'
         return result
         pass
@@ -274,8 +275,11 @@ class MovieMakerUtils:
         for piece in pieces:
             question = MovieMakerUtils.seperatetextbynewline(piece,1920,80)
             duration = clip.duration * len(piece) / len(captionText)
-            titleClip: TextClip = TextClip(question, font='华文隶书', color='yellow2',
-                                           align='center', stroke_color='black', fontsize=80, bg_color='white', size=(1920, 290 - 54))
+            fontsize = 65
+            if len(piece) > 60: # 三行以上,太高了
+                fontsize = 48
+            titleClip: TextClip = TextClip(question, font=Config.Config.Config.subtitlefont, color='white',
+                                           align='center', stroke_color='black', fontsize=fontsize, bg_color='black', size=(1920, 290 - 54))
             if titleClip.size[0] > 1920 * 0.9:
                 titleClip = titleClip.resize(1920 * 0.9 / titleClip.size[0]).set_position((96, 54 + 790))
 
@@ -290,4 +294,9 @@ class MovieMakerUtils:
 
 if __name__ == '__main__':
     # concatevideo()
+    # text = TextClip("克拉戴假发恋爱记", font="C:\\Users\\Administrator\\AppData\\Local\\Microsoft\\Windows\\Fonts\\hanyialitifan.ttf",bg_color='black', color='white', align='center', stroke_color='black', fontsize=80, size=(1920, 1080))
+    # text = text.set_fps(5).set_duration(5)
+    # text.write_videofile('r:/fonttest.mp4')
+    # print(TextClip.list('font'))
     MovieMakerUtils.test()
+
