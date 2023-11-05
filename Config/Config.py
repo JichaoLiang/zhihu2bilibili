@@ -12,6 +12,8 @@ class Config:
     bgpicPath = os.path.abspath('../Resource/bground.png')
     stopFlagFilePath = os.path.abspath('../Resource/stop.txt')
 
+    bilibiliCredentialPath = os.path.abspath('../Resource/bilibili_credential.json')
+
     # 最小回答长度
     minAnswerLength = 80
     maxAnswerlength = 1000

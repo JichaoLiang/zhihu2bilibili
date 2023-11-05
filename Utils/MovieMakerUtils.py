@@ -11,6 +11,7 @@ from moviepy.video.VideoClip import TextClip
 
 import Config.Config
 from MovieMaker.TTSAgent import TTSAgent
+from Utils.DataStorageUtils import DataStorageUtils
 
 
 class MovieMakerUtils:
@@ -290,6 +291,14 @@ class MovieMakerUtils:
         textsubtitlecliplist.insert(0,enlarged)
         composited = CompositeVideoClip(textsubtitlecliplist).resize(clip.size)
         return composited
+
+    @staticmethod
+    def getCaptureFile(videoPath, momentSec=1):
+        clip = VideoFileClip(videoPath)
+        id, path = DataStorageUtils.tempFile("jpg")
+        clip.save_frame(path, t=momentSec)
+        return path
+        pass
 
 
 if __name__ == '__main__':
