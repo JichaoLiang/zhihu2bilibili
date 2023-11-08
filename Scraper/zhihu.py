@@ -441,6 +441,7 @@ def checkAndInsertDB(answerId, result ,scenario='default'):
     commentCount = result.commentCount
     updated = result.updated
     isCollapsed = result.isCollapsed
+    questionid = answerId.split('_')[1]
 
     decision = AnswerAnalyser.dataPickStrategy(result)
     if decision != 'ok':
@@ -449,7 +450,7 @@ def checkAndInsertDB(answerId, result ,scenario='default'):
         return
     exists = database.answerExists(answerId)
     if not exists:
-        database.newAnswer(answerId,qTitle,qContent,answer,updated,topicname,topics,voteCount,commentCount,scenario,isCollapsed)
+        database.newAnswer(answerId,qTitle,qContent,answer,updated,topicname,topics,voteCount,commentCount,scenario,isCollapsed,questionid)
     pass
 
 

@@ -66,7 +66,7 @@ class BilibiliUtils:
         pass
 
     @staticmethod
-    async def Upload(videoPath, title=None, desc=None, cover=None, credential=None):
+    async def Upload(videoPath, title=None, desc=None, cover=None, credential=None, tags=[]):
         filename = os.path.basename(videoPath)
         fileprimaryname = filename.split('.')[0]
         if title is None:
@@ -91,7 +91,7 @@ class BilibiliUtils:
                 "lan": "",
                 "open": 0
             },
-            "tag": "搞笑,生活,吐槽,欢乐,茶话会,闺蜜,社会",
+            "tag": ",".join(tags),
             "tid": 130,
             "title": title,
             "up_close_danmaku": False,

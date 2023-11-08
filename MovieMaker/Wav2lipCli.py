@@ -1,11 +1,13 @@
 import subprocess
 import os
 
+from Config.Config import Config
+
 
 class Wav2lipCli:
     @staticmethod
     def wav2lip(audioPath: str, faceVideoPath: str, toPath):
-        cmdPath = os.path.abspath('../Shell/wav2lipsh.bat')
+        cmdPath = os.path.join(Config.basePath, 'Shell/wav2lipsh.bat')
         os.system(f'{cmdPath} {faceVideoPath} {audioPath} {toPath}')
         # completedproc = subprocess.run([cmdPath, faceVideoPath, audioPath, toPath])
         # print(f'process finished. code: {completedproc.returncode}')

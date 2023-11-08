@@ -69,8 +69,16 @@ class TTSAgent:
             textChunk = jobEntry[5]
             wavId, destpath = DataStorageUtils.generateVoicePathId()
             print(f'new edge tts: {textChunk}')
-            TTS.edgeTTS(textChunk,voiceName,destpath)
-            db.updateVoicePath(id, wavId)
+            try:
+                TTS.edgeTTS(textChunk,voiceName,destpath)
+                db.updateVoicePath(id, wavId)
+            except Exception as ex:
+                print(ex)
+                try:
+                    TTS.edgeTTS(textChunk,voiceName,destpath)
+                    db.updateVoicePath(id, wavId)
+                except Exception as ex:
+                    print(f"retry failed. {ex}")
             # 暂时不用
             # db.bookVideoChunkJob(id)
         db.close()

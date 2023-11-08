@@ -12,6 +12,19 @@ import Config.Config
 
 
 class CommonUtils:
+    @staticmethod
+    def retry(func, times=3):
+        exce = None
+        for i in range(0, times):
+            try:
+                func()
+                break
+            except Exception as ex:
+                print(ex)
+                exce = ex
+        print("max retries reached: " + str(exce))
+        raise exce
+
 
     @staticmethod
     def urlencodestring(string: str):

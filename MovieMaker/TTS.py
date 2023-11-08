@@ -5,12 +5,13 @@ from pathlib import Path
 import edge_tts
 import sys
 
+from Config.Config import Config
 from Config.VoiceModel import VoiceModel
 from Utils.CommonUtils import CommonUtils
 
 TEXT = sys.argv[1] if len(sys.argv) > 1 else "Hello World!"
 VOICE = sys.argv[2] if len(sys.argv) > 2 else "en-GB-SoniaNeural"
-OUTPUT_FILE = os.path.abspath('../Resource/Product/dev/tts.wav')
+OUTPUT_FILE = os.path.join(Config.basePath,'Resource/Product/dev/tts.wav')
 
 
 async def _main(TEXT, VOICE) -> None:

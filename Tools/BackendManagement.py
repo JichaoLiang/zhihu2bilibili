@@ -7,6 +7,7 @@ import uuid
 
 from Config.Config import Config
 from Config.VoiceModel import VoiceModel
+from Scraper.Enums.Status import taskStatus, qnaStatus
 from Utils.BaidunetdiskUtils import BaidunetdiskUtils
 from Utils.CommonUtils import CommonUtils
 from Utils.DBUtils import DBUtils
@@ -158,6 +159,49 @@ class BackendManagement:
                 shutil.move(file,destFile)
 
     @staticmethod
+    def generatequestionidbatch():
+        db = DBUtils()
+        answers = db.doQuery('select idqna, answerid from zhihu2bilibili.qna;')
+        for answer in answers:
+            idqna = answer[0]
+            answerid = answer[1]
+            questionid = answerid.split('_')[1]
+            db.doCommand(f'update zhihu2bilibili.qna set questionid="{questionid}" where idqna="{idqna}";')
+        db.close()
+        pass
+
+    @staticmethod
+    def clearQnaStatusByTask():
+        db = DBUtils()
+        questionids = db.doQuery('select distinct(questionid) from zhihu2bilibili.taskstatus')
+        db.doCommand(f'update  zhihu2bilibili.qna set taskgenerated={qnaStatus.notStarted} where 1=1;')
+        for q in questionids:
+            questionid = q[0]
+            db.doCommand(f'update zhihu2bilibili.qna set taskgenerated={qnaStatus.complete} where questionid="{questionid}";')
+
+    @staticmethod
+    def clearTTSJobByTask():
+        db = DBUtils()
+        taskids = db.doQuery('select distinct(idtaskstatus) from zhihu2bilibili.taskstatus where ttssuccess = 2 and charactersuccess=0')
+        # db.doCommand(f'update  zhihu2bilibili.qna set taskgenerated={qnaStatus.notStarted} where 1=1;')
+        for task in taskids:
+            t = task[0]
+            db.doCommand(f'delete from zhihu2bilibili.ttstask where taskid="{t}";')
+
+    # 根据taskid范围抹除生产痕迹=.=
+    @staticmethod
+    def eraseJobByTaskId(min, max):
+        db = DBUtils()
+        questionids = db.doQuery(f'select idtaskstatus,questionid from zhihu2bilibili.taskstatus where idtaskstatus < {max} and idtaskstatus > {min}')
+        for q in questionids:
+            questionid = q[1]
+            taskid = q[0]
+            db.doCommand(f'update zhihu2bilibili.qna set taskgenerated={qnaStatus.notStarted} where questionid="{questionid}";')
+            db.doCommand(f'delete from zhihu2bilibili.ttstask where taskid="{taskid}";')
+            db.doCommand(f'delete from zhihu2bilibili.videochunk where taskstatusid="{taskid}";')
+        db.doCommand(f'delete from zhihu2bilibili.taskstatus where idtaskstatus < {max} and idtaskstatus > {min}')
+
+    @staticmethod
     def test():
         folderpath = 'H:/character_import/trump_male'
         # convert files in folder from 1 to n, if the character booked manually, do not call this which will mess up the order
@@ -170,5 +214,4 @@ class BackendManagement:
 
 
 if __name__ == '__main__':
-    BackendManagement.newBGM(r"Q:\迅雷下载\A Good Bass for Gambling.mp3")
-    BackendManagement.newBGM(r"Q:\迅雷下载\Alls Fair In Love.mp3")
+    BackendManagement.eraseJobByTaskId(1050,2000)

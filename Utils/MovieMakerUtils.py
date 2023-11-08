@@ -274,10 +274,14 @@ class MovieMakerUtils:
         offsetduration = 0
         textsubtitlecliplist = []
         for piece in pieces:
+            rows = len(piece) / 20
             question = MovieMakerUtils.seperatetextbynewline(piece,1920,80)
+            if rows > 4:
+                question = MovieMakerUtils.seperatetextbynewline(piece, 1920, 28)
+                rows = len(piece) / 28
             duration = clip.duration * len(piece) / len(captionText)
             fontsize = 65
-            if len(piece) > 60: # 三行以上,太高了
+            if rows > 3: # 三行以上,太高了
                 fontsize = 48
             titleClip: TextClip = TextClip(question, font=Config.Config.Config.subtitlefont, color='white',
                                            align='center', stroke_color='black', fontsize=fontsize, bg_color='black', size=(1920, 290 - 54))

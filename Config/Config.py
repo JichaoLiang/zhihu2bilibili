@@ -3,16 +3,17 @@ import os.path
 
 class Config:
     recalllimit = 5
-    dataPath = os.path.abspath('../Resource/Data')
+    basePath = r'R:\workspace\zhihu2bilibili'
+    dataPath = os.path.join(basePath, 'Resource/Data')
     voice_male_default = 'zh-CN-YunxiNeural'
     voice_female_default = 'zh-CN-XiaoyiNeural'
-    tempPath = os.path.abspath('../Resource/Temp')
+    tempPath = os.path.join(basePath, 'Resource/Temp')
 
-    productPath = os.path.abspath('../Resource/output')
-    bgpicPath = os.path.abspath('../Resource/bground.png')
-    stopFlagFilePath = os.path.abspath('../Resource/stop.txt')
+    productPath = os.path.join(basePath, 'Resource/output')
+    bgpicPath = os.path.join(basePath, 'Resource/bground.png')
+    stopFlagFilePath = os.path.join(basePath, 'Resource/stop.txt')
 
-    bilibiliCredentialPath = os.path.abspath('../Resource/bilibili_credential.json')
+    bilibiliCredentialPath = os.path.join(basePath, 'Resource/bilibili_credential.json')
 
     # 最小回答长度
     minAnswerLength = 80

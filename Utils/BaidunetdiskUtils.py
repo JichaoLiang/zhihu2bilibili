@@ -1,19 +1,23 @@
 from bypy import ByPy
+
+
 class BaidunetdiskUtils:
     @staticmethod
-    def upload(filepath):
+    def upload(filepath, dest='/'):
         baidunetdiskclient = ByPy()
-        baidunetdiskclient.upload(filepath)
+        baidunetdiskclient.upload(filepath, dest)
+
     @staticmethod
-    def list():
+    def list(path='/'):
         baidunetdiskclient = ByPy()
-        list = baidunetdiskclient.list()
+        list = baidunetdiskclient.list(path)
         print(list)
 
     @staticmethod
     def test():
-        BaidunetdiskUtils.upload("G:/test/opening_o.mp4")
-        BaidunetdiskUtils.list()
+        BaidunetdiskUtils.upload("G:/test.png", '/origin/')
+        BaidunetdiskUtils.list('/origin/')
+
 
 if __name__ == '__main__':
     BaidunetdiskUtils.test()

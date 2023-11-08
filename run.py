@@ -27,9 +27,9 @@ def start():
         os.remove(flagfile)
     count = 0
     revertprocesslist = [
-        MovieMakerAgent.process,
-        CharacterMovieAgent.process,
         TTSAgent.process,
+        CharacterMovieAgent.process,
+        MovieMakerAgent.process,
         # QuestionPicker.process
     ]
     if not Path(flagfile).exists():

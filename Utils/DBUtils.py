@@ -92,7 +92,7 @@ class DBUtils:
         return result[0][0] > 0
 
     def newAnswer(self, answerId, questionTitle, questionContent, answerText, updated, topics, topicIds, voteUpCount,
-                  commentCount, tagmark, isCollapsed):
+                  commentCount, tagmark, isCollapsed,questionid):
         localtime = time.localtime(updated)
         timestr = time.strftime('%Y-%m-%d %H:%M:%S', localtime)
         comm = ('INSERT INTO `zhihu2bilibili`.`qna`'
@@ -108,7 +108,8 @@ class DBUtils:
                 '`Updated`,'
                 '`Topics`,'
                 '`TopicId`,'
-                '`isCollapsed`)'
+                '`isCollapsed`,'
+                '`questionid`)'
                 'VALUES'
                 '('
                 f'"{answerId}",'
@@ -122,7 +123,8 @@ class DBUtils:
                 f'"{timestr}",'
                 f'"{topics}",'
                 f'"{topicIds}",'
-                f'{isCollapsed});')
+                f'{isCollapsed},'
+                f'"{questionid}");')
         self.doCommand(comm)
 
     pass
@@ -316,6 +318,7 @@ class DBUtils:
         result = self.doQuery(sql)
         return result
         pass
+
 
     def getQnaByAnswerId(self, answerid):
         sql = f'select * from zhihu2bilibili.qna where answerid ="{answerid}"'

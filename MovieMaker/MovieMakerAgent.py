@@ -1,3 +1,5 @@
+import shutil
+
 import moviepy
 from moviepy.video.compositing.concatenate import concatenate_videoclips
 from moviepy.video.io.VideoFileClip import VideoFileClip
@@ -11,6 +13,7 @@ from MovieMaker.Strategy import Strategy
 from Scraper.Enums import Status
 from Scraper.Enums.Status import taskStatus
 from Utils.BaidunetdiskUtils import BaidunetdiskUtils
+from Utils.CommonUtils import CommonUtils
 from Utils.DBUtils import DBUtils
 from Utils.DataStorageUtils import DataStorageUtils
 from Utils.MovieMakerUtils import MovieMakerUtils
@@ -25,7 +28,7 @@ class MovieMakerAgent:
         currentQna = None
         for task in job:
             datalist = db.fetchVideoChunkList(task)
-            questionText =  MovieMakerAgent.getQuestionTextByTaskId(datalist[0][1])
+            questionText = MovieMakerAgent.getQuestionTextByTaskId(datalist[0][1])
             try:
                 MovieMakerAgent.processJobByIdlist(datalist)
                 db.setTaskStatus(task, -1, -1, Status.taskStatus.complete)
@@ -70,6 +73,7 @@ class MovieMakerAgent:
             cliplist.append((waitingVideoClip, newClip))
 
         questionText = MovieMakerAgent.getQuestionTextByTaskId(host[1])
+        tags = MovieMakerAgent.getTagsByTaskId(host[1])
         context = {
             "question": questionText,
             "bgm": Strategy.getBGMFile()
@@ -77,9 +81,20 @@ class MovieMakerAgent:
 
         finalClip = MovieMakerAgent.directProduct(hostclip, cliplist, conclustionClip, endClip, context)
         filetext = f'{questionText}.mp4'
+        captureFileName = f'{questionText}.jpg'
+        tagsfile = f'{questionText}.tags'
         destpath = os.path.join(Config.productPath, filetext)
+        destCapturePath = os.path.join(Config.productPath, captureFileName)
+        destTagsPath = os.path.join(Config.productPath, tagsfile)
+
         finalClip.write_videofile(destpath)
-        BaidunetdiskUtils.upload(destpath)
+        capturefile = MovieMakerUtils.getCaptureFile(destpath, 0.5)
+        CommonUtils.writeAllText(destTagsPath, ",".join(tags))
+        shutil.move(capturefile, destCapturePath)
+
+        BaidunetdiskUtils.upload(destpath, '/origin')
+        BaidunetdiskUtils.upload(destCapturePath, '/origin')
+        BaidunetdiskUtils.upload(destTagsPath, '/origin')
         pass
 
     @staticmethod
@@ -144,7 +159,6 @@ class MovieMakerAgent:
         finalClip.write_videofile(output)
         pass
 
-
     @staticmethod
     def predictTotalDuration(hostclip, cliplist, conclusionClip, endClip, openinglatencyseconds):
         duration = hostclip.duration
@@ -181,8 +195,10 @@ class MovieMakerAgent:
                                                           True)
         hostclip = MovieMakerUtils.captionTextToVideoClip(hostclip, Config.hostspeech.replace('{question}', question))
 
-        titleClip = TextClip(MovieMakerUtils.seperatetextbynewline(question,charcount=10), font=Config.headerfont, color='yellow2',
-                             align='center', stroke_color='black', stroke_width=1, fontsize=80 / 1280 * hostclip.size[0], size=hostclip.size)
+        titleClip = TextClip(MovieMakerUtils.seperatetextbynewline(question, charcount=10), font=Config.headerfont,
+                             color='yellow2',
+                             align='center', stroke_color='black', stroke_width=1,
+                             fontsize=80 / 1280 * hostclip.size[0], size=hostclip.size)
         titleClip = titleClip.set_duration(2)
         compostedhost = CompositeVideoClip([hostclip, titleClip])
         headlineClip = compostedhost.resize((1920, 1080)).set_position((0, 0)).without_audio()
@@ -247,12 +263,27 @@ class MovieMakerAgent:
 
     @staticmethod
     def test2():
-        videoclip = VideoFileClip('R:\\workspace\\zhihu2bilibili\\Resource\\Data\\Movie\\2023_10\\29\\2023_10_29_19_28_27_786.mp4')
-        videoclip = videoclip.resize((1920,1080))
+        videoclip = VideoFileClip(
+            'R:\\workspace\\zhihu2bilibili\\Resource\\Data\\Movie\\2023_10\\29\\2023_10_29_19_28_27_786.mp4')
+        videoclip = videoclip.resize((1920, 1080))
         videoclip.write_videofile('r:/testreadfile.mp4')
+
+    @staticmethod
+    def getTagsByTaskId(taskid):
+        db = DBUtils()
+        answers: str = db.getAnswersByTaskstatusId(taskid)[0]
+        answerid = answers[0].split(',')[0]
+        qna = db.getQnaByAnswerId(answerid)
+        # topic列
+        tags = qna[0][10]
+        tags = tags.replace('[', '').replace(']', '').replace("'", "").replace(" ", "").split(',')
+        return tags
+        pass
 
 
 if __name__ == '__main__':
+    # a = "['病娇文', '虐文', '古言', '现言', '幻言']".replace('[', '').replace(']', '').replace("'", "").replace(" ", "").split(',')
+    # print(a)
     # MovieMakerAgent.test2()
     MovieMakerAgent.process()
     # MovieMakerAgent.test()

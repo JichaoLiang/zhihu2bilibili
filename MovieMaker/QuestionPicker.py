@@ -118,9 +118,9 @@ class QuestionPicker:
         db = DBUtils()
         # touchedQuestions = db.doQuery('select QuestionTitle from zhihu2bilibili.qna where taskgen != 0')
         result = db.doQuery(
-            f'select QuestionTitle, Sum(VoteUpCount) as votesum, count(1) as cnt, sum(taskgenerated) as taskgen from '
-            f'(SELECT idQnA, AnswerId, QuestionTitle, Answer, VoteUpCount, taskgenerated FROM zhihu2bilibili.qna where length(answer) > 100 and VoteUpCount > 10) availableData '
-            f'group by QuestionTitle having cnt >= 3 and taskgen = 0 order by votesum desc limit {limit}')
+            f'select QuestionTitle, Sum(VoteUpCount) as votesum, count(1) as cnt from '
+            f'(SELECT idQnA, AnswerId, QuestionTitle, Answer, VoteUpCount, taskgenerated FROM zhihu2bilibili.qna where length(answer) > 30 and VoteUpCount > 5 and taskgenerated=0) availableData '
+            f'group by QuestionTitle having cnt >= 3 order by votesum desc limit {limit}')
         resultlist = []
         print(f'question fetched: {[q[0] for q in result]}')
         for row in result:
