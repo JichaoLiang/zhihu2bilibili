@@ -92,7 +92,7 @@ class DBUtils:
         return result[0][0] > 0
 
     def newAnswer(self, answerId, questionTitle, questionContent, answerText, updated, topics, topicIds, voteUpCount,
-                  commentCount, tagmark, isCollapsed,questionid):
+                  commentCount, tagmark, isCollapsed, questionid):
         localtime = time.localtime(updated)
         timestr = time.strftime('%Y-%m-%d %H:%M:%S', localtime)
         comm = ('INSERT INTO `zhihu2bilibili`.`qna`'
@@ -319,7 +319,6 @@ class DBUtils:
         return result
         pass
 
-
     def getQnaByAnswerId(self, answerid):
         sql = f'select * from zhihu2bilibili.qna where answerid ="{answerid}"'
         return self.doQuery(sql)
@@ -344,6 +343,18 @@ class DBUtils:
     def updateQnaTaskStatusByQuestionText(self, question, status):
         sql = f'update zhihu2bilibili.qna set taskGenerated={status} where QuestionTitle="{question}"'
         self.doCommand(sql)
+        pass
+
+    def top3answersByQuestionId(self, query):
+        sql = f'SELECT questiontitle,answer FROM zhihu2bilibili.qna where questionid={query} order by voteupcount desc limit 3'
+        data = self.doQuery(sql)
+        if len(data) < 3:
+            return None, None, None, None
+        question = data[0][0]
+        answer1 = data[0][1]
+        answer2 = data[1][1]
+        answer3 = data[2][1]
+        return question, answer1, answer2, answer3
         pass
 
 

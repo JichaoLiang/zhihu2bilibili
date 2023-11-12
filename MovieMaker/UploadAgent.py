@@ -48,7 +48,9 @@ class UploadAgent:
 
 if __name__ == '__main__':
     bypy = ByPy()
-    bypy.mkdir("/uploaded/")
-    paths = bypy.list('/uploaded/')
+    paths = bypy.list('/origin/')
+    for p in paths:
+        print(p)
     print(paths)
+    print('111')
     # UploadAgent.process(9, 13, 16)
