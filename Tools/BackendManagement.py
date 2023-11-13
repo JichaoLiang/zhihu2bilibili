@@ -64,7 +64,7 @@ class BackendManagement:
 
     @staticmethod
     def newBGM(filpath):
-        BackendManagement.newVoice(filpath,tag="bgm")
+        BackendManagement.newVoice(filpath, tag="bgm")
 
     @staticmethod
     def newVoice(filepath, name=None, specifiedgroupid=None, tag=''):
@@ -94,10 +94,10 @@ class BackendManagement:
         if len(tokens) > 1 and tokens[1].lower() != 'male':
             isMale = 0
         if isMale:
-            voice = VoiceModel.default_male['ShortName'] # Config.voice_male_default
+            voice = VoiceModel.default_male['ShortName']  # Config.voice_male_default
             pass
         else:
-            voice = VoiceModel.default_female['ShortName'] # Config.voice_female_default
+            voice = VoiceModel.default_female['ShortName']  # Config.voice_female_default
             pass
         if len(tokens) > 2:
             voice = tokens[2]
@@ -147,6 +147,7 @@ class BackendManagement:
         db.newCharacter(name, isMale, voice, picinfolist, videoinfolist)
         db.close()
         pass
+
     @staticmethod
     def indexfolder(folderpath):
         files = os.listdir(folderpath)
@@ -154,9 +155,9 @@ class BackendManagement:
         for i in range(0, len(fullpath)):
             file = fullpath[i]
             extendName = os.path.basename(file).split('.')[-1]
-            destFile = os.path.join(folderpath, f'{i+1}.{extendName}')
+            destFile = os.path.join(folderpath, f'{i + 1}.{extendName}')
             if Path(file).is_file():
-                shutil.move(file,destFile)
+                shutil.move(file, destFile)
 
     @staticmethod
     def generatequestionidbatch():
@@ -177,12 +178,14 @@ class BackendManagement:
         db.doCommand(f'update  zhihu2bilibili.qna set taskgenerated={qnaStatus.notStarted} where 1=1;')
         for q in questionids:
             questionid = q[0]
-            db.doCommand(f'update zhihu2bilibili.qna set taskgenerated={qnaStatus.complete} where questionid="{questionid}";')
+            db.doCommand(
+                f'update zhihu2bilibili.qna set taskgenerated={qnaStatus.complete} where questionid="{questionid}";')
 
     @staticmethod
     def clearTTSJobByTask():
         db = DBUtils()
-        taskids = db.doQuery('select distinct(idtaskstatus) from zhihu2bilibili.taskstatus where ttssuccess = 2 and charactersuccess=0')
+        taskids = db.doQuery(
+            'select distinct(idtaskstatus) from zhihu2bilibili.taskstatus where ttssuccess = 2 and charactersuccess=0')
         # db.doCommand(f'update  zhihu2bilibili.qna set taskgenerated={qnaStatus.notStarted} where 1=1;')
         for task in taskids:
             t = task[0]
@@ -192,14 +195,42 @@ class BackendManagement:
     @staticmethod
     def eraseJobByTaskId(min, max):
         db = DBUtils()
-        questionids = db.doQuery(f'select idtaskstatus,questionid from zhihu2bilibili.taskstatus where idtaskstatus < {max} and idtaskstatus > {min}')
+        questionids = db.doQuery(
+            f'select idtaskstatus,questionid from zhihu2bilibili.taskstatus where idtaskstatus < {max} and idtaskstatus > {min}')
         for q in questionids:
             questionid = q[1]
             taskid = q[0]
-            db.doCommand(f'update zhihu2bilibili.qna set taskgenerated={qnaStatus.notStarted} where questionid="{questionid}";')
+            db.doCommand(
+                f'update zhihu2bilibili.qna set taskgenerated={qnaStatus.notStarted} where questionid="{questionid}";')
             db.doCommand(f'delete from zhihu2bilibili.ttstask where taskid="{taskid}";')
             db.doCommand(f'delete from zhihu2bilibili.videochunk where taskstatusid="{taskid}";')
         db.doCommand(f'delete from zhihu2bilibili.taskstatus where idtaskstatus < {max} and idtaskstatus > {min}')
+        db.close()
+
+    @staticmethod
+    def addVideoToCharacter(videoPath, characterName, tag):
+        db = DBUtils()
+        id, path = DataStorageUtils.generateMoviePathId()
+        shutil.copyfile(videoPath, path)
+        sql = f'SELECT videogroupid FROM zhihu2bilibili.character where name="{characterName}"'
+        videogroupid = db.doQuery(sql)[0][0]
+        sql = f'SELECT max(IndexInGroup) FROM zhihu2bilibili.videoresourcedata where VideoGroupId="{videogroupid}"'
+        maxIndex = db.doQuery(sql)[0][0]
+        sql = f'insert into zhihu2bilibili.videoresourcedata(VideoGroupId,IndexInGroup,RelPath,Tag) ' \
+              f'values("{videogroupid}","{str(maxIndex + 1)}","{id}","{tag}")'
+        db.doCommand(sql)
+        db.close()
+        pass
+
+    @staticmethod
+    def removeVideoToCharacter(characterName, indexId):
+        db = DBUtils()
+        sql = f'SELECT videogroupid FROM zhihu2bilibili.character where name="{characterName}"'
+        videogroupid = db.doQuery(sql)[0][0]
+        sql = f'delete from zhihu2bilibili.videoresourcedata where VideoGroupId="{videogroupid}" and IndexInGroup="{indexId}"'
+        db.doCommand(sql)
+        db.close()
+        pass
 
     @staticmethod
     def test():
@@ -208,10 +239,11 @@ class BackendManagement:
         # BackendManagement.indexfolder(folderpath)
         BackendManagement.newCharacterFromDirectory(folderpath)
         pass
+
     pass
 
 
-
-
 if __name__ == '__main__':
-    BackendManagement.eraseJobByTaskId(1050,2000)
+    BackendManagement.removeVideoToCharacter('putin', 5)
+    #path = r'Q:\baiduNetdisk\新素材\新素材\Obama\Obama_Openning.mp4'
+    #BackendManagement.addVideoToCharacter(path, 'obama', 'opening')

@@ -7,6 +7,7 @@ import json
 import os
 import io
 import randomNum
+import brotli
 
 # 如何进行一次网络访问
 # 输入: 网址
@@ -74,8 +75,12 @@ def run(domain, period='week'):
         # 通过get方法访问网络请求
         # 网络请求通常有 get post两种方法,其他的方法使用的不多, 具体可以从浏览器查询
         response = webRequest(hotAPISample)
+        responseText = response.text
+        if (not responseText.startswith("{")) and response.headers.get('content-encoding') == 'br':
+            decompressed_data = brotli.decompress(response.content)
+            responseText = decompressed_data.decode('utf-8')
         # 将json的数据中,需要的问题和相应链接拆出来
-        questions = analysisJson(response.text)
+        questions = analysisJson(responseText)
         print(questions)
         result += questions
         time.sleep(randomNum.random01() * 3)
