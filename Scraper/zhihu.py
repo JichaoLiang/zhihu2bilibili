@@ -695,6 +695,7 @@ if __name__ == '__main__':
     # main()
 
     topicIdList = [
+        # QuestionDomain.dongmanyouxi,
         QuestionDomain.renwensheke
         # QuestionDomain.muyingqinzi,
         # QuestionDomain.qinggan

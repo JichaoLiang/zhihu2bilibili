@@ -9,6 +9,8 @@ from MovieMaker.TTSAgent import TTSAgent
 from Scraper.Enums import Status
 from Scraper.Enums.IdType import IdType
 from Utils.DBUtils import DBUtils
+from Utils.LLMUtils import LLMUtils
+from chatglm3.basic_demo.inference import ChatglmClient
 
 
 class QuestionPicker:
@@ -17,6 +19,7 @@ class QuestionPicker:
         pickedData = QuestionPicker.pickQuestion()
         print(f'picked data: {[p["questiontext"] for p in pickedData]}. {len(pickedData)} total')
         QuestionPicker.bookTask(pickedData)
+        ChatglmClient.clearDistance()
         pass
 
     @staticmethod
@@ -54,6 +57,7 @@ class QuestionPicker:
                 tasklist.append(ttsTask)
 
             characterIdLIst = Strategy.getSpeechActorIdList()
+            answerTexts = []
             for i in range(0, len(top3answer)):
                 entry = top3answer[i]
                 qnaid = entry[0]
@@ -61,6 +65,7 @@ class QuestionPicker:
                 answer = entry[2]
                 voteupcount = entry[3]
 
+                answerTexts.append(answer)
                 answerer = Character.fromId(characterIdLIst[i])
                 answerPieces = TTSAgent.splitText(answer)
                 for j in range(0, len(answerPieces)):
@@ -74,7 +79,7 @@ class QuestionPicker:
                     tasklist.append(ttsTask)
 
             # conclusion
-            conclusion = Config.conclusionspeech
+            conclusion = QuestionPicker.GenerateConclusion(question, answerTexts)  # Config.conclusionspeech
 
             ttsTask = TTSTaskEntry()
             ttsTask.qnaid = 0
@@ -166,6 +171,36 @@ class QuestionPicker:
         #     i += 1
 
     @staticmethod
+    def testLLMChat():
+        while True:
+            query = input("input:")
+            if query.lower() == 'quit':
+                break
+            response = LLMUtils.askChatGLM3(query)
+            print(f"chatglm:{response}")
+        pass
+
+    @staticmethod
+    def testLLMConclusion():
+        db = DBUtils()
+        while True:
+            query = input("input question id:")
+            if query.lower() == 'quit':
+                break
+            question, answer1, answer2, answer3 = db.top3answersByQuestionId(query)
+            if question is None:
+                print("No such question.")
+                continue
+            response = LLMUtils.commentFor3qna(question, answer1, answer2, answer3)
+            print("--------------------------------------")
+            print(f"question:{question}")
+            print(f"answer1:{answer1}")
+            print(f"answer2:{answer2}")
+            print(f"answer3:{answer3}")
+            print(f"chatglm conclusion:{response}")
+            print("--------------------------------------")
+
+    @staticmethod
     def ignoreSignToDroppedRecall(recalldata, filtereddata):
         questionset = set([q['questiontext'] for q in recalldata])
         filteredQuestionSet = set([q['questiontext'] for q in filtereddata])
@@ -181,7 +216,7 @@ class QuestionPicker:
     def postprocess(answerfiltereddata):
         for qnapair in answerfiltereddata:
             answerlist = qnapair['answerlist']
-            for i in range(0,len(answerlist)):
+            for i in range(0, len(answerlist)):
                 answer = answerlist[i]
                 answerlist[i] = QuestionPicker.postprocessAnswer(answer)
         return answerfiltereddata
@@ -192,8 +227,15 @@ class QuestionPicker:
         return answer
         pass
 
+    @staticmethod
+    def GenerateConclusion(question, answerTexts):
+        # return Config.conclusionspeech
+        responseText = LLMUtils.commentFor3qna(question, answerTexts[0], answerTexts[1], answerTexts[2])
+        return responseText
+        pass
+
 
 # zh-CN-XiaoyiNeural 女
 # zh-CN-YunxiNeural 男
 if __name__ == '__main__':
-    QuestionPicker.test()
+    QuestionPicker.testLLMConclusion()

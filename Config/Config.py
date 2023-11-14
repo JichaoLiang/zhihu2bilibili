@@ -8,6 +8,7 @@ class Config:
     voice_male_default = 'zh-CN-YunxiNeural'
     voice_female_default = 'zh-CN-XiaoyiNeural'
     tempPath = os.path.join(basePath, 'Resource/Temp')
+    glmModelPath = r"J:\git\chatglmmodel"
 
     productPath = os.path.join(basePath, 'Resource/output')
     bgpicPath = os.path.join(basePath, 'Resource/bground.png')
