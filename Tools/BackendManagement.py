@@ -244,6 +244,7 @@ class BackendManagement:
 
 
 if __name__ == '__main__':
-    BackendManagement.removeVideoToCharacter('putin', 5)
+    BackendManagement.eraseJobByTaskId(1266,9999)
+    # BackendManagement.removeVideoToCharacter('putin', 5)
     #path = r'Q:\baiduNetdisk\新素材\新素材\Obama\Obama_Openning.mp4'
     #BackendManagement.addVideoToCharacter(path, 'obama', 'opening')
