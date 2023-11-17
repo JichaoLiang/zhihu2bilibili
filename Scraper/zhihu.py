@@ -17,6 +17,7 @@ import urllib
 import re
 import sys
 import Scraper.Analyser
+from Scraper.Analyser.BaiduSearchAnalyser import BaiduSearchAnalyser
 from Scraper.Analyser.QuestionAnalyser import QuestionAnalyser
 from Scraper.Analyser.AnswerAnalyser import AnswerAnalyser
 from Scraper.Analyser.RelatedQuestionAnalyser import RelatedQuestionAnalyser
@@ -536,6 +537,9 @@ def scrapeZhihu(tagmark):
         if IdType.getType(qid) == IdType.favorlist:
             pass
         if IdType.getType(qid) == IdType.relatedquestion:
+            pass
+        if IdType.getType(qid) == IdType.baidusearch:
+            result = BaiduSearchAnalyser.extractAndDiscover(dataStr)
             pass
         if IdType.getType(qid) == IdType.search:
             result = SearchKeywordAnalyser.extractAndDiscover(dataStr, qid)

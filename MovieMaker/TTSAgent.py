@@ -1,8 +1,12 @@
+from Config.Config import Config
 from MovieMaker import TTS
 from Scraper.Enums.Status import taskStatus
 from Utils.DBUtils import DBUtils
 from Utils.DataStorageUtils import DataStorageUtils
 import re
+
+from Utils.VITS.Vits import Vits
+
 
 class TTSAgent:
     @staticmethod
@@ -11,7 +15,7 @@ class TTSAgent:
         maxpiecelength = 50
         minpiecelength = 30
 
-        stopflag = ['。','?','？','!','！']
+        stopflag = ['。', '?', '？', '!', '！']
 
         resultparagraph = []
 
@@ -59,7 +63,42 @@ class TTSAgent:
         pass
 
     @staticmethod
+    def process_localTTS():
+        db = DBUtils()
+        job = db.fetchTTSJob()
+        print(f'fetch tts job. {len(job)} total')
+        tts = Vits()
+        shantianfang = Vits.voicemodel["shantianfang"]
+        speed = Config.localTTSSpeed
+        tts.loadModel(shantianfang["modelpath"], shantianfang["configpath"])
+        for jobEntry in job:
+            id = jobEntry[0]
+            voiceName = jobEntry[4]
+            textChunk = jobEntry[5]
+            wavId, destpath = DataStorageUtils.generateVoicePathId()
+            print(f'new local tts: {textChunk}')
+            try:
+                tts.vits_tts(textChunk, speed, destpath)
+                # TTS.edgeTTS(textChunk, voiceName, destpath)
+                db.updateVoicePath(id, wavId)
+            except Exception as ex:
+                print(ex)
+                try:
+                    tts.vits_tts(textChunk, speed, destpath)
+                    db.updateVoicePath(id, wavId)
+                except Exception as ex:
+                    print(f"retry failed. {ex}")
+            # 暂时不用
+            # db.bookVideoChunkJob(id)
+        db.close()
+        TTSAgent.checkStatus(set([ele[1] for ele in job]))
+        pass
+
+    @staticmethod
     def process():
+        if Config.forceLocalTTS:
+            TTSAgent.process_localTTS()
+            return
         db = DBUtils()
         job = db.fetchTTSJob()
         print(f'fetch tts job. {len(job)} total')
@@ -70,12 +109,12 @@ class TTSAgent:
             wavId, destpath = DataStorageUtils.generateVoicePathId()
             print(f'new edge tts: {textChunk}')
             try:
-                TTS.edgeTTS(textChunk,voiceName,destpath)
+                TTS.edgeTTS(textChunk, voiceName, destpath)
                 db.updateVoicePath(id, wavId)
             except Exception as ex:
                 print(ex)
                 try:
-                    TTS.edgeTTS(textChunk,voiceName,destpath)
+                    TTS.edgeTTS(textChunk, voiceName, destpath)
                     db.updateVoicePath(id, wavId)
                 except Exception as ex:
                     print(f"retry failed. {ex}")
@@ -90,9 +129,9 @@ class TTSAgent:
         db = DBUtils()
         job = db.fetchTTSJob()
         for taskid in taskIdSet:
-            match = [jb for jb in job if jb[1]==taskid]
+            match = [jb for jb in job if jb[1] == taskid]
             if len(match) == 0:
-                db.setTaskStatus(taskid,taskStatus.complete, -1, -1)
+                db.setTaskStatus(taskid, taskStatus.complete, -1, -1)
         db.close()
         pass
 

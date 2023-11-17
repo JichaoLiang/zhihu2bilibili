@@ -223,17 +223,17 @@ class MovieMakerUtils:
 
     @staticmethod
     def extendRotateDuration(clip: VideoClip, durationSec, muteExtended = False):
-        duration = clip.duration
-        concatelist = [clip]
+        duration = 0
+        concatelist = []
         while durationSec - duration > clip.duration:
             copy = clip.copy()
-            if muteExtended:
+            if len(concatelist) > 0 and muteExtended:
                 copy = copy.without_audio()
             concatelist.append(copy)
             duration += clip.duration
         if durationSec > duration:
             lastSec = clip.subclip(0, durationSec - duration)
-            if muteExtended:
+            if len(concatelist) > 0 and muteExtended:
                 lastSec = lastSec.without_audio()
             concatelist.append(lastSec)
         return concatenate_videoclips(concatelist)

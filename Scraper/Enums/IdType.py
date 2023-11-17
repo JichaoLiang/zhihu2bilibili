@@ -6,6 +6,7 @@ class IdType:
     favorlist:str = 'favorlist'
     relatedquestion:str = 'relatedquestion'
     search:str = 'search'
+    baidusearch:str = 'baidusearch'
     fullset = [answer,question,topic,favorlist,relatedquestion, search]
 
     @staticmethod
@@ -19,8 +20,10 @@ class IdType:
         return [f'{type}_{id}']
 
     @staticmethod
-    def convertAnswer(questionId:str, answerId:str):
+    def convertAnswer(questionId:str, answerId:str, remainingRelAnsTest:int=-1):
         id = f'{questionId}_{answerId}'
+        if remainingRelAnsTest >= 0:
+            id = f'{questionId}_{answerId}_{str(remainingRelAnsTest)}'
         return IdType.convertId(IdType.answer,id)[0]
 
     @staticmethod

@@ -12,14 +12,26 @@ from Utils.DataStorageUtils import DataStorageUtils
 
 
 def process():
+    if testStop():
+        return
     print('question pick start.')
     QuestionPicker.process()
+    if testStop():
+        return
     print('tts job start.')
     TTSAgent.process()
+    if testStop():
+        return
     print('video character job start.')
     CharacterMovieAgent.process()
+    if testStop():
+        return
     print('moviemaker job start')
     MovieMakerAgent.process()
+
+def testStop():
+    flagfile = Config.stopFlagFilePath
+    return Path(flagfile).exists()
 
 def start():
     flagfile = Config.stopFlagFilePath
@@ -36,6 +48,8 @@ def start():
         print('handling unfinished last rotation')
         for i in range(0, len(revertprocesslist)):
             func = revertprocesslist[i]
+            if testStop():
+                return
             func()
     print('start regular process.')
     while not Path(flagfile).exists():

@@ -10,7 +10,7 @@ from Scraper.Enums import Status
 from Scraper.Enums.IdType import IdType
 from Utils.DBUtils import DBUtils
 from Utils.LLMUtils import LLMUtils
-from chatglm3.basic_demo.inference import ChatglmClient
+# from chatglm3.basic_demo.inference import ChatglmClient
 
 
 class QuestionPicker:
@@ -19,7 +19,7 @@ class QuestionPicker:
         pickedData = QuestionPicker.pickQuestion()
         print(f'picked data: {[p["questiontext"] for p in pickedData]}. {len(pickedData)} total')
         QuestionPicker.bookTask(pickedData)
-        ChatglmClient.clearDistance()
+        # ChatglmClient.clearDistance()
         pass
 
     @staticmethod
@@ -124,7 +124,12 @@ class QuestionPicker:
         # touchedQuestions = db.doQuery('select QuestionTitle from zhihu2bilibili.qna where taskgen != 0')
         result = db.doQuery(
             f'select QuestionTitle, Sum(VoteUpCount) as votesum, count(1) as cnt from '
-            f'(SELECT idQnA, AnswerId, QuestionTitle, Answer, VoteUpCount, taskgenerated FROM zhihu2bilibili.qna where length(answer) > 30 and VoteUpCount > 5 and taskgenerated=0) availableData '
+            f'(SELECT idQnA, AnswerId, QuestionTitle, Answer, VoteUpCount, taskgenerated FROM zhihu2bilibili.qna'
+            f' where length(answer) > 30'
+            f' and length(answer) < 600'
+            f' and VoteUpCount > 5'
+            f' and TagMark="100010_2023-11-11"'
+            f' and taskgenerated=0) availableData '
             f'group by QuestionTitle having cnt >= 3 order by votesum desc limit {limit}')
         resultlist = []
         print(f'question fetched: {[q[0] for q in result]}')
@@ -229,9 +234,9 @@ class QuestionPicker:
 
     @staticmethod
     def GenerateConclusion(question, answerTexts):
-        # return Config.conclusionspeech
-        responseText = LLMUtils.commentFor3qna(question, answerTexts[0], answerTexts[1], answerTexts[2])
-        return responseText
+        return Config.conclusionspeech
+        # responseText = LLMUtils.commentFor3qna(question, answerTexts[0], answerTexts[1], answerTexts[2])
+        # return responseText
         pass
 
 
