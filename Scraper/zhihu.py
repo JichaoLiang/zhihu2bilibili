@@ -17,7 +17,7 @@ import urllib
 import re
 import sys
 import Scraper.Analyser
-from Scraper.Analyser.BaiduSearchAnalyser import BaiduSearchAnalyser
+from Scraper.Analyser.BingSearchAnalyser import BingSearchAnalyser
 from Scraper.Analyser.QuestionAnalyser import QuestionAnalyser
 from Scraper.Analyser.AnswerAnalyser import AnswerAnalyser
 from Scraper.Analyser.RelatedQuestionAnalyser import RelatedQuestionAnalyser
@@ -29,12 +29,13 @@ from Utils.CommonUtils import CommonUtils
 from Utils.DBUtils import DBUtils
 from Utils.ZhihuTaskManager import ZhihuTaskManager
 from Scraper.Enums.IdType import IdType
+
 #
 # reload(sys)
 # sys.setdefaultencoding('utf-8')
 
 requestConfig = {
-    "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/117.0.0.0 Safari/537.36",
+    "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36",
     "cookie": "lastCity=101010100; sid=sem_pz_bdpc_dasou_title; __g=sem_pz_bdpc_dasou_title; Hm_lvt_194df3105ad7148dcf2b98a91b5e727a=1656859923; Hm_lvt_f97992073bffedfa462561a24c99eb83=1656859926; wd_guid=cc8e9532-4f44-48c2-9535-31be86a90f2b; historyState=state; wljssdk_cross_new_user=1; Hm_lpvt_194df3105ad7148dcf2b98a91b5e727a=1656859962; wt2=DK6-CZbTlbdKFd4zsOaNwECsVo8RIpukEWjw5e3dPHGf7MBuTHee0Via5-9F4gKkGJ7--erfBecAIj9dVO9-Ytg~~; wbg=0; warlockjssdkcross={\"distinct_id\":\"52851058\",\"first_id\":\"181c48c1e62a36-00030193961745-6a7c2b1b-2073600-181c48c1e63100f\",\"props\":{},\"device_id\":\"181c48c1e62a36-00030193961745-6a7c2b1b-2073600-181c48c1e63100f\"}; __zp_seo_uuid__=f547d254-79c3-436f-897b-f5bf5eae0830; __l=r=https://youle.zhipin.com/questions/b8ce106c235ff3actnVy2dW5GVo~.html&l=/wapi/moment/preview/qrCode?bossUrl=https%3A%2F%2Fwww.zhipin.com%2Fmpa%2Fhtml%2Fget%2Fgrowth-system%2Findex&s=1; Hm_lpvt_f97992073bffedfa462561a24c99eb83=1656862905; __c=1656859923; __a=38993184.1656859923..1656859923.7.1.7.7"
 }
 
@@ -125,7 +126,7 @@ proxyList = [
     {"http": "115.211.45.26:9000"}
 ]
 
-proxyVoteDict={
+proxyVoteDict = {
 
 }
 
@@ -172,20 +173,22 @@ def stopFlag():
 
 
 def openf():
-    global lineCount,index,handler,target
-    pth = target+"_"+str(index)+".txt"
+    global lineCount, index, handler, target
+    pth = target + "_" + str(index) + ".txt"
     if not Path(pth).exists():
-        open(Path(pth),'x',encoding='utf-8').close()
-    handler = open(target+"_"+str(index)+".txt", 'a', encoding='utf-8')
+        open(Path(pth), 'x', encoding='utf-8').close()
+    handler = open(target + "_" + str(index) + ".txt", 'a', encoding='utf-8')
     index += 1
     lineCount = 0
+
 
 def closef():
     global handler
     handler.close()
 
+
 def record(msg):
-    global handler,lineCount
+    global handler, lineCount
     handler.write(msg + "\n")
     lineCount += 1
     if lineCount > maxLine:
@@ -206,6 +209,7 @@ def voteAndBlacklistProxy(proxyVal):
                 break
     pass
 
+
 def afterNoProxyStrategy(keepGoing):
     if keepGoing:
         for k in proxyVoteDict.keys():
@@ -216,9 +220,13 @@ def afterNoProxyStrategy(keepGoing):
     else:
         ZhihuTaskManager.saveStatus()
 
+
 rand = random.Random()
+
+
 def randNum():
     return rand.random()
+
 
 def scrapeSingle(task, builder, callback):
     retry = 3
@@ -251,6 +259,7 @@ def scrapeSingle(task, builder, callback):
             time.sleep(21)
     return success
 
+
 def scrapeMultiIteration(taskQueue, taskSet, builderlist, callbacklist, alldonecallback):
     counter = 0
     maxRound = 2000
@@ -265,7 +274,7 @@ def scrapeMultiIteration(taskQueue, taskSet, builderlist, callbacklist, alldonec
         task = taskQueue.pop()
         taskSet.remove(task)
 
-        for i in range(0,len(builderlist)):
+        for i in range(0, len(builderlist)):
             builder = builderlist[i]
             callback = callbacklist[i]
             s = scrapeSingle(task, builder, callback)
@@ -286,6 +295,7 @@ def scrapeMultiIteration(taskQueue, taskSet, builderlist, callbacklist, alldonec
                 stack = traceback.format_exc()
                 print(stack)
     pass
+
 
 def scrape(taskQueue, taskSet, builder, callback):
     retry = 3
@@ -333,6 +343,7 @@ def scrape(taskQueue, taskSet, builder, callback):
         time.sleep(int(randNum() * 3))
 
     pass
+
 
 def scrapeGlobal(builder, callback):
     retry = 3
@@ -388,6 +399,7 @@ def scrapeGlobal(builder, callback):
 def stripId(str):
     return str.split("https://youle.zhipin.com/questions/")[-1].split(".html")[0]
 
+
 def stripTopic(str):
     return str.split("https://youle.zhipin.com/topic/")[-1].split(".html")[0]
 
@@ -402,13 +414,14 @@ def topicInfoToDict(topicId, topicName, qCount, fCount):
 
 
 def saveTopicInfo():
-    with open(topicInfoPath,'a') as f:
+    with open(topicInfoPath, 'a') as f:
         for k in topicInfoDict.keys():
             val = topicInfoDict.get(k)
             f.write(k + "\t" + val[0] + "\t" + str(val[1]) + "\t" + str(val[2]) + "\n")
 
+
 def convertNewLineAndTable(str):
-    return str.replace('\n','<br />').replace('\t', '&nbsp;')
+    return str.replace('\n', '<br />').replace('\t', '&nbsp;')
 
 
 def stripHtmlTag(p):
@@ -423,6 +436,7 @@ def stripHtmlTag(p):
     return ''.join(tokens)
     pass
 
+
 def discoverLink(p):
     links = p.select('a')
     resultlist = []
@@ -432,7 +446,8 @@ def discoverLink(p):
             resultlist.append(targetUrl["baikePrefix"] + href)
     return resultlist
 
-def checkAndInsertDB(answerId, result ,scenario='default'):
+
+def checkAndInsertDB(answerId, result, scenario='default'):
     qTitle = result.titleText
     qContent = result.qContentText
     answer = result.answerText
@@ -451,7 +466,8 @@ def checkAndInsertDB(answerId, result ,scenario='default'):
         return
     exists = database.answerExists(answerId)
     if not exists:
-        database.newAnswer(answerId,qTitle,qContent,answer,updated,topicname,topics,voteCount,commentCount,scenario,isCollapsed,questionid)
+        database.newAnswer(answerId, qTitle, qContent, answer, updated, topicname, topics, voteCount, commentCount,
+                           scenario, isCollapsed, questionid)
     pass
 
 
@@ -494,7 +510,9 @@ def scrapeZhihu(tagmark):
         if IdType.getType(qid) == IdType.relatedquestion:
             url = RelatedQuestionAnalyser.buildRequestURL(id)
         if IdType.getType(qid) == IdType.search:
-            url,header = SearchKeywordAnalyser.buildRequestURL(id,header)
+            url, header = SearchKeywordAnalyser.buildRequestURL(id, header)
+        if IdType.getType(qid) == IdType.bingsearch:
+            url = BingSearchAnalyser.buildRequestURL(id)
         return url, header
 
     def recordAndDiscover(response, qid):
@@ -529,7 +547,7 @@ def scrapeZhihu(tagmark):
             lastcursor = result.lastcursor
             batch = result.batch
             if batch >= 0:
-                taskId = IdType.convertQuestion(question,batch, lastcursor, sessionid)
+                taskId = IdType.convertQuestion(question, batch, lastcursor, sessionid)
                 ZhihuTaskManager.newTaskImmediate(taskId)
             pass
         if IdType.getType(qid) == IdType.topic:
@@ -538,8 +556,13 @@ def scrapeZhihu(tagmark):
             pass
         if IdType.getType(qid) == IdType.relatedquestion:
             pass
-        if IdType.getType(qid) == IdType.baidusearch:
-            result = BaiduSearchAnalyser.extractAndDiscover(dataStr)
+        if IdType.getType(qid) == IdType.bingsearch:
+            result = BingSearchAnalyser.extractAndDiscover(dataStr)
+            qnaList = result.qnaPairList
+            for qnaPair in qnaList:
+                questionId = qnaPair
+                questionTaskId = IdType.convertQuestion(questionId, -1, '', '')
+                ZhihuTaskManager.newTaskImmediate(questionTaskId)
             pass
         if IdType.getType(qid) == IdType.search:
             result = SearchKeywordAnalyser.extractAndDiscover(dataStr, qid)
@@ -553,21 +576,25 @@ def scrapeZhihu(tagmark):
         # state saving
         ZhihuTaskManager.doneTask(qid)
         return False, True
+
     # stripedQueue = [q[-1] for q in qidQueue]
     scrapeGlobal(buildRequest, recordAndDiscover)
     database.close()
     ZhihuTaskManager.saveStatus()
+
 
 def newQid(qid):
     if not scrapedQid.__contains__(qid) and not waitQid.__contains__(qid):
         waitQid.add(qid)
         taskQueue.append(qid)
 
+
 def newTopic(topics):
     for topicId in topics:
         if not scrapedTopic.__contains__(topicId) and not waitingTopic.__contains__(topicId) and len(topicId) > 0:
             waitingTopic.add(topicId)
             taskQueue.append(topicId)
+
 
 def scrapeBossList():
     iter = 1
@@ -580,7 +607,9 @@ def scrapeBossList():
         while tried < retry:
             try:
                 prox = proxyList[int(randNum() * len(proxyList))]
-                response = requests.get(targetUrl["list"].replace("[page_index]", str(iter)), headers={"user-agent": requestConfig["user-agent"], "cookie": requestConfig["cookie"]})
+                response = requests.get(targetUrl["list"].replace("[page_index]", str(iter)),
+                                        headers={"user-agent": requestConfig["user-agent"],
+                                                 "cookie": requestConfig["cookie"]})
                 data = json.loads(response.text)
                 list = None
                 if "filterVO" in data["zpData"].keys() and len(data["zpData"]["filterVO"]["list"]) > 0:
@@ -593,19 +622,21 @@ def scrapeBossList():
                 print("found " + str(len(list)))
                 dupCount = 0
                 for item in list:
-                        question = item["questionInfo"]["content"]
-                        qUrl = targetUrl["detailprefix"].replace("[qid]", str(item["questionInfo"]["linkUrl"]).split("questionId=")[-1].split("&")[0])
-                        answerCount = item["questionInfo"]["answerCount"]
-                        topic = item["topicName"]
-                        if qSet.__contains__(question):
-                            global duplicated
-                            duplicated += 1
-                            dupCount += 1
-                            print("dup: " + str(duplicated))
-                        else:
-                            qSet.add(question)
-                            record(question+"\t"+qUrl+"\t"+str(answerCount)+"\t"+topic)
-                            # print(question+"\t"+qUrl+"\t"+str(answerCount))
+                    question = item["questionInfo"]["content"]
+                    qUrl = targetUrl["detailprefix"].replace("[qid]",
+                                                             str(item["questionInfo"]["linkUrl"]).split("questionId=")[
+                                                                 -1].split("&")[0])
+                    answerCount = item["questionInfo"]["answerCount"]
+                    topic = item["topicName"]
+                    if qSet.__contains__(question):
+                        global duplicated
+                        duplicated += 1
+                        dupCount += 1
+                        print("dup: " + str(duplicated))
+                    else:
+                        qSet.add(question)
+                        record(question + "\t" + qUrl + "\t" + str(answerCount) + "\t" + topic)
+                        # print(question+"\t"+qUrl+"\t"+str(answerCount))
                 alldup = dupCount == len(list)
                 break
             except Exception as e:
@@ -631,11 +662,13 @@ def zhihuPickedRulePassed(siteUrl):
 
 def scrapeSeedUrlBykey():
     querylist = loadList(seedQueryPath)
+
     def builder(task):
         urlTemplate = targetUrl["bingSearchPath"]
         url = urlTemplate.replace("[query]", urllib.urlencode({'q': task}))
         header = {"user-agent": requestConfig["user-agent"]}
         return url, header
+
     def callback(response, id):
         textStr = response.text
         bs = BeautifulSoup(textStr, 'html.parser')
@@ -651,10 +684,11 @@ def scrapeSeedUrlBykey():
                         key = id + "\t" + siteUrl
                         if not seedDict.__contains__(key):
                             print(key)
-                            seedDict.add(id+"\t"+siteUrl)
+                            seedDict.add(id + "\t" + siteUrl)
             except Exception as ex:
                 print(str(ex))
         return False, True
+
     for query in querylist:
         task = query.replace('\n', '')
         try:
@@ -662,8 +696,9 @@ def scrapeSeedUrlBykey():
         except Exception as ex:
             print(str(ex))
             failedSeedList.add(id)
-    saveList(list(seedDict),seedOutputPath)
+    saveList(list(seedDict), seedOutputPath)
     pass
+
 
 def main():
     # scrapeSeedUrlBykey()
@@ -672,32 +707,50 @@ def main():
     scrapeZhihu()
     # scrapeBossList()
 
+
 # period = week / day / hour
 def scrapeRoutineJob(topicIdList, tagmark='hottopic', period='day'):
     ZhihuTaskManager.loadScrapedAndFailed()
     for topic in topicIdList:
-        result = TutorialDemo.run(topic,period)
-        questionIdList= [IdType.convertId(IdType.question, row[2]) for row in result]
+        result = TutorialDemo.run(topic, period)
+        questionIdList = [IdType.convertId(IdType.question, row[2]) for row in result]
         for qid in questionIdList:
             ZhihuTaskManager.taskQueue += qid
     print(f'question list generated, {len(ZhihuTaskManager.taskQueue)} total.')
     scrapeZhihu(tagmark)
 
-def scrapeKeywords(keywords:list, tagmark='search'):
+
+def scrapeKeywords(keywords: list, tagmark='search'):
     ZhihuTaskManager.loadScrapedAndFailed()
     for keyword in keywords:
         taskId = IdType.convertId(IdType.search, keyword)[0]
         ZhihuTaskManager.taskQueue.append(taskId)
         print(f'task generated: id={taskId}')
-    if tagmark=='search':
+    if tagmark == 'search':
         tagmark = f'search_{",".join(keywords)}_{CommonUtils.now_short_string()}'
     scrapeZhihu(tagmark)
     pass
 
-if __name__ == '__main__':
-    openf()
-    # main()
 
+def scrapeBaiduKeywords(keywords: list, tagmark='bingsearch'):
+    ZhihuTaskManager.loadScrapedAndFailed()
+    for keyword in keywords:
+        taskId = IdType.convertId(IdType.bingsearch, keyword)[0]
+        ZhihuTaskManager.taskQueue.append(taskId)
+        print(f'task generated: id={taskId}')
+    if tagmark == 'bingsearch':
+        tagmark = f'bingsearch_{keywords[0]}_{CommonUtils.now_short_string()}'
+    scrapeZhihu(tagmark)
+
+
+def processSearchList():
+    openf()
+    scrapeBaiduKeywords(['缅北电诈', '楼市'])
+    closef()
+
+
+def process():
+    openf()
     topicIdList = [
         # QuestionDomain.dongmanyouxi,
         QuestionDomain.renwensheke
@@ -706,6 +759,8 @@ if __name__ == '__main__':
     ]
     tagmark = '_'.join([str(item) for item in topicIdList]) + "_" + CommonUtils.now_short_string()
     scrapeRoutineJob(topicIdList, tagmark, period='day')
-
-    # scrapeKeywords(['悲剧','纠结'])
     closef()
+
+
+if __name__ == '__main__':
+    processSearchList()

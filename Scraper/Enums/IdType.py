@@ -1,13 +1,12 @@
-
 class IdType:
-    answer:str = 'answer'
-    question:str = 'question'
-    topic:str = 'topic'
-    favorlist:str = 'favorlist'
-    relatedquestion:str = 'relatedquestion'
-    search:str = 'search'
-    baidusearch:str = 'baidusearch'
-    fullset = [answer,question,topic,favorlist,relatedquestion, search]
+    answer: str = 'answer'
+    question: str = 'question'
+    topic: str = 'topic'
+    favorlist: str = 'favorlist'
+    relatedquestion: str = 'relatedquestion'
+    search: str = 'search'
+    bingsearch: str = 'bingsearch'
+    fullset = [answer, question, topic, favorlist, relatedquestion, search, bingsearch]
 
     @staticmethod
     def getType(qid: str):
@@ -15,16 +14,17 @@ class IdType:
             if qid.startswith(tp):
                 return tp
         pass
+
     @staticmethod
-    def convertId(type:str, id)->list:
+    def convertId(type: str, id) -> list:
         return [f'{type}_{id}']
 
     @staticmethod
-    def convertAnswer(questionId:str, answerId:str, remainingRelAnsTest:int=-1):
+    def convertAnswer(questionId: str, answerId: str, remainingRelAnsTest: int = -1):
         id = f'{questionId}_{answerId}'
         if remainingRelAnsTest >= 0:
             id = f'{questionId}_{answerId}_{str(remainingRelAnsTest)}'
-        return IdType.convertId(IdType.answer,id)[0]
+        return IdType.convertId(IdType.answer, id)[0]
 
     @staticmethod
     def convertQuestion(questionId, batch, cursor, sessionId):
@@ -37,6 +37,7 @@ class IdType:
     @staticmethod
     def stripId(rawId: str):
         return '_'.join(rawId.split('_')[1:])
+
     @staticmethod
     def stripQuestionTask(rawId: str):
         striped = IdType.stripId(rawId)
@@ -52,6 +53,6 @@ class IdType:
             batch = 0
             cursor = ''
             sessionId = ''
-        return qid,batch,cursor,sessionId
-    pass
+        return qid, batch, cursor, sessionId
 
+    pass

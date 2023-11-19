@@ -14,6 +14,18 @@ class BaidunetdiskUtils:
         print(list)
 
     @staticmethod
+    def searchTaskQueue()->list:
+        pass
+
+    @staticmethod
+    def setSearchTaskQueue(queue:list):
+        pass
+
+    @staticmethod
+    def popSearchTaskQueue(limit=5):
+        taskQueue =
+
+    @staticmethod
     def test():
         BaidunetdiskUtils.upload("G:/test.png", '/origin/')
         BaidunetdiskUtils.list('/origin/')

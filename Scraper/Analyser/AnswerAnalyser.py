@@ -75,7 +75,7 @@ class AnswerAnalyser():
 
     @staticmethod
     def dataPickStrategy(entity):
-        if len(entity.answerText) >= 1000:
+        if len(entity.answerText) >= 1200:
             return f'answer to long: {len(entity.answerText)}'
         if len(str(entity.topicIdList)) >= 300:
             return f'topicId to long: {len(str(entity.topicIdList))}'
@@ -83,7 +83,7 @@ class AnswerAnalyser():
             return f'topics to long: {len(str(entity.topics))}'
         if len(str(entity.titleText)) >= 200:
             return f'titleText to long: {len(str(entity.titleText))}'
-        if len(str(entity.qContentText)) >= 500:
+        if len(str(entity.qContentText)) >= 1000:
             return f'qContentText to long: {len(str(entity.qContentText))}'
         return 'ok'
         pass
