@@ -51,15 +51,67 @@ class TTSAgent:
                     if len(result) > 0:
                         result[-1] = result[-1] + temp
                 else:
-                    result.append(temp)
+                    if len(temp) > 400:
+                        splited = []
+                        for j in range(0, len(temp), 400):
+                            if j + 400 > len(temp):
+                                splited.append(temp[j:])
+                            else:
+                                splited.append(temp[j:j+400])
+                        for s in splited:
+                            result.append(s)
+                    else:
+                        result.append(temp)
                 temp = ''
         if temp != '':
             if not TTSAgent.regularchineseABCabc(temp):
                 if len(result) > 0:
                     result[-1] = result[-1] + temp
             else:
-                result.append(temp)
+                if len(temp) > 400:
+                    splited = []
+                    for j in range(0, len(temp), 400):
+                        if j + 400 > len(temp):
+                            splited.append(temp[j:])
+                        else:
+                            splited.append(temp[j:j+400])
+                    for s in splited:
+                        result.append(s)
+                else:
+                    result.append(temp)
         return result
+        pass
+
+    @staticmethod
+    def process_xTTS():
+        db = DBUtils()
+        job = db.fetchTTSJob()
+        print(f'fetch tts job. {len(job)} total')
+        tts = Vits()
+        shantianfang = Vits.voicemodel["shantianfang"]
+        speed = Config.localTTSSpeed
+        tts.loadModel(shantianfang["modelpath"], shantianfang["configpath"])
+        for jobEntry in job:
+            id = jobEntry[0]
+            voiceName = jobEntry[4]
+            textChunk = jobEntry[5]
+            wavId, destpath = DataStorageUtils.generateVoicePathId()
+            print(f'new local tts: {textChunk}')
+            try:
+                tts.vits_tts(textChunk, speed, destpath)
+                # TTS.edgeTTS(textChunk, voiceName, destpath)
+                db.updateVoicePath(id, wavId)
+            except Exception as ex:
+                print(ex)
+                try:
+                    tts.vits_tts(textChunk, speed, destpath)
+                    db.updateVoicePath(id, wavId)
+                except Exception as ex:
+                    print(f"retry failed. {ex}")
+            # 暂时不用
+            # db.bookVideoChunkJob(id)
+        db.close()
+        TTSAgent.checkStatus(set([ele[1] for ele in job]))
         pass
 
     @staticmethod
@@ -97,7 +149,10 @@ class TTSAgent:
     @staticmethod
     def process():
         if Config.forceLocalTTS:
-            TTSAgent.process_localTTS()
+            if Config.useXTTS:
+                TTSAgent.process_xTTS()
+            else:
+                TTSAgent.process_localTTS()
             return
         db = DBUtils()
         job = db.fetchTTSJob()

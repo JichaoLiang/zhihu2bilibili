@@ -7,7 +7,7 @@ import json
 import time
 
 import TutorialDemo
-import randomNum
+# import randomNum
 import io
 import os.path
 from pathlib import Path
@@ -17,6 +17,7 @@ import urllib
 import re
 import sys
 import Scraper.Analyser
+from Config.Config import Config
 from Scraper.Analyser.BingSearchAnalyser import BingSearchAnalyser
 from Scraper.Analyser.QuestionAnalyser import QuestionAnalyser
 from Scraper.Analyser.AnswerAnalyser import AnswerAnalyser
@@ -36,7 +37,7 @@ from Scraper.Enums.IdType import IdType
 
 requestConfig = {
     "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36",
-    "cookie": "lastCity=101010100; sid=sem_pz_bdpc_dasou_title; __g=sem_pz_bdpc_dasou_title; Hm_lvt_194df3105ad7148dcf2b98a91b5e727a=1656859923; Hm_lvt_f97992073bffedfa462561a24c99eb83=1656859926; wd_guid=cc8e9532-4f44-48c2-9535-31be86a90f2b; historyState=state; wljssdk_cross_new_user=1; Hm_lpvt_194df3105ad7148dcf2b98a91b5e727a=1656859962; wt2=DK6-CZbTlbdKFd4zsOaNwECsVo8RIpukEWjw5e3dPHGf7MBuTHee0Via5-9F4gKkGJ7--erfBecAIj9dVO9-Ytg~~; wbg=0; warlockjssdkcross={\"distinct_id\":\"52851058\",\"first_id\":\"181c48c1e62a36-00030193961745-6a7c2b1b-2073600-181c48c1e63100f\",\"props\":{},\"device_id\":\"181c48c1e62a36-00030193961745-6a7c2b1b-2073600-181c48c1e63100f\"}; __zp_seo_uuid__=f547d254-79c3-436f-897b-f5bf5eae0830; __l=r=https://youle.zhipin.com/questions/b8ce106c235ff3actnVy2dW5GVo~.html&l=/wapi/moment/preview/qrCode?bossUrl=https%3A%2F%2Fwww.zhipin.com%2Fmpa%2Fhtml%2Fget%2Fgrowth-system%2Findex&s=1; Hm_lpvt_f97992073bffedfa462561a24c99eb83=1656862905; __c=1656859923; __a=38993184.1656859923..1656859923.7.1.7.7"
+    "cookie": "MUID=3B94E3408A8C6F0A0A4CF1348B976E27; _EDGE_V=1; SRCHD=AF=NOFORM; SRCHUID=V=2&GUID=F8268E82B39849A7931EC5F7F56E05DF&dmnchg=1; MUIDB=3B94E3408A8C6F0A0A4CF1348B976E27; MicrosoftApplicationsTelemetryDeviceId=4683975d-c6fe-44a0-bd1b-ae5bf48f7873; PPLState=1; SnrOvr=X=rebateson; MMCASM=ID=E0F9DB97F5744A70AD7270B1E638C941; ANON=A=32A5624CED8D971858B5FD7FFFFFFFFF&E=1c80&W=1; _UR=QS=0&TQS=0&cdxcls=0; NAP=V=1.9&E=1c8e&C=gzwiKvBOEPeOW4Wj4266WaIcHTLVA3cDmtiD-7hcaRKgKLJCblCtFA&W=1; KievRPSSecAuth=FAByBBRaTOJILtFsMkpLVWSG6AN6C/svRwNmAAAEgAAACPVUHhwLDv4HMAQ6ScRGqdTLSzIRdxQHogDlx1dTjnOqKXK5OBNTp14TSCHGO5xM5AsMvx+fcCswPI99vKa0Uc56/07Wvh5Ucy7qbegOUNCJIrZTCAOd0DqhNUsIe5powF88MEJyO3oefvPEWyYXVVSf2S2CIz2TWWF8b9+suvmwBjWPs0HJS9bdVAS98liIes0iH++D+LlUxkvGmIpr0oJQRUDiFmmZArC4Q3nkVzRawkfZna8jJupYkF2rweEAns1UUSQO2aUFDbPSvFGBRf/g1w26J960QC2rN5tljOnI2sMKbpyJWxxLPFCTAm2GqW1D7cXfUFxdfMt2Z1e6IF7mqBACvQLvvuuOr0zgEVB72tmSM5zddRichwIxf7EeoXHxZ2ZhEQSC9PHeecY32fLCOmLBgr0MyKlkDUzUJku6WqzxktZenqxKUz5sRDl7gkmi/TL8utIReIix+vCseXS/V0MSjdO8X2XwaryreLmibYGkyqqGJti8eKgYHiUZ3iyKsdsYvVm56nWuftsalrMYyfZtUNxiBBgDkUyP0OS//LJKWQzK4YqaBseGABHWVdfzS13WFfyyuCcYlUpYvJnbJlaYRUG9TU+mWlEsPuZoZhsmis6gEM17qUH7DonPW0psAyG0+GJa8jurNpSZ6MiDDY02kARMM9lmJRc7kHKlJmLECeNkD8oTn9QL+fzMEdU9Wk2djfpaj0XROJtJzAzH7cUq/v0nacZYbN2sx4YqXQKrMfNJCbdydC67R37t5Cgg0luiF99eCileIFuV1ZWHv2T0LRz0HJNfDhC9mXg4qptxbUjimAUr76KnmB3OJTAZgtHhUrBfpiJZpsz6z4OuefsKpkZyHrdbGrtr98CQFfKYX/60sv0vrZyfD/qM0lps2maWTaPVsbBWFnDqBmThrNjKEZQfl84fwv+wjvv9jIvNHs+e1t7Qeh0PBNvJOFLF64zqf5T1F2xDstUVYawkwTvhLb506Dt/GDYPnz0rdQV5JE3ZJ+L1i+1+3Uni/3KE3JS4puiRpBJh462WR/ewpQ780h5hQeBdeDtQW4UXUzsn1kAp33ogACc/ghI6316djISoHkxTOyTJ/lDBz6bzfrSGVIOf6eMexq9Qh0a2/R5b0cOQ3Zr/3LmksJlMN8ii88yIDckB5l2JPAexeLNbIf96WQoXFKumoxotzWiiQ8ADPWip8Rfvaq3asI6/LYSaktIdIQqkZhXcBcDt+MLtKbKV+t933FJWg1dA+rLlUVCrlf7FuUbI/WkJU2IUwVMwq0NBZ8mSZXDXWCY24rr8nHmxdO3A6v7ZiQebPS96BDXLxTIEDT0Q9G16S7Bo5shPMbozIC0ZA31jxuAF0zwv2Uzf7jMpP+3xXQhZGPzMPMtJbb84Nm8K6+1123wl2pLMvLdNavRITMAkCp4zpMpu7j5dqm3BeG6YFACs/2/Y3g0KzJWbhALv+PBn55aVKw==; MSCCSC=1; _HPVN=CS=eyJQbiI6eyJDbiI6MTcsIlN0IjowLCJRcyI6MCwiUHJvZCI6IlAifSwiU2MiOnsiQ24iOjE3LCJTdCI6MCwiUXMiOjAsIlByb2QiOiJIIn0sIlF6Ijp7IkNuIjoxNywiU3QiOjAsIlFzIjowLCJQcm9kIjoiVCJ9LCJBcCI6dHJ1ZSwiTXV0ZSI6dHJ1ZSwiTGFkIjoiMjAyMy0xMS0yMVQwMDowMDowMFoiLCJJb3RkIjowLCJHd2IiOjAsIlRucyI6MCwiRGZ0IjpudWxsLCJNdnMiOjAsIkZsdCI6MCwiSW1wIjo2MSwiVG9iYnMiOjB9; ipv6=hit=1700571129835&t=4; _Rwho=u=d; ai_session=KzAUSY73GtHk7bq4dzJFmZ|1700567531095|1700567531095; USRLOC=HS=1&ELOC=LAT=39.96904373168945|LON=116.48928833007812|N=%E6%9C%9D%E9%98%B3%E5%8C%BA%EF%BC%8C%E5%8C%97%E4%BA%AC%E5%B8%82|ELT=6|; SRCHUSR=DOB=20221208&T=1700567529000&TPC=1700567542000; _SS=SID=28E3F85EECAF69DA09E6EB8EEDE5684E&R=441&RB=441&GB=0&RG=0&RP=441; _RwBf=ilt=23&ihpd=1&ispd=0&rc=441&rb=441&gb=0&rg=0&pc=441&mtu=0&rbb=0.0&g=0&cid=&clo=0&v=5&l=2023-11-21T08:00:00.0000000Z&lft=0001-01-01T00:00:00.0000000&aof=0&o=0&p=BINGCOPILOTWAITLIST&c=MR000T&t=3146&s=2023-05-13T06:41:56.6719363+00:00&ts=2023-11-21T11:55:36.9008507+00:00&rwred=0&wls=2&lka=0&lkt=0&TH=&r=1&mta=0&e=CDH4m6z6z-vKniIU_F76f-3kF9tgmYpNo3650x5qDBhq-_K1Glz1SyAhJRdnT8bq6I-T99K4O3wkpz_Yw59kdl5TAMFxIMiH90YY18IfjE8&A=&dci=0&wlb=0&aad=0; SRCHHPGUSR=SRCHLANG=zh-Hans&BRW=XW&BRH=T&CW=2560&CH=1291&SCW=2543&SCH=3274&DPR=1.0&UTC=480&DM=0&WTS=63836164329&HV=1700567737&PRVCW=662&PRVCH=1291&PV=10.0.0&BZA=0&IG=4C4C58128620429A8BE425BB2EA2C81D&EXLTT=2&CIBV=1.1342.2; _EDGE_S=SID=28E3F85EECAF69DA09E6EB8EEDE5684E&mkt=zh-cn"
 }
 
 targetUrl = {
@@ -149,7 +150,7 @@ duplicated = 0
 # topicQueue = []
 
 
-dataBasePath = os.path.abspath('../Resource/task/zhihu/')
+dataBasePath = os.path.join(Config.basePath, 'Resource/task/zhihu/')
 target = os.path.join(dataBasePath, 'data/data')
 
 flagPath = os.path.join(dataBasePath, "stop.txt")
@@ -512,7 +513,7 @@ def scrapeZhihu(tagmark):
         if IdType.getType(qid) == IdType.search:
             url, header = SearchKeywordAnalyser.buildRequestURL(id, header)
         if IdType.getType(qid) == IdType.bingsearch:
-            url = BingSearchAnalyser.buildRequestURL(id)
+            url, header = BingSearchAnalyser.buildRequestURL(id)
         return url, header
 
     def recordAndDiscover(response, qid):
@@ -749,11 +750,18 @@ def processSearchList():
     closef()
 
 
+def processSearchKeywords(list: list, tagmark='bingsearchkeyword'):
+    openf()
+    scrapeBaiduKeywords(list, tagmark)
+    closef()
+
+
 def process():
     openf()
     topicIdList = [
         # QuestionDomain.dongmanyouxi,
-        QuestionDomain.renwensheke
+        QuestionDomain.dongmanyouxi,
+        QuestionDomain.shuma
         # QuestionDomain.muyingqinzi,
         # QuestionDomain.qinggan
     ]
@@ -763,4 +771,5 @@ def process():
 
 
 if __name__ == '__main__':
-    processSearchList()
+    process()
+    # processSearchList()

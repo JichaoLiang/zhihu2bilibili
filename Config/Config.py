@@ -2,8 +2,11 @@ import os.path
 
 
 class Config:
+    defaultTagmark = '100010_2023-11-11'
     localTTSSpeed = 1.0
-    forceLocalTTS = True
+    forceLocalTTS = False
+    useXTTS = True
+    xTTSPath = r'R:\workspace\xTTS'
 
     recalllimit = 5
     basePath = r'R:\workspace\zhihu2bilibili'

@@ -1,4 +1,5 @@
 import os
+import re
 
 from Config.Config import Config
 from Config.VoiceModel import VoiceModel
@@ -10,6 +11,8 @@ from Scraper.Enums import Status
 from Scraper.Enums.IdType import IdType
 from Utils.DBUtils import DBUtils
 from Utils.LLMUtils import LLMUtils
+
+
 # from chatglm3.basic_demo.inference import ChatglmClient
 
 
@@ -20,6 +23,15 @@ class QuestionPicker:
         print(f'picked data: {[p["questiontext"] for p in pickedData]}. {len(pickedData)} total')
         QuestionPicker.bookTask(pickedData)
         # ChatglmClient.clearDistance()
+        pass
+
+    @staticmethod
+    def processTag(tag):
+        pickedData = QuestionPicker.pickQuestion(tag)
+        print(f'picked data: {[p["questiontext"] for p in pickedData]}. {len(pickedData)} total')
+        QuestionPicker.bookTask(pickedData)
+        # ChatglmClient.clearDistance()
+        return len(pickedData)
         pass
 
     @staticmethod
@@ -96,15 +108,15 @@ class QuestionPicker:
         pass
 
     @staticmethod
-    def pickQuestion() -> list:
-        recalldata = QuestionPicker.recall(Config.recalllimit)
+    def pickQuestion(tagmark=Config.defaultTagmark) -> list:
+        recalldata = QuestionPicker.recall(Config.recalllimit, tagmark=tagmark)
         filtereddata = [item for item in recalldata if QuestionPicker.filter(item)]
         # 给已审过滤的结果打标
         QuestionPicker.ignoreSignToDroppedRecall(recalldata, filtereddata)
         answerfiltereddata = QuestionPicker.answerfiltereddata(filtereddata)
         rankedData = QuestionPicker.rank(answerfiltereddata)
-        postprocessedData = QuestionPicker.postprocess(answerfiltereddata)
-        return rankedData
+        postprocessedData = QuestionPicker.postprocess(rankedData)
+        return postprocessedData
         pass
 
     @staticmethod
@@ -119,7 +131,7 @@ class QuestionPicker:
         return data
 
     @staticmethod
-    def recall(limit: int, minlength: int = 50):
+    def recall(limit: int, minlength: int = 50, tagmark='100010_2023-11-11'):
         db = DBUtils()
         # touchedQuestions = db.doQuery('select QuestionTitle from zhihu2bilibili.qna where taskgen != 0')
         result = db.doQuery(
@@ -127,8 +139,7 @@ class QuestionPicker:
             f'(SELECT idQnA, AnswerId, QuestionTitle, Answer, VoteUpCount, taskgenerated FROM zhihu2bilibili.qna'
             f' where length(answer) > 30'
             f' and length(answer) < 600'
-            f' and VoteUpCount > 5'
-            f' and TagMark="100010_2023-11-11"'
+            f' and TagMark="{tagmark}"'
             f' and taskgenerated=0) availableData '
             f'group by QuestionTitle having cnt >= 3 order by votesum desc limit {limit}')
         resultlist = []
@@ -137,9 +148,9 @@ class QuestionPicker:
             question = row[0]
             top3answer = db.doQuery(
                 f'select idqna, answerid, Answer , voteupcount from zhihu2bilibili.qna where questiontitle = "{question}" and length(Answer) > {minlength} order by voteupcount desc limit 5')
-            zhihuqid = IdType.stripId(top3answer[0][1]).split('_')[0]
             if len(top3answer) < 3:
                 continue
+            zhihuqid = IdType.stripId(top3answer[0][1]).split('_')[0]
             resultlist.append({
                 'questionid': zhihuqid,
                 'questiontext': question,
@@ -223,13 +234,25 @@ class QuestionPicker:
             answerlist = qnapair['answerlist']
             for i in range(0, len(answerlist)):
                 answer = answerlist[i]
-                answerlist[i] = QuestionPicker.postprocessAnswer(answer)
+                # answerlist[i] = QuestionPicker.postprocessAnswer(answer)
         return answerfiltereddata
         pass
 
     @staticmethod
     def postprocessAnswer(answer):
-        return answer
+        replacepairlist = [
+            ['知乎', '这里'],
+            ['谢邀', '谢谢'],
+            ['[-]*分割线[-]*', ''],
+            [r'^http://([\w-]+\.)+[\w-]+(/[\w-./?%&=]*)?$', '']
+        ]
+        for pair in replacepairlist:
+            regexstr = pair[0]
+            replaced = pair[1]
+            anstext = answer[2]
+            newAnswerText = re.sub(regexstr, replaced, anstext)
+            newAnswer = (answer[0],answer[1],newAnswerText,answer[3])
+        return newAnswer
         pass
 
     @staticmethod

@@ -1,4 +1,9 @@
+import os.path
+
 from bypy import ByPy
+
+from Config.Config import Config
+from Utils.CommonUtils import CommonUtils
 
 
 class BaidunetdiskUtils:
@@ -14,21 +19,42 @@ class BaidunetdiskUtils:
         print(list)
 
     @staticmethod
-    def searchTaskQueue()->list:
+    def sync(relpath='/task/'):
+        baidunetdiskclient = ByPy()
+        baidunetdiskclient.syncdown(relpath, os.path.join(Config.basePath, f'Resource/baidunetdisk{relpath}'), True)
+
+    @staticmethod
+    def syncUp(relpath='/task/'):
+        baidunetdiskclient = ByPy()
+        baidunetdiskclient.syncup(relpath, os.path.join(Config.basePath, f'Resource/baidunetdisk{relpath}'), True)
+
+    @staticmethod
+    def popSearchTaskQueue() -> list:
+        taskpath = os.path.join(Config.basePath, f'Resource/baidunetdisk/task/task.txt')
+        BaidunetdiskUtils.sync()
+        lines = CommonUtils.readAllText(taskpath).split('\n')
+        if lines.__contains__(''):
+            lines.remove('')
+        client = ByPy()
+        client.remove('/task/task.txt')
+        BaidunetdiskUtils.newTaskFile()
+        return lines
         pass
 
     @staticmethod
-    def setSearchTaskQueue(queue:list):
-        pass
-
-    @staticmethod
-    def popSearchTaskQueue(limit=5):
-        taskQueue =
+    def newTaskFile():
+        client = ByPy()
+        taskpath = os.path.join(Config.basePath, f'Resource/baidunetdisk/task/task.txt')
+        if os.path.exists(taskpath):
+            os.remove(taskpath)
+        CommonUtils.writeAllText(taskpath, '')
+        client.upload(taskpath, 'task/task.txt')
 
     @staticmethod
     def test():
-        BaidunetdiskUtils.upload("G:/test.png", '/origin/')
-        BaidunetdiskUtils.list('/origin/')
+        # BaidunetdiskUtils.sync()
+        queue = BaidunetdiskUtils.popSearchTaskQueue()
+        print(queue)
 
 
 if __name__ == '__main__':

@@ -53,7 +53,7 @@ class SadTalkerCli:
         request.driven_audio = voicePath
         request.source_image = characterImagePath #'./SadTalkerMain/examples/source_image/happy.png'
         request.ref_eyeblink = './SadTalkerMain/examples/ref_video/WDA_KatieHill_000.mp4'
-        request.ref_pose = './SadTalkerMain/examples/ref_video/shuai.mp4'
+        # request.ref_pose = './SadTalkerMain/examples/ref_video/shuai.mp4'
         request.still = False
         # request.ref_pose = './SadTalkerMain/examples/ref_video/WDA_KatieHill_000.mp4'
         # request.ref_pose = './SadTalkerMain/examples/ref_video/WDA_AlexandriaOcasioCortez_000.mp4'
@@ -84,7 +84,7 @@ class SadTalkerCli:
     pass
 
 if __name__ == '__main__':
-    img = 'g:/test.png'
-    audio = 'r:/output_8.wav'
+    img = 'r:/test2.png'
+    audio = 'r:/output_4.wav'
     to = img + '.mp4'
     SadTalkerCli.produceSadTalkerVideo(img, audio, to)

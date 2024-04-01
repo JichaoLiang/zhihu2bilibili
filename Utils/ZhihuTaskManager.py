@@ -1,7 +1,8 @@
+from Config.Config import Config
 from Utils.CommonUtils import CommonUtils
 import os
 class ZhihuTaskManager:
-    dataBasePath = os.path.abspath('../Resource/task/zhihu/')
+    dataBasePath = os.path.join(Config.basePath, 'Resource/task/zhihu/')
 
     waitingPath = os.path.join(dataBasePath, "waiting.txt")
     scrapedPath = os.path.join(dataBasePath, "scraped.txt")
